@@ -16,13 +16,29 @@ class RegisterController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var registerButton: UIButton!
-    @IBOutlet var warningLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        passwordField.isSecureTextEntry = true
-        warningLabel.adjustsFontSizeToFitWidth = true
+        //warningLabel.adjustsFontSizeToFitWidth = true
+        
+        setUpNormаlField(firstNameField)
+        setUpNormаlField(lastNameField)
+        setUpNormаlField(emailField)
+        setUpPassField(passwordField)
+    }
+    
+    func setUpNormаlField(_ normal: UITextField) {
+        normal.layer.cornerRadius = 15
+        normal.layer.borderColor = UIColor.black.cgColor
+        normal.layer.borderWidth = 1
+    }
+    
+    func setUpPassField(_ password: UITextField) {
+        password.layer.cornerRadius = 15
+        password.layer.borderColor = UIColor.black.cgColor
+        password.layer.borderWidth = 1
+        password.isSecureTextEntry = true
     }
     
     func validate() -> String? {
@@ -39,8 +55,8 @@ class RegisterController: UIViewController {
         let error = validate()
         
         if error != nil {
-            warningLabel.alpha = 1
-            warningLabel.text = error
+            //warningLabel.alpha = 1
+            //warningLabel.text = error
         } else {
             guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
             guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
@@ -51,8 +67,8 @@ class RegisterController: UIViewController {
                 guard let result = result else { return }
                 
                 if error != nil {
-                    self.warningLabel.alpha = 1
-                    self.warningLabel.text = error?.localizedDescription
+                    //self.warningLabel.alpha = 1
+                    //self.warningLabel.text = error?.localizedDescription
                 } else {
                     let db = Firestore.firestore()
                     
@@ -60,8 +76,8 @@ class RegisterController: UIViewController {
                                                               "lastName":lastName,
                                                               "uid":result.user.uid]) { error in
                         if error != nil {
-                            self.warningLabel.alpha = 1
-                            self.warningLabel.text = "Error storing user."
+                            //self.warningLabel.alpha = 1
+                            //self.warningLabel.text = "Error storing user."
                         }
                     }
                  
@@ -72,10 +88,11 @@ class RegisterController: UIViewController {
     }
     
     func moveToNextScreen() {
-        let balanceVC = storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceController
+        guard let balanceVC = storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceController else {
+            return
+        }
         
-        view.window?.rootViewController = balanceVC
-        view.window?.makeKeyAndVisible()
+        present(balanceVC, animated: true)
     }
     
 }

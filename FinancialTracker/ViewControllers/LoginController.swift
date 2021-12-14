@@ -13,13 +13,27 @@ class LoginController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var loginButton: UIButton!
-    @IBOutlet var warningLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        passwordField.isSecureTextEntry = true
-        warningLabel.adjustsFontSizeToFitWidth = true
+        //warningLabel.adjustsFontSizeToFitWidth = true
+        
+        setUpEmailField(emailField)
+        setUpPassField(passwordField)
+    }
+    
+    func setUpEmailField(_ email: UITextField) {
+        email.layer.cornerRadius = 15
+        email.layer.borderColor = UIColor.black.cgColor
+        email.layer.borderWidth = 1
+    }
+    
+    func setUpPassField(_ password: UITextField) {
+        password.layer.cornerRadius = 15
+        password.layer.borderColor = UIColor.black.cgColor
+        password.layer.borderWidth = 1
+        password.isSecureTextEntry = true
     }
     
     func validate() -> String? {
@@ -27,18 +41,6 @@ class LoginController: UIViewController {
         if emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
             return "Fill in all fields."
         }
-        
-        /*let password = passwordField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        if passwordValidation(password) == false {
-            return "Make sure your password is at least 8 characters, contains a special character and a number."
-        }
-        
-        let email = emailField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        if emailValidation(email) == false {
-            return "Make sure your email is valid."
-        }*/
         
         return nil
     }
@@ -48,16 +50,16 @@ class LoginController: UIViewController {
         let error = validate()
         
         if error != nil {
-            warningLabel.alpha = 1
-            warningLabel.text = error
+            //warningLabel.alpha = 1
+            //warningLabel.text = error
         } else {
             guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
             guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
             
             Auth.auth().signIn(withEmail: email, password: password) { result, error in
                 if error != nil {
-                    self.warningLabel.alpha = 1
-                    self.warningLabel.text = error?.localizedDescription
+                    //self.warningLabel.alpha = 1
+                    //self.warningLabel.text = error?.localizedDescription
                 } else {
                     self.moveToNextScreen()
                 }
