@@ -38,8 +38,12 @@ class LoginController: UIViewController {
     
     func validate() -> String? {
         
-        if emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
-            return "Fill in all fields."
+        guard emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else {
+            return "Fill in email."
+        }
+        
+        guard passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else {
+            return "Fill in password."
         }
         
         return nil
@@ -48,30 +52,36 @@ class LoginController: UIViewController {
     
     @IBAction func registerTapped(_ sender: Any) {
         let error = validate()
+        let ac = UIAlertController(title: "Error", message: "", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Continue", style: .default))
         
         if error != nil {
-            //warningLabel.alpha = 1
-            //warningLabel.text = error
+            ac.message = error
+            present(ac, animated: true)
         } else {
-            guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-            guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+            guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                fatalError("Couldn't process email.")
+            }
+            guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {                 fatalError("Couldn't process password.")
+            }
             
-            Auth.auth().signIn(withEmail: email, password: password) { result, error in
-                if error != nil {
-                    //self.warningLabel.alpha = 1
-                    //self.warningLabel.text = error?.localizedDescription
+            Firebase.signIn(email: email, password: password) { (err) in
+                if err != nil {
+                    ac.message = err
+                    self.present(ac, animated: true)
                 } else {
-                    self.moveToNextScreen()
+                    self.successfullAuth()
                 }
             }
         }
     }
     
-    func moveToNextScreen() {
-        let balanceVC = storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceController
-        
-        view.window?.rootViewController = balanceVC
-        view.window?.makeKeyAndVisible()
+    func successfullAuth() {
+        guard let balanceVC = storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceController else {
+            fatalError("Couldn't convert to balanceVC.")
+        }
+        balanceVC.modalPresentationStyle = .fullScreen
+        present(balanceVC, animated: true)
     }
 
 }

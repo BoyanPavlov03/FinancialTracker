@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class EntryController: UIViewController {
     @IBOutlet var loginButton: UIButton!
     @IBOutlet var registerButton: UIButton!
     

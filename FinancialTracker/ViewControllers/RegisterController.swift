@@ -6,9 +6,6 @@
 //
 
 import UIKit
-import Firebase
-import FirebaseAuth
-import FirebaseFirestore
 
 class RegisterController: UIViewController {
     @IBOutlet var firstNameField: UITextField!
@@ -19,9 +16,7 @@ class RegisterController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //warningLabel.adjustsFontSizeToFitWidth = true
-        
+                
         setUpNormаlField(firstNameField)
         setUpNormаlField(lastNameField)
         setUpNormаlField(emailField)
@@ -41,10 +36,33 @@ class RegisterController: UIViewController {
         password.isSecureTextEntry = true
     }
     
+    func isValidEmail(_ email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: email)
+    }
+    
     func validate() -> String? {
         
-        if firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" || passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) == "" {
-            return "Fill in all fields."
+        guard firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else {
+            return "Fill in first name."
+        }
+        
+        guard lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else {
+            return "Fill in last name."
+        }
+        
+        guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines), email != "" else {
+            return "Fill in email."
+        }
+        
+        guard passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) != "" else {
+            return "Fill in password."
+        }
+        
+        if isValidEmail(email) == false {
+            return "Invalid email format."
         }
         
         return nil
@@ -53,45 +71,42 @@ class RegisterController: UIViewController {
     
     @IBAction func registerTapped(_ sender: Any) {
         let error = validate()
+        let ac = UIAlertController(title: "Error", message: "", preferredStyle: .alert)
+        
+        ac.addAction(UIAlertAction(title: "Continue", style: .default))
         
         if error != nil {
-            //warningLabel.alpha = 1
-            //warningLabel.text = error
+            ac.message = error
+            present(ac, animated: true)
         } else {
-            guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-            guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-            guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-            guard let lastName = lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+            guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                fatalError("Couldn't process email.")
+            }
+            guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {                 fatalError("Couldn't process password.")
+            }
+            guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {                 fatalError("Couldn't process first name.")
+            }
+            guard let lastName = lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {                 fatalError("Couldn't process last name.")
+            }
             
-            Auth.auth().createUser(withEmail: email, password: password) { (result, error) in
-                guard let result = result else { return }
-                
-                if error != nil {
-                    //self.warningLabel.alpha = 1
-                    //self.warningLabel.text = error?.localizedDescription
+            Firebase.createUser(firstName: firstName, lastName: lastName, email: email, password: password) { (err) in
+                if err != nil {
+                    self.present(ac, animated: true)
                 } else {
-                    let db = Firestore.firestore()
-                    
-                    db.collection("users").addDocument(data: ["firstName":firstName,
-                                                              "lastName":lastName,
-                                                              "uid":result.user.uid]) { error in
-                        if error != nil {
-                            //self.warningLabel.alpha = 1
-                            //self.warningLabel.text = "Error storing user."
-                        }
-                    }
-                 
-                    self.moveToNextScreen()
+                    self.successfullAuth()
                 }
             }
+            
+            
         }
     }
     
-    func moveToNextScreen() {
+    func successfullAuth() {
         guard let balanceVC = storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceController else {
-            return
+            fatalError("Couldn't convert to balanceVC.")
         }
-        
+        balanceVC.modalPresentationStyle = .fullScreen
+
         present(balanceVC, animated: true)
     }
     
