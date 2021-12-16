@@ -176,7 +176,7 @@
                                     <color key="baseBackgroundColor" systemColor="tintColor"/>
                                 </buttonConfiguration>
                                 <connections>
-                                    <action selector="registerTapped:" destination="gck-Yy-xUr" eventType="touchUpInside" id="jyV-Ni-1US"/>
+                                    <action selector="loginButtonTapped:" destination="gck-Yy-xUr" eventType="touchUpInside" id="jK1-QT-TUF"/>
                                 </connections>
                             </button>
                         </subviews>
