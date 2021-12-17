@@ -11,51 +11,75 @@ import FirebaseCore
 import FirebaseFirestore
 import Foundation
 
-struct Firebase {
-    static func createUser(firstName: String, lastName: String, email: String, password: String, errorHandler: @escaping (String?) -> Void) {
-        errorHandler(nil)
+enum FirebaseError: Error {
+    case auth(Error?)
+    case db(Error?)
+    case signOut(Error?)
+    case unknown
+}
 
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
+enum DBCollectionKey: String {
+    case users
+}
 
+enum UserDataProperty: String {
+    case firstName
+    case lastName
+    case uid
+}
+
+class FirebaseHandler {
+    private let db = Firestore.firestore()
+    static let shared = FirebaseHandler()
+    
+    private init() {}
+    
+    var signedIn: Bool {
+        return Auth.auth().currentUser != nil
+    }
+    
+    func createUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] (result, error) in
+
+            guard let self = self else {
+                fatalError("self is nil")
+            }
+            
             guard error == nil else {
-                errorHandler(error?.localizedDescription)
+                completionHandler(FirebaseError.auth(error), false)
                 return
             }
 
-            let db = Firestore.firestore()
-
             guard let result = result else {
-                fatalError("errorHere")
+                completionHandler(FirebaseError.unknown, false)
+                return
             }
 
-            db.collection("users").addDocument(data: ["firstName": firstName, "lastName": lastName, "uid": result.user.uid]) { error in
+            self.db.collection(DBCollectionKey.users.rawValue).addDocument(data: [UserDataProperty.firstName.rawValue: firstName, UserDataProperty.lastName.rawValue: lastName, UserDataProperty.uid.rawValue: result.user.uid]) { error in
                 if error != nil {
-                    errorHandler("Error storing user.")
+                    completionHandler(FirebaseError.db(error), false)
+                    return
                 }
+                completionHandler(nil, true)
             }
         }
     }
 
-    static func signIn(email: String, password: String, errorHandler: @escaping (String?) -> Void) {
-        errorHandler(nil)
-
+    func signIn(email: String, password: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { _, error in
 
             if error != nil {
-                errorHandler(error?.localizedDescription)
+                completionHandler(FirebaseError.auth(error), false)
             }
+            completionHandler(nil, true)
         }
     }
     
-    static func signedIn() -> Bool {
-        return Auth.auth().currentUser != nil ? true : false
-    }
-    
-    static func signOut() {
+    func signOut() {
         do {
             try Auth.auth().signOut()
-        } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
+        } catch let signOutError {
+            print("Error signing out: %@", FirebaseError.signOut(signOutError))
         }
     }
 }

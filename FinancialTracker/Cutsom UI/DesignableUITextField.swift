@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// Custom TextFieldField for adding icons to the text field
 @IBDesignable
 class DesignableUITextField: UITextField {
     override func leftViewRect(forBounds bounds: CGRect) -> CGRect {
