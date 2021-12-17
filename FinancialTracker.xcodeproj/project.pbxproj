@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		703DACFE2769CFC400149626 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703DACFD2769CFC400149626 /* Firebase.swift */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
+		70616DB1276CD20D0084FC13 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70616DB0276CD20D0084FC13 /* Package.swift */; };
+		70616DB3276CD23D0084FC13 /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70616DB2276CD23C0084FC13 /* Empty.swift */; };
 		708905A52764A317000CEE4E /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708905A42764A317000CEE4E /* LoginController.swift */; };
 		709638D427649777000C152D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D327649777000C152D /* FirebaseAnalytics */; };
 		709638D627649777000C152D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D527649777000C152D /* FirebaseAuth */; };
@@ -30,6 +32,8 @@
 /* Begin PBXFileReference section */
 		703DACFD2769CFC400149626 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
+		70616DB0276CD20D0084FC13 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		70616DB2276CD23C0084FC13 /* Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		708905A42764A317000CEE4E /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		709638DF27649D2F000C152D /* BalanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceController.swift; sourceTree = "<group>"; };
 		70B3335E2763DDC7002FAEB5 /* RegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterController.swift; sourceTree = "<group>"; };
@@ -69,6 +73,15 @@
 			path = "Cutsom UI";
 			sourceTree = "<group>";
 		};
+		70616DAF276CD1FB0084FC13 /* BuildTools */ = {
+			isa = PBXGroup;
+			children = (
+				70616DB0276CD20D0084FC13 /* Package.swift */,
+				70616DB2276CD23C0084FC13 /* Empty.swift */,
+			);
+			path = BuildTools;
+			sourceTree = "<group>";
+		};
 		70D0D6CA2766227600ED0060 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +96,7 @@
 		70D37DE327633FB40067FFE6 = {
 			isa = PBXGroup;
 			children = (
+				70616DAF276CD1FB0084FC13 /* BuildTools */,
 				70D37DEE27633FB40067FFE6 /* FinancialTracker */,
 				70D37DED27633FB40067FFE6 /* Products */,
 			);
@@ -120,6 +134,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 70D37E0027633FB50067FFE6 /* Build configuration list for PBXNativeTarget "FinancialTracker" */;
 			buildPhases = (
+				70616DB4276CD24A0084FC13 /* ShellScript */,
 				70D37DE827633FB40067FFE6 /* Sources */,
 				70D37DE927633FB40067FFE6 /* Frameworks */,
 				70D37DEA27633FB40067FFE6 /* Resources */,
@@ -191,6 +206,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		70616DB4276CD24A0084FC13 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "
+";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		70D37DE827633FB40067FFE6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -199,9 +235,11 @@
 				70B3335F2763DDC7002FAEB5 /* RegisterController.swift in Sources */,
 				708905A52764A317000CEE4E /* LoginController.swift in Sources */,
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
+				70616DB1276CD20D0084FC13 /* Package.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceController.swift in Sources */,
 				7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */,
+				70616DB3276CD23D0084FC13 /* Empty.swift in Sources */,
 				70D37DF027633FB40067FFE6 /* AppDelegate.swift in Sources */,
 				70D37DF227633FB40067FFE6 /* SceneDelegate.swift in Sources */,
 			);
