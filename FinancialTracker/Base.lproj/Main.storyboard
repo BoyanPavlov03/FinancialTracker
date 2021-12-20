@@ -369,8 +369,7 @@
                                             <color key="baseBackgroundColor" systemColor="tintColor"/>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="registerTapped:" destination="ZpF-hA-3yF" eventType="touchUpInside" id="5Ge-cQ-P1h"/>
-                                            <action selector="registerTapped:" destination="gck-Yy-xUr" eventType="touchUpInside" id="dHw-gK-pt2"/>
+                                            <action selector="registerButtonTapped:" destination="ZpF-hA-3yF" eventType="touchUpInside" id="5kd-5V-MMJ"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -433,10 +432,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="hoc-TO-5wW">
-                                <rect key="frame" x="130" y="255" width="154" height="45"/>
+                                <rect key="frame" x="100" y="255" width="214" height="45"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1JQ-hW-DPZ">
-                                        <rect key="frame" x="0.0" y="0.0" width="85.5" height="45"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="124" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="45" id="PBB-wX-6Ww"/>
                                         </constraints>
@@ -444,12 +443,17 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BGN" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uio-CX-1E4">
-                                        <rect key="frame" x="90.5" y="0.0" width="63.5" height="45"/>
+                                        <rect key="frame" x="129" y="0.0" width="85" height="45"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="1JQ-hW-DPZ" secondAttribute="trailing" constant="90" id="Pnk-gc-o8L"/>
+                                    <constraint firstItem="1JQ-hW-DPZ" firstAttribute="leading" secondItem="hoc-TO-5wW" secondAttribute="leading" id="Xi3-NY-gXj"/>
+                                    <constraint firstAttribute="trailing" secondItem="Uio-CX-1E4" secondAttribute="trailing" id="umR-tS-HTM"/>
+                                </constraints>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fOO-MP-sMf">
                                 <rect key="frame" x="147" y="545" width="120" height="50"/>
@@ -463,6 +467,12 @@
                                     <action selector="nextButtonTapped:" destination="5Ou-QW-iX9" eventType="touchUpInside" id="wCF-yv-e8H"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tho-mC-WdZ">
+                                <rect key="frame" x="207" y="135" width="0.0" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="pHH-nV-nFO"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -471,16 +481,19 @@
                             <constraint firstItem="fOO-MP-sMf" firstAttribute="top" secondItem="hoc-TO-5wW" secondAttribute="bottom" constant="245" id="3m7-5v-XJS"/>
                             <constraint firstItem="1wO-Mb-aFP" firstAttribute="centerX" secondItem="pHH-nV-nFO" secondAttribute="centerX" id="DmR-iA-THv"/>
                             <constraint firstItem="JeT-cy-eH6" firstAttribute="centerX" secondItem="pHH-nV-nFO" secondAttribute="centerX" id="ELk-Pe-ctH"/>
-                            <constraint firstItem="pHH-nV-nFO" firstAttribute="trailing" secondItem="hoc-TO-5wW" secondAttribute="trailing" constant="130" id="cpp-Qe-LnP"/>
+                            <constraint firstItem="pHH-nV-nFO" firstAttribute="trailing" secondItem="hoc-TO-5wW" secondAttribute="trailing" constant="100" id="cpp-Qe-LnP"/>
                             <constraint firstItem="fOO-MP-sMf" firstAttribute="centerX" secondItem="pHH-nV-nFO" secondAttribute="centerX" id="d9h-4f-Mrv"/>
+                            <constraint firstItem="JeT-cy-eH6" firstAttribute="top" secondItem="tho-mC-WdZ" secondAttribute="bottom" constant="29" id="faG-yO-6kK"/>
+                            <constraint firstItem="tho-mC-WdZ" firstAttribute="centerX" secondItem="pHH-nV-nFO" secondAttribute="centerX" id="gr0-yT-AYG"/>
                             <constraint firstItem="pHH-nV-nFO" firstAttribute="bottom" secondItem="1wO-Mb-aFP" secondAttribute="bottom" constant="30" id="nt0-SS-xff"/>
-                            <constraint firstItem="hoc-TO-5wW" firstAttribute="leading" secondItem="pHH-nV-nFO" secondAttribute="leading" constant="130" id="t2F-qP-wpz"/>
+                            <constraint firstItem="hoc-TO-5wW" firstAttribute="leading" secondItem="pHH-nV-nFO" secondAttribute="leading" constant="100" id="t2F-qP-wpz"/>
                             <constraint firstItem="JeT-cy-eH6" firstAttribute="top" secondItem="pHH-nV-nFO" secondAttribute="top" constant="120" id="xvZ-gL-l7g"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="balanceTextField" destination="1JQ-hW-DPZ" id="hhH-Gz-5v3"/>
                         <outlet property="nextButton" destination="fOO-MP-sMf" id="VSw-30-ZZF"/>
+                        <outlet property="welcomeLabel" destination="tho-mC-WdZ" id="wRT-vx-e2z"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lX1-dl-y8A" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -54,7 +54,5 @@ class DesignableUITextField: UITextField {
             leftViewMode = UITextField.ViewMode.never
             leftView = nil
         }
-        
-        attributedPlaceholder = NSAttributedString(string: placeholder != nil ?  placeholder! : "", attributes:[NSAttributedString.Key.foregroundColor: color])
     }
 }

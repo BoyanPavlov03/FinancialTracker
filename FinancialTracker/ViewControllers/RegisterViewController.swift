@@ -38,22 +38,22 @@ class RegisterViewController: UIViewController {
     }
 
     @IBAction func registerButtonTapped(_: Any) {
-        guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+        guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !firstName.isEmpty else {
             self.present(UIAlertController.create(title: "Missing First Name", message: "Please fill in your first name"), animated: true)
             return
         }
         
-        guard let lastName = lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+        guard let lastName = lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !lastName.isEmpty else {
             self.present(UIAlertController.create(title: "Missing Password", message: "Please fill in your last name"), animated: true)
             return
         }
         
-        guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+        guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !email.isEmpty else {
             self.present(UIAlertController.create(title: "Missing Email", message: "Please fill in your email"), animated: true)
             return
         }
         
-        guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+        guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !password.isEmpty else {
             self.present(UIAlertController.create(title: "Missing Password", message: "Please fill in your password"), animated: true)
             return
         }
@@ -69,16 +69,22 @@ class RegisterViewController: UIViewController {
                 switch firebaseError {
                 case .unknown:
                     self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-                case .some(let error):
-                    self.present(UIAlertController.create(title: "Error", message: error.localizedDescription), animated: true)
+                case .auth(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
+                case .database(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
                 case .none:
+                    break
+                default:
                     break
                 }
                 
                 return
             }
             
-            guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier:"BalanceVC") as? BalanceViewController else {
+            guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
                 fatalError("Couldn't convert to balanceVC.")
             }
             balanceVC.modalPresentationStyle = .fullScreen

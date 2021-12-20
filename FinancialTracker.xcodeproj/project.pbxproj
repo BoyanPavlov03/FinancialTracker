@@ -131,6 +131,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 70D37E0027633FB50067FFE6 /* Build configuration list for PBXNativeTarget "FinancialTracker" */;
 			buildPhases = (
+				708E2227276E4A2A00A63FD3 /* Run Script */,
 				70D37DE827633FB40067FFE6 /* Sources */,
 				70D37DE927633FB40067FFE6 /* Frameworks */,
 				70D37DEA27633FB40067FFE6 /* Resources */,
@@ -201,6 +202,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		708E2227276E4A2A00A63FD3 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		70D37DE827633FB40067FFE6 /* Sources */ = {
@@ -364,6 +386,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TM8ZNU4H54;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinancialTracker/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -391,6 +414,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TM8ZNU4H54;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FinancialTracker/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

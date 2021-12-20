@@ -15,6 +15,4 @@ class EntryViewController: UIViewController {
         super.viewDidLoad()
     }
 
-
 }
-

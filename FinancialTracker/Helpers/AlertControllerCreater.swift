@@ -10,8 +10,8 @@ import UIKit
 
 extension UIAlertController {
     static func create(title: String, message: String) -> UIAlertController {
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: nil))
-        return ac
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Continue", style: .default, handler: nil))
+        return alertController
     }
 }
