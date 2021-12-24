@@ -21,8 +21,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let entryVC = storyboard.instantiateViewController(withIdentifier: "EntryVC") as? EntryViewController
         let mainVC = storyboard.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController
-        
-        if FirebaseHandler.shared.signedIn == true {
+                        
+        if FirebaseHandler.shared.currentUser != nil {
             window.rootViewController = mainVC
         } else {
             window.rootViewController = entryVC

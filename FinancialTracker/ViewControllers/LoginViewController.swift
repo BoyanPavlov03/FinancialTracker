@@ -8,10 +8,12 @@
 import UIKit
 
 class LoginViewController: UIViewController {
+    // MARK: - View properties
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var loginButton: UIButton!
 
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -37,26 +39,20 @@ class LoginViewController: UIViewController {
             return
         }
 
-        FirebaseHandler.shared.signIn(email: email, password: password) { firebaseError, success in
-            guard success == true else {
-                switch firebaseError {
-                case .auth(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
-                case .none:
-                    break
-                default:
-                    break
+        FirebaseHandler.shared.signIn(email: email, password: password) { firebaseError, _ in
+            switch firebaseError {
+            case .auth(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
+            case .none:
+                guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
+                    fatalError("Couldn't cast to balanceVC.")
                 }
-                
-                return
+                balanceVC.modalPresentationStyle = .fullScreen
+                self.present(balanceVC, animated: true)
+            default:
+                assertionFailure("This error is inaccessible")
             }
-            
-            guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
-                fatalError("Couldn't convert to balanceVC.")
-            }
-            balanceVC.modalPresentationStyle = .fullScreen
-            self.present(balanceVC, animated: true)
         }
     }
 }

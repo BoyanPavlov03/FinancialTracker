@@ -8,12 +8,14 @@
 import UIKit
 
 class RegisterViewController: UIViewController {
+    // MARK: - View properties
     @IBOutlet var firstNameField: UITextField!
     @IBOutlet var lastNameField: UITextField!
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var registerButton: UIButton!
 
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -63,32 +65,26 @@ class RegisterViewController: UIViewController {
             return
         }
 
-        FirebaseHandler.shared.createUser(firstName: firstName, lastName: lastName, email: email, password: password) { firebaseError, success in
+        FirebaseHandler.shared.createUser(firstName: firstName, lastName: lastName, email: email, password: password) { firebaseError, _ in
             
-            guard success == true else {
-                switch firebaseError {
-                case .unknown:
-                    self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-                case .auth(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
-                case .database(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                case .none:
-                    break
-                default:
-                    break
+            switch firebaseError {
+            case .unknown:
+                self.present(UIAlertController.create(title: "UnknownError", message: "Unknown"), animated: true)
+            case .auth(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
+            case .database(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+            case .none:
+                guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
+                    fatalError("Couldn't cast to balanceVC.")
                 }
-                
-                return
+                balanceVC.modalPresentationStyle = .fullScreen
+                self.present(balanceVC, animated: true)
+            default:
+                assertionFailure("This error is inaccessible")
             }
-            
-            guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
-                fatalError("Couldn't convert to balanceVC.")
-            }
-            balanceVC.modalPresentationStyle = .fullScreen
-            self.present(balanceVC, animated: true)
         }
     }
 }

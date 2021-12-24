@@ -8,6 +8,7 @@
 import UIKit
 
 class EntryViewController: UIViewController {
+    // MARK: - View properties
     @IBOutlet var loginButton: UIButton!
     @IBOutlet var registerButton: UIButton!
     

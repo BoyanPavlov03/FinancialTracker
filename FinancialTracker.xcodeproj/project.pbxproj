@@ -131,7 +131,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 70D37E0027633FB50067FFE6 /* Build configuration list for PBXNativeTarget "FinancialTracker" */;
 			buildPhases = (
-				708E2227276E4A2A00A63FD3 /* Run Script */,
+				708E2227276E4A2A00A63FD3 /* Swift Lint */,
 				70D37DE827633FB40067FFE6 /* Sources */,
 				70D37DE927633FB40067FFE6 /* Frameworks */,
 				70D37DEA27633FB40067FFE6 /* Resources */,
@@ -204,7 +204,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		708E2227276E4A2A00A63FD3 /* Run Script */ = {
+		708E2227276E4A2A00A63FD3 /* Swift Lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -213,7 +213,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Run Script";
+			name = "Swift Lint";
 			outputFileListPaths = (
 			);
 			outputPaths = (

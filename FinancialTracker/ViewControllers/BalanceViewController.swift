@@ -8,35 +8,22 @@
 import UIKit
 
 class BalanceViewController: UIViewController {
+    // MARK: - View properties
     @IBOutlet var balanceTextField: UITextField!
     @IBOutlet var nextButton: UIButton!
     @IBOutlet var welcomeLabel: UILabel!
     
+    // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         balanceTextField.keyboardType = .numberPad
-                
-        FirebaseHandler.shared.getCurrentUserData(completionHandler: { firebaseError, success, data in
-            guard success == true else {
-                switch firebaseError {
-                case .some(let error):
-                    fatalError(error.localizedDescription)
-                case .none:
-                    break
-                }
-
-                return
-            }
-            guard let data = data else {
-                return
-            }
-            
-            guard let firstName = data["firstName"] as? String else {
-                return
-            }
-            
-            self.welcomeLabel.text = "Welcome " + firstName
-        })
+        
+        guard let firstName = FirebaseHandler.shared.currentUser?.firstName else {
+            assertionFailure("User data is nil")
+            return
+        }
+        
+        self.welcomeLabel.text = "Welcome " + firstName
     }
     
     @IBAction func nextButtonTapped(_ sender: Any) {
@@ -44,37 +31,40 @@ class BalanceViewController: UIViewController {
             self.present(UIAlertController.create(title: "Missing Balance", message: "Please fill in your starting balance"), animated: true)
             return
         }
-
-        guard Int(balance) != nil else {
+        
+        guard let balanceNumber = Int(balance) else {
             self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }
         
-        FirebaseHandler.shared.addDataToDocument(collection: "users", data: ["balance": balance])
+        FirebaseHandler.shared.addBalanceToCurrentUser(balanceNumber) { firebaseError, _ in
+            switch firebaseError {
+            case .access:
+                self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
+            case .none:
+                break
+            default:
+                assertionFailure("This error is inaccessible")
+            }
+        }
     }
     
     @IBAction func signOutButtonTapped(_ sender: Any) {
-        FirebaseHandler.shared.signOut { firebaseError, success in
-            guard success == true else {
-                switch firebaseError {
-                case .signOut(let error):
-                    guard let error = error else { return }
-                    fatalError(error.localizedDescription)
-                case .none:
-                    break
-                default:
-                    break
+        FirebaseHandler.shared.signOut { firebaseError, _ in
+            switch firebaseError {
+            case .signOut(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+            case .none:
+                guard let entryVC = self.storyboard?.instantiateViewController(withIdentifier: "EntryVC") as? EntryViewController else {
+                    fatalError("Couldn't cast to entryVC.")
                 }
                 
-                return
+                entryVC.modalPresentationStyle = .fullScreen
+                self.present(entryVC, animated: true)
+            default:
+                assertionFailure("This error is inaccessible")
             }
         }
-        
-        guard let entryVC = storyboard?.instantiateViewController(withIdentifier: "EntryVC") as? EntryViewController else {
-            fatalError("Couldn't convert to entryVC.")
-        }
-        
-        entryVC.modalPresentationStyle = .fullScreen
-        present(entryVC, animated: true)
     }
 }
