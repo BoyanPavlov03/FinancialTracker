@@ -41,10 +41,10 @@ class BalanceViewController: UIViewController {
             switch firebaseError {
             case .access:
                 self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
+            case .auth, .database, .unknown, .signOut:
+                assertionFailure("This error is inaccessible")
             case .none:
                 break
-            default:
-                assertionFailure("This error is inaccessible")
             }
         }
     }
@@ -55,6 +55,8 @@ class BalanceViewController: UIViewController {
             case .signOut(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+            case .database, .unknown, .access, .auth:
+                assertionFailure("This error should not appear.")
             case .none:
                 guard let entryVC = self.storyboard?.instantiateViewController(withIdentifier: "EntryVC") as? EntryViewController else {
                     fatalError("Couldn't cast to entryVC.")
@@ -62,8 +64,6 @@ class BalanceViewController: UIViewController {
                 
                 entryVC.modalPresentationStyle = .fullScreen
                 self.present(entryVC, animated: true)
-            default:
-                assertionFailure("This error is inaccessible")
             }
         }
     }

@@ -42,17 +42,7 @@ class FirebaseHandler {
         guard signedIn else {
             return nil
         }
-                        
-        if user == nil {
-            getCurrentUserData { firebaseError, user in
-                guard firebaseError == nil else {
-                    assertionFailure("Can't access user data")
-                    return
-                }
-                self.user = user
-            }
-        }
-                        
+        
         return user
     }
     
@@ -61,14 +51,24 @@ class FirebaseHandler {
     private let firestore = Firestore.firestore()
     private let auth = Auth.auth()
     
-    var signedIn: Bool {
+    private var signedIn: Bool {
         return auth.currentUser != nil
     }
     
-    private init() {}
+    private init() {
+        if self.user == nil && signedIn {
+            getCurrentUserData { firebaseError, user in
+                guard firebaseError == nil else {
+                    assertionFailure("Can't access user data")
+                    return
+                }
+                self.user = user
+            }
+        }
+    }
     
     // MARK: - Methods
-    func createUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    func registerUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.createUser(withEmail: email, password: password) { [weak self] (result, error) in
 
             guard let self = self else {
@@ -103,7 +103,7 @@ class FirebaseHandler {
         }
     }
 
-    func signIn(email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    func loginUser(email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.signIn(withEmail: email, password: password) { _, error in
             guard error == nil else {
                 completionHandler(FirebaseError.auth(error), nil)
@@ -116,18 +116,45 @@ class FirebaseHandler {
                     completionHandler(FirebaseError.database(error), user)
                 case .unknown:
                     completionHandler(FirebaseError.unknown, user)
+                case .access:
+                    completionHandler(FirebaseError.access, user)
                 case .none:
-                    completionHandler(nil, user)
                     self.user = user
-                default:
-                    break
+                    completionHandler(nil, user)
+                case .auth, .signOut:
+                    assertionFailure("This error should not appear.")
                 }
             }
         }
     }
     
-    func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    func signOut(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        do {
+            try auth.signOut()
+            self.user = nil
+            completionHandler(nil, true)
+        } catch let signOutError {
+            completionHandler(FirebaseError.signOut(signOutError), false)
+        }
+    }
+    
+    func addBalanceToCurrentUser(_ balance: Int, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access, false)
+            return
+        }
+                
+        let usersKey = DBCollectionKey.users.rawValue
+        let balanceKey = User.CodingKeys.balance.rawValue
+        
+        self.user.balance = balance
+        
+        firestore.collection(usersKey).document(currentUser.uid).setData([balanceKey: balance], merge: true)
+    }
+    
+    private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let uid = self.auth.currentUser?.uid else {
+            completionHandler(FirebaseError.access, nil)
             return
         }
         
@@ -150,30 +177,5 @@ class FirebaseHandler {
                 completionHandler(FirebaseError.database(error), nil)
             }
         }
-    }
-    
-    func signOut(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        do {
-            try auth.signOut()
-            self.user = nil
-        } catch let signOutError {
-            completionHandler(FirebaseError.signOut(signOutError), false)
-        }
-    }
-    
-    func addBalanceToCurrentUser(_ balance: Int, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access, false)
-            return
-        }
-        
-        print(currentUser)
-        
-        let usersKey = DBCollectionKey.users.rawValue
-        let balanceKey = User.CodingKeys.balance.rawValue
-        
-        self.user.balance = balance
-        
-        firestore.collection(usersKey).document(currentUser.uid).setData([balanceKey: balance], merge: true)
     }
 }

@@ -39,19 +39,26 @@ class LoginViewController: UIViewController {
             return
         }
 
-        FirebaseHandler.shared.signIn(email: email, password: password) { firebaseError, _ in
+        FirebaseHandler.shared.loginUser(email: email, password: password) { firebaseError, _ in
             switch firebaseError {
             case .auth(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
+            case .unknown:
+                self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
+            case .access:
+                self.present(UIAlertController.create(title: "Access Error", message: "You can't access that"), animated: true)
+            case .database(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+            case .signOut:
+                assertionFailure("This error should not appear.")
             case .none:
                 guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
                     fatalError("Couldn't cast to balanceVC.")
                 }
                 balanceVC.modalPresentationStyle = .fullScreen
                 self.present(balanceVC, animated: true)
-            default:
-                assertionFailure("This error is inaccessible")
             }
         }
     }
