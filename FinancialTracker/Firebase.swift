@@ -56,7 +56,7 @@ class FirebaseHandler {
     }
     
     private init() {
-        if self.user == nil && signedIn {
+        if signedIn {
             getCurrentUserData { firebaseError, user in
                 guard firebaseError == nil else {
                     assertionFailure("Can't access user data")
@@ -68,6 +68,16 @@ class FirebaseHandler {
     }
     
     // MARK: - Methods
+    func checkAuthorisedState(completionHandler: @escaping (Bool) -> Void) {
+        auth.addStateDidChangeListener { _, user in
+            if user != nil {
+                completionHandler(true)
+            } else {
+                completionHandler(false)
+            }
+        }
+    }
+    
     func registerUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.createUser(withEmail: email, password: password) { [weak self] (result, error) in
 
@@ -103,7 +113,7 @@ class FirebaseHandler {
         }
     }
 
-    func loginUser(email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    func logInUser(email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.signIn(withEmail: email, password: password) { _, error in
             guard error == nil else {
                 completionHandler(FirebaseError.auth(error), nil)
@@ -123,6 +133,7 @@ class FirebaseHandler {
                     completionHandler(nil, user)
                 case .auth, .signOut:
                     assertionFailure("This error should not appear.")
+                    break
                 }
             }
         }

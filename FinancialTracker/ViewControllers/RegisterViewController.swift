@@ -78,12 +78,10 @@ class RegisterViewController: UIViewController {
                 self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
             case .access, .signOut:
                 assertionFailure("This error should not appear.")
+                break
             case .none:
-                guard let balanceVC = self.storyboard?.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController else {
-                    fatalError("Couldn't cast to balanceVC.")
-                }
-                balanceVC.modalPresentationStyle = .fullScreen
-                self.present(balanceVC, animated: true)
+                assert(true)
+                break
             }
         }
     }
