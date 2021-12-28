@@ -1,6 +1,5 @@
 disabled_rules:
 - trailing_whitespace
-- unneeded_break_in_switch
 
 opt_in_rules:
 - empty_count

@@ -21,18 +21,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let entryVC = storyboard.instantiateViewController(withIdentifier: "EntryVC") as? EntryViewController
         let mainVC = storyboard.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController
-               
+        
         FirebaseHandler.shared.checkAuthorisedState { success in
             if success {
                 window.rootViewController = mainVC
             } else {
                 window.rootViewController = entryVC
             }
-        }
             
-        self.window = window
-        
-        self.window?.makeKeyAndVisible()
+            self.window = window
+            self.window?.makeKeyAndVisible()
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

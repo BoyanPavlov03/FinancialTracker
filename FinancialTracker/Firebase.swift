@@ -55,23 +55,21 @@ class FirebaseHandler {
         return auth.currentUser != nil
     }
     
-    private init() {
-        if signedIn {
-            getCurrentUserData { firebaseError, user in
-                guard firebaseError == nil else {
-                    assertionFailure("Can't access user data")
-                    return
-                }
-                self.user = user
-            }
-        }
-    }
+    private init() {}
     
     // MARK: - Methods
     func checkAuthorisedState(completionHandler: @escaping (Bool) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if user != nil {
-                completionHandler(true)
+                self.getCurrentUserData { firebaseError, user in
+                    guard firebaseError == nil else {
+                        // swiftlint:disable:next force_unwrapping
+                        assertionFailure("Can't access user data: \(firebaseError!.localizedDescription)")
+                        return
+                    }
+                    self.user = user
+                    completionHandler(true)
+                }
             } else {
                 completionHandler(false)
             }
@@ -133,6 +131,7 @@ class FirebaseHandler {
                     completionHandler(nil, user)
                 case .auth, .signOut:
                     assertionFailure("This error should not appear.")
+                    // swiftlint:disable:next unneeded_break_in_switch
                     break
                 }
             }

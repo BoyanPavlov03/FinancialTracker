@@ -78,9 +78,11 @@ class RegisterViewController: UIViewController {
                 self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
             case .access, .signOut:
                 assertionFailure("This error should not appear.")
+                // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
                 assert(true)
+                // swiftlint:disable:next unneeded_break_in_switch
                 break
             }
         }

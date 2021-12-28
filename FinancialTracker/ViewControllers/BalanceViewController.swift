@@ -18,15 +18,14 @@ class BalanceViewController: UIViewController {
         super.viewDidLoad()
         balanceTextField.keyboardType = .numberPad
         
-        // Data is fetched too slow and this crashes. Will be used in the future
-        /*
+        
         guard let firstName = FirebaseHandler.shared.currentUser?.firstName else {
             assertionFailure("User data is nil")
             return
         }
         
         self.welcomeLabel.text = "Welcome " + firstName
-         */
+        
     }
     
     @IBAction func nextButtonTapped(_ sender: Any) {
@@ -46,9 +45,11 @@ class BalanceViewController: UIViewController {
                 self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
             case .auth, .database, .unknown, .signOut:
                 assertionFailure("This error should not appear.")
+                // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
                 assert(true)
+                // swiftlint:disable:next unneeded_break_in_switch
                 break
             }
         }
@@ -62,9 +63,11 @@ class BalanceViewController: UIViewController {
                 self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
             case .database, .unknown, .access, .auth:
                 assertionFailure("This error should not appear.")
+                // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
                 assert(true)
+                // swiftlint:disable:next unneeded_break_in_switch
                 break
             }
         }
