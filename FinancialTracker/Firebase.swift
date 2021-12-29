@@ -130,7 +130,8 @@ class FirebaseHandler {
                     self.user = user
                     completionHandler(nil, user)
                 case .auth, .signOut:
-                    assertionFailure("This error should not appear.")
+                    // swiftlint:disable:next force_unwrapping
+                    assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                     // swiftlint:disable:next unneeded_break_in_switch
                     break
                 }

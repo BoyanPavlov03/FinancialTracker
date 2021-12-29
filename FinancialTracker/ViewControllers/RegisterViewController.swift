@@ -76,12 +76,9 @@ class RegisterViewController: UIViewController {
             case .database(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-            case .access, .signOut:
-                assertionFailure("This error should not appear.")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
-            case .none:
-                assert(true)
+            case .access, .signOut, .none:
+                // swiftlint:disable:next force_unwrapping
+                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             }
