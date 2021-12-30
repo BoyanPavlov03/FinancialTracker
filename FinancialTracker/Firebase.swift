@@ -23,15 +23,26 @@ enum DBCollectionKey: String {
     case users
 }
 
+struct Expense: Codable {
+    let amount: Int
+    let date: String
+    let category: String
+    
+    enum CodingKeys: String, CodingKey {
+        case amount, date, category
+    }
+}
+
 struct User: Codable {
     let firstName: String
     let lastName: String
     let email: String
     let uid: String
     var balance: Int?
+    var expenses: [Expense]?
     
     enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance
+        case firstName, lastName, email, uid, balance, expenses
     }
 }
 
@@ -58,7 +69,7 @@ class FirebaseHandler {
     private init() {}
     
     // MARK: - Methods
-    func checkAuthorisedState(completionHandler: @escaping (Bool) -> Void) {
+    func checkAuthorisedState(completionHandler: @escaping (User?) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if user != nil {
                 self.getCurrentUserData { firebaseError, user in
@@ -68,10 +79,10 @@ class FirebaseHandler {
                         return
                     }
                     self.user = user
-                    completionHandler(true)
+                    completionHandler(user)
                 }
             } else {
-                completionHandler(false)
+                completionHandler(nil)
             }
         }
     }
@@ -161,6 +172,34 @@ class FirebaseHandler {
         self.user.balance = balance
         
         firestore.collection(usersKey).document(currentUser.uid).setData([balanceKey: balance], merge: true)
+        
+        completionHandler(nil, true)
+    }
+    
+    func addExpenseToCurrentUser(_ expenseAmount: Int, category: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access, false)
+            return
+        }
+                
+        let usersKey = DBCollectionKey.users.rawValue
+        let expensesKey = User.CodingKeys.expenses.rawValue
+        
+        let expense = Expense(amount: expenseAmount, date: String(Date.init().description.prefix(19)), category: category)
+                
+        do {
+            let expenseData = try JSONEncoder().encode(expense)
+            let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
+            guard let dictionary = json as? [String: Any] else {
+                return
+            }
+
+            firestore.collection(usersKey).document(currentUser.uid).updateData([expensesKey: FieldValue.arrayUnion([dictionary])])
+            
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), true)
+        }
     }
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {

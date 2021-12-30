@@ -20,11 +20,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let entryVC = storyboard.instantiateViewController(withIdentifier: "EntryVC") as? EntryViewController
-        let mainVC = storyboard.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController
+        let balanceVC = storyboard.instantiateViewController(withIdentifier: "BalanceVC") as? BalanceViewController
+        let homeVC = storyboard.instantiateViewController(withIdentifier: "HomeVC") as? HomeViewController
         
-        FirebaseHandler.shared.checkAuthorisedState { success in
-            if success {
-                window.rootViewController = mainVC
+        FirebaseHandler.shared.checkAuthorisedState { user in
+            if user != nil {
+                if user?.balance != nil {
+                    window.rootViewController = homeVC
+                } else {
+                    window.rootViewController = balanceVC
+                }
             } else {
                 window.rootViewController = entryVC
             }

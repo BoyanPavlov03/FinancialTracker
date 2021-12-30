@@ -18,7 +18,6 @@ class BalanceViewController: UIViewController {
         super.viewDidLoad()
         balanceTextField.keyboardType = .numberPad
         
-        
         guard let firstName = FirebaseHandler.shared.currentUser?.firstName else {
             assertionFailure("User data is nil")
             return
@@ -43,10 +42,12 @@ class BalanceViewController: UIViewController {
             switch firebaseError {
             case .access:
                 self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
-            case .auth, .database, .unknown, .signOut, .none:
+            case .auth, .database, .unknown, .signOut:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch
+                break
+            case .none:
                 break
             }
         }
@@ -58,10 +59,12 @@ class BalanceViewController: UIViewController {
             case .signOut(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-            case .database, .unknown, .access, .auth, .none:
+            case .database, .unknown, .access, .auth:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch
+                break
+            case .none:
                 break
             }
         }

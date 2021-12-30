@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		703DACFE2769CFC400149626 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703DACFD2769CFC400149626 /* Firebase.swift */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
+		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
+		7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */; };
 		707C5DD7276D16CA0097A522 /* AlertControllerCreater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707C5DD6276D16CA0097A522 /* AlertControllerCreater.swift */; };
 		708905A52764A317000CEE4E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708905A42764A317000CEE4E /* LoginViewController.swift */; };
 		709638D427649777000C152D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D327649777000C152D /* FirebaseAnalytics */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		703DACFD2769CFC400149626 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
+		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewController.swift; sourceTree = "<group>"; };
 		707C5DD6276D16CA0097A522 /* AlertControllerCreater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerCreater.swift; sourceTree = "<group>"; };
 		708905A42764A317000CEE4E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		709638DF27649D2F000C152D /* BalanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceViewController.swift; sourceTree = "<group>"; };
@@ -86,6 +90,8 @@
 				709638DF27649D2F000C152D /* BalanceViewController.swift */,
 				70D37DF327633FB40067FFE6 /* EntryViewController.swift */,
 				70B3335E2763DDC7002FAEB5 /* RegisterViewController.swift */,
+				7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */,
+				7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -229,11 +235,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */,
 				70B3335F2763DDC7002FAEB5 /* RegisterViewController.swift in Sources */,
 				708905A52764A317000CEE4E /* LoginViewController.swift in Sources */,
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
+				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
 				7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */,
 				70D37DF027633FB40067FFE6 /* AppDelegate.swift in Sources */,
 				707C5DD7276D16CA0097A522 /* AlertControllerCreater.swift in Sources */,
