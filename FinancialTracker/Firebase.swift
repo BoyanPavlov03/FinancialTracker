@@ -191,6 +191,7 @@ class FirebaseHandler {
             let expenseData = try JSONEncoder().encode(expense)
             let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
             guard let dictionary = json as? [String: Any] else {
+                assertionFailure("Couldn't cast json to map.")
                 return
             }
 

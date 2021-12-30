@@ -19,7 +19,9 @@ class ExpenseViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        title = "Add Expense"
+        
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
     }
@@ -47,11 +49,7 @@ class ExpenseViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                guard let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "HomeVC") as? HomeViewController else {
-                    return
-                }
-                homeVC.modalPresentationStyle = .fullScreen
-                self.present(homeVC, animated: true)
+                self.navigationController?.popViewController(animated: true)
             }
         }
     }

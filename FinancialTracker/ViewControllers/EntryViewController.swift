@@ -14,6 +14,19 @@ class EntryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = "Entry"
+        self.navigationItem.setHidesBackButton(true, animated: true)
     }
-
+    
+    @IBAction func logInButtonTapped(_ sender: Any) {
+        let loginVC = ViewControllerFactory.viewController(for: .login)
+        navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
+    @IBAction func registerButtonTapped(_ sender: Any) {
+        let registerVC = ViewControllerFactory.viewController(for: .register)
+        navigationController?.pushViewController(registerVC, animated: true)
+    }
+    
 }

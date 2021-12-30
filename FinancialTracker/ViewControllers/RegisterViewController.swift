@@ -19,6 +19,8 @@ class RegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "Register"
+        
         setUpUITextField(firstNameField)
         setUpUITextField(lastNameField)
         setUpUITextField(emailField)

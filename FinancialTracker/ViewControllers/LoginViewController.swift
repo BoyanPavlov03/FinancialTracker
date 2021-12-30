@@ -17,6 +17,8 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "Login"
+        
         setUpUITextField(emailField)
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true

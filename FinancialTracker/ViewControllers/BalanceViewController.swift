@@ -18,6 +18,10 @@ class BalanceViewController: UIViewController {
         super.viewDidLoad()
         balanceTextField.keyboardType = .numberPad
         
+        title = "Balance"
+        self.navigationItem.setHidesBackButton(true, animated: true)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        
         guard let firstName = FirebaseHandler.shared.currentUser?.firstName else {
             assertionFailure("User data is nil")
             return
@@ -53,7 +57,7 @@ class BalanceViewController: UIViewController {
         }
     }
     
-    @IBAction func signOutButtonTapped(_ sender: Any) {
+    @objc func signOut() {
         FirebaseHandler.shared.signOut { firebaseError, _ in
             switch firebaseError {
             case .signOut(let error):
@@ -69,4 +73,5 @@ class BalanceViewController: UIViewController {
             }
         }
     }
+    
 }
