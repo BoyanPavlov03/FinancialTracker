@@ -14,59 +14,76 @@ struct StoryboardRepresentation {
     let storyboardId: String
 }
 
-enum TypeOfViewController {
-    case navigation(TypeOfNavigationController)
+enum StoryBoardType: String {
+    case main = "Main"
+}
+
+enum ViewControllerType {
+    case navigation(NavigationControllerType)
     case entry
     case register
     case login
     case balance
     case home
     case expense
-}
-
-enum TypeOfNavigationController {
-    case entry
-    case balance
-    case home
-}
-
-extension TypeOfViewController {
-    func storyboardRepresentation() -> StoryboardRepresentation {
+    
+    var value: String {
         switch self {
-        case .navigation(let type):
-            switch type {
-            case .entry:
-                return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "EntryNavigationVC")
-            case .balance:
-                return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "EntryNavigationVC")
-            case .home:
-                return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "HomeNavigationVC")
-            }
+        case .navigation:
+            return "Navigation"
         case .entry:
-            return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "EntryVC")
+            return "EntryVC"
         case .register:
-            return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "RegisterVC")
+            return "RegisterVC"
         case .login:
-            return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "LoginVC")
+            return "LoginVC"
         case .balance:
-            return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "BalanceVC")
+            return "BalanceVC"
         case .home:
-            return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "HomeVC")
+            return "HomeVC"
         case .expense:
-            return StoryboardRepresentation(bundle: nil, storyboardName: "Main", storyboardId: "ExpenseVC")
+            return "ExpenseVC"
         }
     }
 }
 
-class ViewControllerFactory: NSObject {
-    static func viewController(for typeOfVC: TypeOfViewController) -> UIViewController {
+enum NavigationControllerType: String {
+    case entry
+    case balance
+    case home
+    
+    var value: String {
+        switch self {
+        case .home:
+            return "HomeNavigationVC"
+        case .balance:
+            return "BalanceNavigationVC"
+        case .entry:
+            return "EntryNavigationVC"
+        }
+    }
+}
+
+extension ViewControllerType {
+    func storyboardRepresentation() -> StoryboardRepresentation {
+        switch self {
+        case .navigation(let type):
+            return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: type.value)
+        default:
+            return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: self.value)
+        }
+    }
+}
+
+class ViewControllerFactory {
+    static func viewController(for typeOfVC: ViewControllerType) -> UIViewController {
         let metadata = typeOfVC.storyboardRepresentation()
         let storyboard = UIStoryboard(name: metadata.storyboardName, bundle: metadata.bundle)
         let viewController = storyboard.instantiateViewController(withIdentifier: metadata.storyboardId)
         return viewController
     }
     
-    static func navController(for typeOfVC: TypeOfViewController) -> UINavigationController? {
+    static func navController(for typeOfVC: ViewControllerType) -> UINavigationController? {
         let metadata = typeOfVC.storyboardRepresentation()
         let storyboard = UIStoryboard(name: metadata.storyboardName, bundle: metadata.bundle)
         guard let navigationController = storyboard.instantiateViewController(withIdentifier: metadata.storyboardId) as? UINavigationController else {

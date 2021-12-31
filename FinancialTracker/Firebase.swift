@@ -184,6 +184,7 @@ class FirebaseHandler {
                 
         let usersKey = DBCollectionKey.users.rawValue
         let expensesKey = User.CodingKeys.expenses.rawValue
+        let balanceKey = User.CodingKeys.balance.rawValue
         
         let expense = Expense(amount: expenseAmount, date: String(Date.init().description.prefix(19)), category: category)
                 
@@ -191,11 +192,22 @@ class FirebaseHandler {
             let expenseData = try JSONEncoder().encode(expense)
             let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
             guard let dictionary = json as? [String: Any] else {
-                assertionFailure("Couldn't cast json to map.")
+                assertionFailure("Couldn't cast json to dictionary.")
+                return
+            }
+            
+            guard let userBalance = self.user.balance else {
+                assertionFailure("User hasn't entered balance yet.")
                 return
             }
 
-            firestore.collection(usersKey).document(currentUser.uid).updateData([expensesKey: FieldValue.arrayUnion([dictionary])])
+            let newBalance = userBalance - expenseAmount
+            let fieldValue = FieldValue.arrayUnion([dictionary])
+            
+            firestore.collection(usersKey).document(currentUser.uid).setData([expensesKey: fieldValue, balanceKey: newBalance], merge: true)
+            
+            self.user.expenses?.append(expense)
+            self.user.balance = newBalance
             
             completionHandler(nil, true)
         } catch {

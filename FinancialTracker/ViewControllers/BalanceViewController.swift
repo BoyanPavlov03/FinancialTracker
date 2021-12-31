@@ -52,7 +52,11 @@ class BalanceViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                break
+                let navVC = ViewControllerFactory.navController(for: .navigation(.home))
+                let homeVC = ViewControllerFactory.viewController(for: .home)
+                navVC?.pushViewController(homeVC, animated: true)
+                self.view.window?.rootViewController = navVC
+                self.view.window?.makeKeyAndVisible()
             }
         }
     }
