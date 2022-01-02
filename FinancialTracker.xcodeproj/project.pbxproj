@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		703DACFE2769CFC400149626 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703DACFD2769CFC400149626 /* Firebase.swift */; };
+		703DF427277F8F2100827FE8 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 703DF426277F8F2100827FE8 /* Charts */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */; };
@@ -59,6 +60,7 @@
 			files = (
 				709638D827649777000C152D /* FirebaseDatabase in Frameworks */,
 				709638DA27649777000C152D /* FirebaseFirestore in Frameworks */,
+				703DF427277F8F2100827FE8 /* Charts in Frameworks */,
 				709638DC27649777000C152D /* FirebaseFunctions in Frameworks */,
 				709638D427649777000C152D /* FirebaseAnalytics in Frameworks */,
 				709638D627649777000C152D /* FirebaseAuth in Frameworks */,
@@ -157,6 +159,7 @@
 				709638D927649777000C152D /* FirebaseFirestore */,
 				709638DB27649777000C152D /* FirebaseFunctions */,
 				709638DD27649777000C152D /* FirebaseStorage */,
+				703DF426277F8F2100827FE8 /* Charts */,
 			);
 			productName = FinancialTracker;
 			productReference = 70D37DEC27633FB40067FFE6 /* FinancialTracker.app */;
@@ -188,6 +191,7 @@
 			mainGroup = 70D37DE327633FB40067FFE6;
 			packageReferences = (
 				709638D227649777000C152D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				703DF425277F8F2100827FE8 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = 70D37DED27633FB40067FFE6 /* Products */;
 			projectDirPath = "";
@@ -471,6 +475,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		703DF425277F8F2100827FE8 /* XCRemoteSwiftPackageReference "Charts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielgindi/Charts";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		709638D227649777000C152D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -482,6 +494,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		703DF426277F8F2100827FE8 /* Charts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 703DF425277F8F2100827FE8 /* XCRemoteSwiftPackageReference "Charts" */;
+			productName = Charts;
+		};
 		709638D327649777000C152D /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 709638D227649777000C152D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

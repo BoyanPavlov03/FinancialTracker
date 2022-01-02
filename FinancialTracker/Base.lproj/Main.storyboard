@@ -521,22 +521,34 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3r-Je-feF">
-                                <rect key="frame" x="153" y="459.5" width="108" height="31"/>
+                                <rect key="frame" x="100" y="460" width="214" height="31"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Add expense" cornerStyle="capsule"/>
                                 <connections>
                                     <action selector="addButtonTapped:" destination="z9v-lM-IuL" eventType="touchUpInside" id="sc3-gT-Jmd"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q6x-Sw-bed" customClass="PieChartView" customModule="Charts">
+                                <rect key="frame" x="20" y="128" width="374" height="282"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="A2i-Ah-hWy"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="X3r-Je-feF" firstAttribute="centerX" secondItem="A2i-Ah-hWy" secondAttribute="centerX" id="SED-83-Dgf"/>
-                            <constraint firstItem="X3r-Je-feF" firstAttribute="centerY" secondItem="A2i-Ah-hWy" secondAttribute="centerY" id="eYk-aV-dOy"/>
+                            <constraint firstItem="X3r-Je-feF" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="100" id="8aX-KG-7sL"/>
+                            <constraint firstItem="q6x-Sw-bed" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="40" id="Adp-Rm-lK3"/>
+                            <constraint firstItem="X3r-Je-feF" firstAttribute="top" secondItem="q6x-Sw-bed" secondAttribute="bottom" constant="50" id="BhH-P1-90m"/>
+                            <constraint firstItem="q6x-Sw-bed" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="20" id="OHK-20-kpC"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="X3r-Je-feF" secondAttribute="trailing" constant="100" id="S5X-YI-19g"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="X3r-Je-feF" secondAttribute="bottom" constant="371" id="ZjR-6m-jmm"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="q6x-Sw-bed" secondAttribute="trailing" constant="20" id="xx5-OB-LKI"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HAk-SP-DEM"/>
+                    <connections>
+                        <outlet property="expenseChart" destination="q6x-Sw-bed" id="ExH-Q3-Rcb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpm-QT-zLu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

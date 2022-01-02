@@ -11,6 +11,17 @@ enum Category: String, CaseIterable {
     case transport = "Transport"
     case grocery = "Grocery"
     case other = "Other"
+    
+    var color: UIColor {
+        switch self {
+        case .transport:
+            return UIColor(red: CGFloat(50.0/255), green: CGFloat(82.0/255), blue: CGFloat(168.0/255), alpha: 1)
+        case .grocery:
+            return UIColor(red: CGFloat(168.0/255), green: CGFloat(50.0/255), blue: CGFloat(50.0/255), alpha: 1)
+        case .other:
+            return UIColor(red: CGFloat(50.0/255), green: CGFloat(138.0/255), blue: CGFloat(47.0/255), alpha: 1)
+        }
+    }
 }
 
 class ExpenseViewController: UIViewController {

@@ -48,27 +48,16 @@ enum ViewControllerType {
 }
 
 enum NavigationControllerType: String {
-    case entry
-    case balance
-    case home
-    
-    var value: String {
-        switch self {
-        case .home:
-            return "HomeNavigationVC"
-        case .balance:
-            return "BalanceNavigationVC"
-        case .entry:
-            return "EntryNavigationVC"
-        }
-    }
+    case entry = "EntryNavigationVC"
+    case balance = "BalanceNavigationVC"
+    case home = "HomeNavigationVC"
 }
 
 extension ViewControllerType {
     func storyboardRepresentation() -> StoryboardRepresentation {
         switch self {
         case .navigation(let type):
-            return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: type.value)
+            return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: type.rawValue)
         default:
             return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: self.value)
         }

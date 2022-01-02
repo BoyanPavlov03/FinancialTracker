@@ -186,7 +186,7 @@ class FirebaseHandler {
         let expensesKey = User.CodingKeys.expenses.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         
-        let expense = Expense(amount: expenseAmount, date: String(Date.init().description.prefix(19)), category: category)
+        let expense = Expense(amount: expenseAmount, date: String(Date.init().description), category: category)
                 
         do {
             let expenseData = try JSONEncoder().encode(expense)
