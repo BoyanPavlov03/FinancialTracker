@@ -7,21 +7,10 @@
 
 import UIKit
 
-enum Category: String, CaseIterable {
+enum Category: String, CaseIterable, Codable {
     case transport = "Transport"
     case grocery = "Grocery"
     case other = "Other"
-    
-    var color: UIColor {
-        switch self {
-        case .transport:
-            return UIColor(red: CGFloat(50.0/255), green: CGFloat(82.0/255), blue: CGFloat(168.0/255), alpha: 1)
-        case .grocery:
-            return UIColor(red: CGFloat(168.0/255), green: CGFloat(50.0/255), blue: CGFloat(50.0/255), alpha: 1)
-        case .other:
-            return UIColor(red: CGFloat(50.0/255), green: CGFloat(138.0/255), blue: CGFloat(47.0/255), alpha: 1)
-        }
-    }
 }
 
 class ExpenseViewController: UIViewController {
@@ -48,12 +37,13 @@ class ExpenseViewController: UIViewController {
             return
         }
         
-        let categoryType = Category.allCases[categoryPicker.selectedRow(inComponent: 0)].rawValue
+        let selectedCategory = Category.allCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        FirebaseHandler.shared.addExpenseToCurrentUser(expenseNumber, category: categoryType) { firebaseError, _ in
+        FirebaseHandler.shared.addExpenseToCurrentUser(expenseNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
-            case .access:
-                self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
+            case .access(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
             case .auth, .database, .unknown, .signOut:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
@@ -64,7 +54,6 @@ class ExpenseViewController: UIViewController {
             }
         }
     }
-    
 }
 
 extension ExpenseViewController: UIPickerViewDataSource {

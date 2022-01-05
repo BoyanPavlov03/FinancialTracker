@@ -20,12 +20,12 @@ class EntryViewController: UIViewController {
     }
     
     @IBAction func logInButtonTapped(_ sender: Any) {
-        let loginVC = ViewControllerFactory.viewController(for: .login)
+        let loginVC = ViewControllerFactory.shared.viewController(for: .login)
         navigationController?.pushViewController(loginVC, animated: true)
     }
     
     @IBAction func registerButtonTapped(_ sender: Any) {
-        let registerVC = ViewControllerFactory.viewController(for: .register)
+        let registerVC = ViewControllerFactory.shared.viewController(for: .register)
         navigationController?.pushViewController(registerVC, animated: true)
     }
     

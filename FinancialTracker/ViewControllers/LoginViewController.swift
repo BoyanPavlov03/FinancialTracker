@@ -48,8 +48,9 @@ class LoginViewController: UIViewController {
                 self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
             case .unknown:
                 self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-            case .access:
-                self.present(UIAlertController.create(title: "Access Error", message: "You can't access that"), animated: true)
+            case .access(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
             case .database(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)

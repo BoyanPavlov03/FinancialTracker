@@ -19,23 +19,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
         let window = UIWindow(windowScene: windowScene)
         
+        let navVC = ViewControllerFactory.shared.navController
+        
         FirebaseHandler.shared.checkAuthorisedState { user in
-            if user != nil {
-                if user?.balance != nil {
-                    let navVC = ViewControllerFactory.navController(for: .navigation(.home))
-                    let homeVC = ViewControllerFactory.viewController(for: .home)
-                    navVC?.pushViewController(homeVC, animated: true)
+            if let user = user {
+                if user.balance != nil {
+                    let homeVC = ViewControllerFactory.shared.viewController(for: .home)
+                    navVC.pushViewController(homeVC, animated: true)
                     window.rootViewController = navVC
                 } else {
-                    let navVC = ViewControllerFactory.navController(for: .navigation(.balance))
-                    let balanceVC = ViewControllerFactory.viewController(for: .balance)
-                    navVC?.pushViewController(balanceVC, animated: true)
+                    let balanceVC = ViewControllerFactory.shared.viewController(for: .balance)
+                    navVC.pushViewController(balanceVC, animated: true)
                     window.rootViewController = navVC
                 }
             } else {
-                let navVC = ViewControllerFactory.navController(for: .navigation(.entry))
-                let entryVC = ViewControllerFactory.viewController(for: .entry)
-                navVC?.pushViewController(entryVC, animated: true)
+                let entryVC = ViewControllerFactory.shared.viewController(for: .entry)
+                navVC.pushViewController(entryVC, animated: true)
                 window.rootViewController = navVC
             }
             

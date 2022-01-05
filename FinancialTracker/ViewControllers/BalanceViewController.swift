@@ -44,17 +44,18 @@ class BalanceViewController: UIViewController {
         
         FirebaseHandler.shared.addBalanceToCurrentUser(balanceNumber) { firebaseError, _ in
             switch firebaseError {
-            case .access:
-                self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
+            case .access(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
             case .auth, .database, .unknown, .signOut:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                let navVC = ViewControllerFactory.navController(for: .navigation(.home))
-                let homeVC = ViewControllerFactory.viewController(for: .home)
-                navVC?.pushViewController(homeVC, animated: true)
+                let navVC = ViewControllerFactory.shared.navController
+                let homeVC = ViewControllerFactory.shared.viewController(for: .home)
+                navVC.pushViewController(homeVC, animated: true)
                 self.view.window?.rootViewController = navVC
                 self.view.window?.makeKeyAndVisible()
             }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8eu-p6-ew3">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Image references" minToolsVersion="12.0"/>
@@ -14,29 +14,41 @@
             <objects>
                 <viewController storyboardIdentifier="InitalVC" id="8eu-p6-ew3" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="RbD-TP-4yo">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LOADING" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YD2-Y1-lTA">
+                                <rect key="frame" x="123.5" y="273.5" width="73" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="rIi-wE-6tB"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="YD2-Y1-lTA" firstAttribute="centerY" secondItem="rIi-wE-6tB" secondAttribute="centerY" id="9wz-M4-B0g"/>
+                            <constraint firstItem="YD2-Y1-lTA" firstAttribute="centerX" secondItem="rIi-wE-6tB" secondAttribute="centerX" id="N05-uh-cbt"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4k8-4v-rKB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="254" y="98"/>
+            <point key="canvasLocation" x="1200" y="97"/>
         </scene>
         <!--Entry View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController storyboardIdentifier="EntryVC" id="BYZ-38-t0r" customClass="EntryViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="39" translatesAutoresizingMaskIntoConstraints="NO" id="kYK-eQ-R4S">
-                                <rect key="frame" x="57" y="178" width="300" height="234"/>
+                                <rect key="frame" x="10" y="90" width="300" height="232"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome! Please sign up!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5w4-Br-ocA">
-                                        <rect key="frame" x="25" y="0.0" width="250" height="75"/>
+                                        <rect key="frame" x="25" y="0.0" width="250" height="73"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="250" id="hWU-Vb-asL"/>
                                         </constraints>
@@ -45,7 +57,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="xwx-bV-U5T">
-                                        <rect key="frame" x="25" y="114" width="250" height="120"/>
+                                        <rect key="frame" x="25" y="112" width="250" height="120"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nvo-99-LTA">
                                                 <rect key="frame" x="0.0" y="0.0" width="250" height="45"/>
@@ -107,32 +119,32 @@
             <objects>
                 <viewController storyboardIdentifier="LoginVC" id="gck-Yy-xUr" customClass="LoginViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZuM-5e-QUq">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="szm-8L-M6m">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign In" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tsA-OO-wWX">
-                                        <rect key="frame" x="161.5" y="80" width="91" height="37"/>
+                                        <rect key="frame" x="116" y="80" width="88" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="nXS-bN-HbY">
-                                        <rect key="frame" x="45" y="137" width="324" height="166"/>
+                                        <rect key="frame" x="45" y="136" width="230" height="166"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="yyn-iv-Wdh">
-                                                <rect key="frame" x="0.0" y="0.0" width="324" height="75.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="230" height="75.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r5Q-GD-TSR">
-                                                        <rect key="frame" x="0.0" y="0.0" width="324" height="20.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="230" height="20.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jYP-cS-Ihx" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="25.5" width="324" height="50"/>
+                                                        <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="CDe-kz-2VX"/>
@@ -155,7 +167,7 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="9FL-sO-eU7">
-                                                <rect key="frame" x="0.0" y="90.5" width="324" height="75.5"/>
+                                                <rect key="frame" x="0.0" y="90.5" width="230" height="75.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yJp-wU-4zE">
                                                         <rect key="frame" x="0.0" y="0.0" width="73.5" height="20.5"/>
@@ -164,7 +176,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2gT-XN-b5k" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="25.5" width="324" height="50"/>
+                                                        <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
@@ -187,7 +199,7 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JaQ-38-6Ky">
-                                        <rect key="frame" x="75" y="323" width="264" height="44"/>
+                                        <rect key="frame" x="75" y="322" width="170" height="44"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Login" cornerStyle="capsule">
                                             <fontDescription key="titleFontDescription" style="UICTFontTextStyleTitle1"/>
@@ -239,32 +251,32 @@
             <objects>
                 <viewController storyboardIdentifier="RegisterVC" id="ZpF-hA-3yF" customClass="RegisterViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="THC-N9-VqU">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BhR-9W-1iE">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tb3-1h-vzp">
-                                        <rect key="frame" x="154" y="80" width="106" height="37"/>
+                                        <rect key="frame" x="108.5" y="80" width="103" height="36"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Xqt-0P-WXF">
-                                        <rect key="frame" x="45" y="137" width="324" height="347"/>
+                                        <rect key="frame" x="45" y="136" width="230" height="347"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="4Kf-dc-tli">
-                                                <rect key="frame" x="0.0" y="0.0" width="324" height="75.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="230" height="75.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TYP-7h-aX3">
-                                                        <rect key="frame" x="0.0" y="0.0" width="324" height="20.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="230" height="20.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter first name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7Ej-Wj-Ox2" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="25.5" width="324" height="50"/>
+                                                        <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="5TL-V2-ziv"/>
@@ -287,7 +299,7 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="OWG-CN-gG8">
-                                                <rect key="frame" x="0.0" y="90.5" width="324" height="75.5"/>
+                                                <rect key="frame" x="0.0" y="90.5" width="230" height="75.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QiI-tP-Y3i">
                                                         <rect key="frame" x="0.0" y="0.0" width="81.5" height="20.5"/>
@@ -296,7 +308,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter last name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Fu-ny-t7c" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="25.5" width="324" height="50"/>
+                                                        <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
@@ -312,16 +324,16 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="uBf-15-OWf">
-                                                <rect key="frame" x="0.0" y="181" width="324" height="75.5"/>
+                                                <rect key="frame" x="0.0" y="181" width="230" height="75.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sxX-ZE-ReB">
-                                                        <rect key="frame" x="0.0" y="0.0" width="324" height="20.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="230" height="20.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="D5G-uC-FGk" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="25.5" width="324" height="50"/>
+                                                        <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
@@ -337,7 +349,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Air-NG-eV7">
-                                                <rect key="frame" x="0.0" y="271.5" width="324" height="75.5"/>
+                                                <rect key="frame" x="0.0" y="271.5" width="230" height="75.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Password" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iQe-ZU-9jo">
                                                         <rect key="frame" x="0.0" y="0.0" width="73.5" height="20.5"/>
@@ -346,7 +358,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tvk-ML-w8e" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="25.5" width="324" height="50"/>
+                                                        <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
@@ -375,7 +387,7 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E6l-YO-gdB">
-                                        <rect key="frame" x="75" y="504" width="264" height="44"/>
+                                        <rect key="frame" x="75" y="503" width="170" height="44"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="tinted" title="Register" cornerStyle="capsule">
                                             <fontDescription key="titleFontDescription" style="UICTFontTextStyleTitle1"/>
@@ -428,29 +440,29 @@
             <objects>
                 <viewController storyboardIdentifier="BalanceVC" id="5Ou-QW-iX9" customClass="BalanceViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="k3U-so-RF7">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="cr0-VR-4LU">
-                                <rect key="frame" x="20" y="128" width="374" height="267"/>
+                                <rect key="frame" x="20" y="40" width="280" height="302"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tho-mC-WdZ">
-                                        <rect key="frame" x="187" y="0.0" width="0.0" height="0.0"/>
+                                        <rect key="frame" x="140" y="0.0" width="0.0" height="0.0"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter account ballance" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JeT-cy-eH6">
-                                        <rect key="frame" x="0.0" y="30" width="374" height="37"/>
+                                        <rect key="frame" x="0.0" y="30" width="280" height="73"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="g1u-OT-Urq">
-                                        <rect key="frame" x="100" y="97" width="174" height="90"/>
+                                        <rect key="frame" x="100" y="133" width="80" height="89"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1JQ-hW-DPZ">
-                                                <rect key="frame" x="0.0" y="0.0" width="174" height="45"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="80" height="45"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="45" id="PBB-wX-6Ww"/>
                                                 </constraints>
@@ -458,7 +470,7 @@
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BGN" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uio-CX-1E4">
-                                                <rect key="frame" x="0.0" y="53" width="174" height="37"/>
+                                                <rect key="frame" x="0.0" y="53" width="80" height="36"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -470,7 +482,7 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fOO-MP-sMf">
-                                        <rect key="frame" x="100" y="217" width="174" height="50"/>
+                                        <rect key="frame" x="100" y="252" width="80" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="epz-7c-y3l"/>
                                         </constraints>
@@ -510,39 +522,50 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lX1-dl-y8A" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4594.202898550725" y="97.767857142857139"/>
+            <point key="canvasLocation" x="3709" y="97"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="4M4-79-LX6">
             <objects>
                 <viewController storyboardIdentifier="HomeVC" id="z9v-lM-IuL" customClass="HomeViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TS1-ct-QoK">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3r-Je-feF">
-                                <rect key="frame" x="100" y="460" width="214" height="31"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Add expense" cornerStyle="capsule"/>
-                                <connections>
-                                    <action selector="addButtonTapped:" destination="z9v-lM-IuL" eventType="touchUpInside" id="sc3-gT-Jmd"/>
-                                </connections>
-                            </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q6x-Sw-bed" customClass="PieChartView" customModule="Charts">
-                                <rect key="frame" x="20" y="128" width="374" height="282"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="AzB-Ee-J8A">
+                                <rect key="frame" x="20" y="40" width="280" height="378"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q6x-Sw-bed" customClass="PieChartView" customModule="Charts">
+                                        <rect key="frame" x="0.0" y="0.0" width="280" height="278"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3r-Je-feF">
+                                        <rect key="frame" x="40" y="328" width="200" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="SFo-AO-gdI"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Add expense" cornerStyle="capsule"/>
+                                        <connections>
+                                            <action selector="addButtonTapped:" destination="z9v-lM-IuL" eventType="touchUpInside" id="sc3-gT-Jmd"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="X3r-Je-feF" secondAttribute="trailing" constant="40" id="3Ts-xD-mXa"/>
+                                    <constraint firstAttribute="trailing" secondItem="q6x-Sw-bed" secondAttribute="trailing" id="BN7-E0-thK"/>
+                                    <constraint firstItem="q6x-Sw-bed" firstAttribute="leading" secondItem="AzB-Ee-J8A" secondAttribute="leading" id="ZZr-jd-hal"/>
+                                    <constraint firstItem="X3r-Je-feF" firstAttribute="leading" secondItem="AzB-Ee-J8A" secondAttribute="leading" constant="40" id="rEK-gn-CKF"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="A2i-Ah-hWy"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="X3r-Je-feF" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="100" id="8aX-KG-7sL"/>
-                            <constraint firstItem="q6x-Sw-bed" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="40" id="Adp-Rm-lK3"/>
-                            <constraint firstItem="X3r-Je-feF" firstAttribute="top" secondItem="q6x-Sw-bed" secondAttribute="bottom" constant="50" id="BhH-P1-90m"/>
-                            <constraint firstItem="q6x-Sw-bed" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="20" id="OHK-20-kpC"/>
-                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="X3r-Je-feF" secondAttribute="trailing" constant="100" id="S5X-YI-19g"/>
-                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="X3r-Je-feF" secondAttribute="bottom" constant="371" id="ZjR-6m-jmm"/>
-                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="q6x-Sw-bed" secondAttribute="trailing" constant="20" id="xx5-OB-LKI"/>
+                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="40" id="MYh-1d-Tns"/>
+                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="20" id="VWR-w5-1If"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="AzB-Ee-J8A" secondAttribute="bottom" constant="150" id="XJn-Qe-Jhz"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="AzB-Ee-J8A" secondAttribute="trailing" constant="20" id="eNj-47-MsF"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HAk-SP-DEM"/>
@@ -552,21 +575,21 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpm-QT-zLu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6278.2608695652179" y="97.767857142857139"/>
+            <point key="canvasLocation" x="4523" y="96"/>
         </scene>
         <!--Expense View Controller-->
         <scene sceneID="cL6-BJ-1w9">
             <objects>
                 <viewController storyboardIdentifier="ExpenseVC" id="b7g-Yl-nAD" customClass="ExpenseViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q1q-IL-8nA">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Pr0-rS-gKx">
-                                <rect key="frame" x="20" y="84" width="374" height="411"/>
+                                <rect key="frame" x="20" y="40" width="280" height="411"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="p3q-AX-Da2">
-                                        <rect key="frame" x="120.5" y="0.0" width="133.5" height="64.5"/>
+                                        <rect key="frame" x="73.5" y="0.0" width="133.5" height="64.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter amount" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FN8-72-vm9">
                                                 <rect key="frame" x="15.5" y="0.0" width="102.5" height="20.5"/>
@@ -591,16 +614,16 @@
                                         </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="SDc-Oo-3yb">
-                                        <rect key="frame" x="2" y="94.5" width="370" height="246.5"/>
+                                        <rect key="frame" x="0.0" y="94.5" width="280" height="246.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose category" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z9M-on-j8t">
-                                                <rect key="frame" x="20" y="0.0" width="330" height="20.5"/>
+                                                <rect key="frame" x="20" y="0.0" width="240" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <pickerView contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="jrK-Uu-rgV">
-                                                <rect key="frame" x="25" y="30.5" width="320" height="216"/>
+                                                <rect key="frame" x="25" y="30.5" width="230" height="216"/>
                                             </pickerView>
                                         </subviews>
                                         <constraints>
@@ -612,7 +635,7 @@
                                         </constraints>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" role="primary" translatesAutoresizingMaskIntoConstraints="NO" id="avd-sa-Few">
-                                        <rect key="frame" x="100" y="371" width="174" height="40"/>
+                                        <rect key="frame" x="40" y="371" width="200" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="UiT-pz-9ZN"/>
                                         </constraints>
@@ -623,8 +646,8 @@
                                     </button>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="avd-sa-Few" firstAttribute="leading" secondItem="Pr0-rS-gKx" secondAttribute="leading" constant="100" id="BIU-pi-7Mf"/>
-                                    <constraint firstAttribute="trailing" secondItem="avd-sa-Few" secondAttribute="trailing" constant="100" id="WlI-MR-cDR"/>
+                                    <constraint firstItem="avd-sa-Few" firstAttribute="leading" secondItem="Pr0-rS-gKx" secondAttribute="leading" constant="40" id="BIU-pi-7Mf"/>
+                                    <constraint firstAttribute="trailing" secondItem="avd-sa-Few" secondAttribute="trailing" constant="40" id="WlI-MR-cDR"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -644,61 +667,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EIo-fz-upG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7140.579710144928" y="97.767857142857139"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="6q8-H8-FxK">
-            <objects>
-                <navigationController storyboardIdentifier="HomeNavigationVC" automaticallyAdjustsScrollViewInsets="NO" id="tVi-Fc-fQy" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="rZX-IR-OIV">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="z9v-lM-IuL" kind="relationship" relationship="rootViewController" id="sSO-mB-7tF"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="kbL-cv-UaR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="5368.115942028986" y="97.767857142857139"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="nQn-w7-emM">
-            <objects>
-                <navigationController storyboardIdentifier="EntryNavigationVC" automaticallyAdjustsScrollViewInsets="NO" id="8fa-0H-GT9" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Tg2-OK-hEa">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="Wrs-46-u23"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rX1-pH-m58" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1042.0289855072465" y="97.767857142857139"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="tWb-hw-ZEO">
-            <objects>
-                <navigationController storyboardIdentifier="BalanceNavigationVC" automaticallyAdjustsScrollViewInsets="NO" id="CuM-5O-IO2" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="t3W-lV-Imu">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="5Ou-QW-iX9" kind="relationship" relationship="rootViewController" id="30t-Nz-uiz"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="oGY-H4-l8x" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3684.057971014493" y="97.767857142857139"/>
+            <point key="canvasLocation" x="5355" y="95"/>
         </scene>
     </scenes>
     <designables>

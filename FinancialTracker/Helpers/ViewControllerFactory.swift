@@ -19,7 +19,6 @@ enum StoryBoardType: String {
 }
 
 enum ViewControllerType {
-    case navigation(NavigationControllerType)
     case entry
     case register
     case login
@@ -29,8 +28,6 @@ enum ViewControllerType {
     
     var value: String {
         switch self {
-        case .navigation:
-            return "Navigation"
         case .entry:
             return "EntryVC"
         case .register:
@@ -47,38 +44,23 @@ enum ViewControllerType {
     }
 }
 
-enum NavigationControllerType: String {
-    case entry = "EntryNavigationVC"
-    case balance = "BalanceNavigationVC"
-    case home = "HomeNavigationVC"
-}
-
 extension ViewControllerType {
     func storyboardRepresentation() -> StoryboardRepresentation {
-        switch self {
-        case .navigation(let type):
-            return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: type.rawValue)
-        default:
-            return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: self.value)
-        }
+        return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: self.value)
     }
 }
 
 class ViewControllerFactory {
-    static func viewController(for typeOfVC: ViewControllerType) -> UIViewController {
+    private init () {}
+    
+    // Will be refractored from singleton in the future
+    static let shared = ViewControllerFactory()
+    let navController = UINavigationController()
+    
+    func viewController(for typeOfVC: ViewControllerType) -> UIViewController {
         let metadata = typeOfVC.storyboardRepresentation()
         let storyboard = UIStoryboard(name: metadata.storyboardName, bundle: metadata.bundle)
         let viewController = storyboard.instantiateViewController(withIdentifier: metadata.storyboardId)
         return viewController
-    }
-    
-    static func navController(for typeOfVC: ViewControllerType) -> UINavigationController? {
-        let metadata = typeOfVC.storyboardRepresentation()
-        let storyboard = UIStoryboard(name: metadata.storyboardName, bundle: metadata.bundle)
-        guard let navigationController = storyboard.instantiateViewController(withIdentifier: metadata.storyboardId) as? UINavigationController else {
-            assertionFailure("Couldn't cast to NavigationVC.")
-            return nil
-        }
-        return navigationController
     }
 }

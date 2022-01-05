@@ -17,35 +17,34 @@ class HomeViewController: UIViewController {
         self.title = "Home"
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        
+        expenseChart.isUserInteractionEnabled = false
+        expenseChart.drawEntryLabelsEnabled = false
+        expenseChart.drawHoleEnabled = true
+        expenseChart.rotationAngle = 0
+        expenseChart.rotationEnabled = false
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        customizeChart(data: FirebaseHandler.shared.currentUser?.expenses)
+        customizeChart(data: FirebaseHandler.shared.currentUser?.expenses ?? [])
     }
     
-    func customizeChart(data: [Expense]?) {
-        guard let data = data else {
+    private func customizeChart(data: [Expense]) {
+        guard !data.isEmpty else {
             return
         }
         
         var expenses: [String: Int] = [:]
         var totalSum = 0
-        var colors = Set<UIColor>()
         for expense in data {
-            if expenses[expense.category] == nil {
-                expenses[expense.category] = 0
+            if expenses[expense.category.rawValue] == nil {
+                expenses[expense.category.rawValue] = 0
             }
             // swiftlint:disable:next force_unwrapping
-            expenses[expense.category]! += expense.amount
+            expenses[expense.category.rawValue]! += expense.amount
             totalSum += expense.amount
-            
-            for category in Category.allCases {
-                if category.rawValue.compare(expense.category, options: .caseInsensitive) == .orderedSame {
-                    colors.insert(category.color)
-                }
-            }
         }
                 
         var dataEntries: [ChartDataEntry] = []
@@ -56,7 +55,8 @@ class HomeViewController: UIViewController {
         }
         
         let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "")
-        pieChartDataSet.colors = Array(colors)
+        
+        pieChartDataSet.colors = randomColors(dataPoints: expenses.count)
         
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         let format = NumberFormatter()
@@ -65,9 +65,20 @@ class HomeViewController: UIViewController {
         pieChartData.setValueFormatter(formatter)
         
         expenseChart.data = pieChartData
-        expenseChart.isUserInteractionEnabled = false
     }
         
+    private func randomColors(dataPoints: Int) -> [UIColor] {
+        var colors: [UIColor] = []
+        for _ in 0..<dataPoints {
+            let red = Double(arc4random_uniform(256))
+            let green = Double(arc4random_uniform(256))
+            let blue = Double(arc4random_uniform(256))
+            let color = UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: 1)
+            colors.append(color)
+        }
+        return colors
+    }
+    
     @objc func signOut() {
         FirebaseHandler.shared.signOut { firebaseError, _ in
             switch firebaseError {
@@ -86,7 +97,7 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func addButtonTapped(_ sender: Any) {
-        let expenseVC = ViewControllerFactory.viewController(for: .expense)
+        let expenseVC = ViewControllerFactory.shared.viewController(for: .expense)
         navigationController?.pushViewController(expenseVC, animated: true)
     }
 }
