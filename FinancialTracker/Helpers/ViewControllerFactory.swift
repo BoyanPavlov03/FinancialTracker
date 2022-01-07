@@ -18,35 +18,18 @@ enum StoryBoardType: String {
     case main = "Main"
 }
 
-enum ViewControllerType {
-    case entry
-    case register
-    case login
-    case balance
-    case home
-    case expense
-    
-    var value: String {
-        switch self {
-        case .entry:
-            return "EntryVC"
-        case .register:
-            return "RegisterVC"
-        case .login:
-            return "LoginVC"
-        case .balance:
-            return "BalanceVC"
-        case .home:
-            return "HomeVC"
-        case .expense:
-            return "ExpenseVC"
-        }
-    }
+enum ViewControllerType: String {
+    case entry = "EntryVC"
+    case register = "RegisterVC"
+    case login = "LoginVC"
+    case balance = "BalanceVC"
+    case home = "HomeVC"
+    case expense = "ExpenseVC"
 }
 
 extension ViewControllerType {
     func storyboardRepresentation() -> StoryboardRepresentation {
-        return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: self.value)
+        return StoryboardRepresentation(bundle: nil, storyboardName: StoryBoardType.main.rawValue, storyboardId: self.rawValue)
     }
 }
 
@@ -55,7 +38,7 @@ class ViewControllerFactory {
     
     // Will be refractored from singleton in the future
     static let shared = ViewControllerFactory()
-    let navController = UINavigationController()
+    private(set) var navController = UINavigationController()
     
     func viewController(for typeOfVC: ViewControllerType) -> UIViewController {
         let metadata = typeOfVC.storyboardRepresentation()

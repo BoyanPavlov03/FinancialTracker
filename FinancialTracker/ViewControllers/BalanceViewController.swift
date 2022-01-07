@@ -53,30 +53,25 @@ class BalanceViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                let navVC = ViewControllerFactory.shared.navController
                 let homeVC = ViewControllerFactory.shared.viewController(for: .home)
-                navVC.pushViewController(homeVC, animated: true)
-                self.view.window?.rootViewController = navVC
-                self.view.window?.makeKeyAndVisible()
+                self.navigationController?.pushViewController(homeVC, animated: true)
             }
         }
     }
     
     @objc func signOut() {
         FirebaseHandler.shared.signOut { firebaseError, _ in
-            switch firebaseError {
-            case .signOut(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-            case .database, .unknown, .access, .auth:
-                // swiftlint:disable:next force_unwrapping
-                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
-            case .none:
-                break
+            if let firebaseError = firebaseError {
+                switch firebaseError {
+                case .signOut(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+                case .database, .unknown, .access, .auth:
+                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
+                    // swiftlint:disable:next unneeded_break_in_switch
+                    break
+                }
             }
         }
     }
-    
 }

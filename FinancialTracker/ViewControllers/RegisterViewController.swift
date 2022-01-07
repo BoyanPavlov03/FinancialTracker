@@ -14,11 +14,11 @@ class RegisterViewController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var registerButton: UIButton!
-
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = "Register"
         
         setUpUITextField(firstNameField)
@@ -27,20 +27,20 @@ class RegisterViewController: UIViewController {
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true
     }
-
+    
     private func setUpUITextField(_ textField: UITextField) {
         textField.layer.cornerRadius = 15
         textField.layer.borderColor = UIColor.black.cgColor
         textField.layer.borderWidth = 1
     }
-
+    
     private func isValidEmail(_ email: String) -> Bool {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-
+        
         let emailPred = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
     }
-
+    
     @IBAction func registerButtonTapped(_: Any) {
         guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !firstName.isEmpty else {
             self.present(UIAlertController.create(title: "Missing First Name", message: "Please fill in your first name"), animated: true)
@@ -61,30 +61,29 @@ class RegisterViewController: UIViewController {
             self.present(UIAlertController.create(title: "Missing Password", message: "Please fill in your password"), animated: true)
             return
         }
-
+        
         if isValidEmail(email) == false {
             self.present(UIAlertController.create(title: "Email Format", message: "Invalid email format"), animated: true)
             return
         }
-
+        
         FirebaseHandler.shared.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { firebaseError, _ in
             
-            switch firebaseError {
-            case .unknown:
-                self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-            case .auth(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
-            case .database(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-            case .access, .signOut:
-                // swiftlint:disable:next force_unwrapping
-                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
-            case .none:
-                break
+            if let firebaseError = firebaseError {
+                switch firebaseError {
+                case .unknown:
+                    self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
+                case .auth(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
+                case .database(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                case .access, .signOut:
+                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
+                    // swiftlint:disable:next unneeded_break_in_switch
+                    break
+                }
             }
         }
     }

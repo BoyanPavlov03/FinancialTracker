@@ -28,17 +28,17 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        customizeChart(data: FirebaseHandler.shared.currentUser?.expenses ?? [])
+        customizeChart(expenseData: FirebaseHandler.shared.currentUser?.expenses ?? [])
     }
     
-    private func customizeChart(data: [Expense]) {
-        guard !data.isEmpty else {
+    private func customizeChart(expenseData: [Expense]) {
+        guard !expenseData.isEmpty else {
             return
         }
         
         var expenses: [String: Int] = [:]
         var totalSum = 0
-        for expense in data {
+        for expense in expenseData {
             if expenses[expense.category.rawValue] == nil {
                 expenses[expense.category.rawValue] = 0
             }
@@ -66,32 +66,19 @@ class HomeViewController: UIViewController {
         
         expenseChart.data = pieChartData
     }
-        
-    private func randomColors(dataPoints: Int) -> [UIColor] {
-        var colors: [UIColor] = []
-        for _ in 0..<dataPoints {
-            let red = Double(arc4random_uniform(256))
-            let green = Double(arc4random_uniform(256))
-            let blue = Double(arc4random_uniform(256))
-            let color = UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: 1)
-            colors.append(color)
-        }
-        return colors
-    }
     
     @objc func signOut() {
         FirebaseHandler.shared.signOut { firebaseError, _ in
-            switch firebaseError {
-            case .signOut(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-            case .database, .unknown, .access, .auth:
-                // swiftlint:disable:next force_unwrapping
-                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
-            case .none:
-                break
+            if let firebaseError = firebaseError {
+                switch firebaseError {
+                case .signOut(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+                case .database, .unknown, .access, .auth:
+                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
+                    // swiftlint:disable:next unneeded_break_in_switch
+                    break
+                }
             }
         }
     }
