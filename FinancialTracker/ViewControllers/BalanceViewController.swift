@@ -18,6 +18,9 @@ class BalanceViewController: UIViewController {
         super.viewDidLoad()
         balanceTextField.keyboardType = .numberPad
         
+        title = "Balance"
+        self.navigationItem.setHidesBackButton(true, animated: true)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         
         guard let firstName = FirebaseHandler.shared.currentUser?.firstName else {
             assertionFailure("User data is nil")
@@ -41,28 +44,33 @@ class BalanceViewController: UIViewController {
         
         FirebaseHandler.shared.addBalanceToCurrentUser(balanceNumber) { firebaseError, _ in
             switch firebaseError {
-            case .access:
-                self.present(UIAlertController.create(title: "Acess Error", message: "You can't access that"), animated: true)
-            case .auth, .database, .unknown, .signOut, .none:
+            case .access(let error):
+                guard let error = error else { return }
+                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
+            case .auth, .database, .unknown, .signOut:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
+            case .none:
+                let homeVC = ViewControllerFactory.shared.viewController(for: .home)
+                self.navigationController?.pushViewController(homeVC, animated: true)
             }
         }
     }
     
-    @IBAction func signOutButtonTapped(_ sender: Any) {
+    @objc func signOut() {
         FirebaseHandler.shared.signOut { firebaseError, _ in
-            switch firebaseError {
-            case .signOut(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-            case .database, .unknown, .access, .auth, .none:
-                // swiftlint:disable:next force_unwrapping
-                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
+            if let firebaseError = firebaseError {
+                switch firebaseError {
+                case .signOut(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+                case .database, .unknown, .access, .auth:
+                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
+                    // swiftlint:disable:next unneeded_break_in_switch
+                    break
+                }
             }
         }
     }

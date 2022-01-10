@@ -15,12 +15,24 @@ enum FirebaseError: Error {
     case auth(Error?)
     case database(Error?)
     case signOut(Error?)
-    case access
+    case access(String?)
     case unknown
 }
 
 enum DBCollectionKey: String {
     case users
+}
+
+struct Expense: Codable {
+    let amount: Int
+    let date: String
+    let category: Category
+    
+    enum CodingKeys: String, CodingKey {
+        case amount
+        case date
+        case category
+    }
 }
 
 struct User: Codable {
@@ -29,9 +41,10 @@ struct User: Codable {
     let email: String
     let uid: String
     var balance: Int?
+    var expenses: [Expense] = []
     
     enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance
+        case firstName, lastName, email, uid, balance, expenses
     }
 }
 
@@ -58,7 +71,7 @@ class FirebaseHandler {
     private init() {}
     
     // MARK: - Methods
-    func checkAuthorisedState(completionHandler: @escaping (Bool) -> Void) {
+    func checkAuthorisedState(completionHandler: @escaping (User?) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if user != nil {
                 self.getCurrentUserData { firebaseError, user in
@@ -68,10 +81,10 @@ class FirebaseHandler {
                         return
                     }
                     self.user = user
-                    completionHandler(true)
+                    completionHandler(user)
                 }
             } else {
-                completionHandler(false)
+                completionHandler(nil)
             }
         }
     }
@@ -98,7 +111,7 @@ class FirebaseHandler {
             let uidKey = User.CodingKeys.uid.rawValue
             let emailKey = User.CodingKeys.email.rawValue
             let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: result.user.uid]
-            
+                        
             self.firestore.collection(DBCollectionKey.users.rawValue).document(result.user.uid).setData(data) { error in
                 if error != nil {
                     completionHandler(FirebaseError.database(error), nil)
@@ -124,8 +137,8 @@ class FirebaseHandler {
                     completionHandler(FirebaseError.database(error), user)
                 case .unknown:
                     completionHandler(FirebaseError.unknown, user)
-                case .access:
-                    completionHandler(FirebaseError.access, user)
+                case .access(let error):
+                    completionHandler(FirebaseError.access(error), user)
                 case .none:
                     self.user = user
                     completionHandler(nil, user)
@@ -151,7 +164,7 @@ class FirebaseHandler {
     
     func addBalanceToCurrentUser(_ balance: Int, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access, false)
+            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
             return
         }
                 
@@ -161,11 +174,55 @@ class FirebaseHandler {
         self.user.balance = balance
         
         firestore.collection(usersKey).document(currentUser.uid).setData([balanceKey: balance], merge: true)
+        
+        completionHandler(nil, true)
+    }
+    
+    func addExpenseToCurrentUser(_ expenseAmount: Int, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            return
+        }
+                
+        let usersKey = DBCollectionKey.users.rawValue
+        let expensesKey = User.CodingKeys.expenses.rawValue
+        let balanceKey = User.CodingKeys.balance.rawValue
+        
+        let formatedDate = today.formatDate("MMM DD, YYYY")
+        
+        let expense = Expense(amount: expenseAmount, date: formatedDate, category: category)
+                
+        do {
+            let expenseData = try JSONEncoder().encode(expense)
+            let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
+            
+            guard let dictionary = json as? [String: Any] else {
+                assertionFailure("Couldn't cast json to dictionary.")
+                return
+            }
+                        
+            guard let userBalance = self.user.balance else {
+                assertionFailure("User hasn't entered balance yet.")
+                return
+            }
+
+            let newBalanceValue = userBalance - expenseAmount
+            let expenseValue = FieldValue.arrayUnion([dictionary])
+            
+            firestore.collection(usersKey).document(currentUser.uid).setData([expensesKey: expenseValue, balanceKey: newBalanceValue], merge: true)
+            
+            self.user.expenses.append(expense)
+            self.user.balance = newBalanceValue
+            
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), true)
+        }
     }
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let uid = self.auth.currentUser?.uid else {
-            completionHandler(FirebaseError.access, nil)
+            completionHandler(FirebaseError.access("Current user is nill in #function."), nil)
             return
         }
         
