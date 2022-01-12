@@ -7,6 +7,7 @@
 
 import UIKit
 import Charts
+import MessageUI
 
 class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
@@ -17,6 +18,7 @@ class HomeViewController: UIViewController {
         self.title = "Home"
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Help", style: .plain, target: self, action: #selector(sendMail))
         
         expenseChart.isUserInteractionEnabled = false
         expenseChart.drawEntryLabelsEnabled = false
@@ -83,8 +85,45 @@ class HomeViewController: UIViewController {
         }
     }
     
+    @objc func sendMail() {
+        guard MFMailComposeViewController.canSendMail() else {
+            assertionFailure("Mail services are not available")
+            return
+        }
+        
+        let composer = MFMailComposeViewController()
+        composer.mailComposeDelegate = self
+        composer.setToRecipients(["support_financialTracker@gmail.com"])
+        
+        present(composer, animated: true)
+    }
+    
     @IBAction func addButtonTapped(_ sender: Any) {
         let expenseVC = ViewControllerFactory.shared.viewController(for: .expense)
         navigationController?.pushViewController(expenseVC, animated: true)
+    }
+}
+
+extension HomeViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        guard error == nil else {
+            controller.dismiss(animated: true)
+            return
+        }
+        
+        switch result {
+        case .cancelled:
+            print("Cancelled")
+        case .saved:
+            print("Saved")
+        case .sent:
+            print("Sent")
+        case .failed:
+            print("Failed")
+        @unknown default:
+            fatalError("Unknown case.")
+        }
+        
+        controller.dismiss(animated: true)
     }
 }
