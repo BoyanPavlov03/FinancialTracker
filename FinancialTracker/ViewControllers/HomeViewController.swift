@@ -114,16 +114,11 @@ class HomeViewController: UIViewController {
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = self
         composer.setToRecipients([Support.Constants.email])
-        if let title = action.title {
-            switch title {
-            case Support.addExpense.rawValue:
-                composer.setSubject(title)
-            case Support.refundMoney.rawValue:
-                composer.setSubject(title)
-            default:
-                composer.setSubject(Support.other.rawValue)
-            }
+        guard let title = action.title else {
+            assertionFailure("This action doesn't exist.")
+            return
         }
+        composer.setSubject(title)
         present(composer, animated: true)
     }
     
