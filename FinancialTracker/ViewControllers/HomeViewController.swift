@@ -9,6 +9,16 @@ import UIKit
 import Charts
 import MessageUI
 
+enum Support: String {
+    case addExpense = "Problem adding an expense"
+    case refundMoney = "Want a refund"
+    
+    // Not sure if this is okay to be done that way
+    static var email: String {
+        return "support_financialTracker@gmail.com"
+    }
+}
+
 class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
     
@@ -86,6 +96,16 @@ class HomeViewController: UIViewController {
     }
     
     @objc func sendMail() {
+        let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: Support.addExpense.rawValue, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Support.refundMoney.rawValue, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
+        
+        present(alertController, animated: true)
+    }
+    
+    private func setComposerMessage(action: UIAlertAction) {
         guard MFMailComposeViewController.canSendMail() else {
             assertionFailure("Mail services are not available")
             return
@@ -93,7 +113,15 @@ class HomeViewController: UIViewController {
         
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = self
-        composer.setToRecipients(["support_financialTracker@gmail.com"])
+        composer.setToRecipients([Support.email])
+        switch action.title {
+        case Support.addExpense.rawValue:
+            composer.setSubject("Failed adding expenses")
+        case Support.refundMoney.rawValue:
+            composer.setSubject("Refund money")
+        default:
+            composer.setSubject("Other")
+        }
         
         present(composer, animated: true)
     }
@@ -109,19 +137,6 @@ extension HomeViewController: MFMailComposeViewControllerDelegate {
         guard error == nil else {
             controller.dismiss(animated: true)
             return
-        }
-        
-        switch result {
-        case .cancelled:
-            print("Cancelled")
-        case .saved:
-            print("Saved")
-        case .sent:
-            print("Sent")
-        case .failed:
-            print("Failed")
-        @unknown default:
-            fatalError("Unknown case.")
         }
         
         controller.dismiss(animated: true)
