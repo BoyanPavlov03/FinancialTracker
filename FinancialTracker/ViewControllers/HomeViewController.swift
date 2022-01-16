@@ -12,10 +12,10 @@ import MessageUI
 enum Support: String {
     case addExpense = "Problem adding an expense"
     case refundMoney = "Want a refund"
+    case other = "Other"
     
-    // Not sure if this is okay to be done that way
-    static var email: String {
-        return "support_financialTracker@gmail.com"
+    struct Constants {
+        static let email = "support_financialTracker@gmail.com"
     }
 }
 
@@ -113,16 +113,17 @@ class HomeViewController: UIViewController {
         
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = self
-        composer.setToRecipients([Support.email])
-        switch action.title {
-        case Support.addExpense.rawValue:
-            composer.setSubject("Failed adding expenses")
-        case Support.refundMoney.rawValue:
-            composer.setSubject("Refund money")
-        default:
-            composer.setSubject("Other")
+        composer.setToRecipients([Support.Constants.email])
+        if let title = action.title {
+            switch title {
+            case Support.addExpense.rawValue:
+                composer.setSubject(title)
+            case Support.refundMoney.rawValue:
+                composer.setSubject(title)
+            default:
+                composer.setSubject(Support.other.rawValue)
+            }
         }
-        
         present(composer, animated: true)
     }
     
