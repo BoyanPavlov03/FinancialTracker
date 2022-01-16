@@ -7,6 +7,17 @@
 
 import UIKit
 import Charts
+import MessageUI
+
+enum Support: String {
+    case addExpense = "Problem adding an expense"
+    case refundMoney = "Want a refund"
+    case other = "Other"
+    
+    struct Constants {
+        static let email = "support_financialTracker@gmail.com"
+    }
+}
 
 class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
@@ -17,6 +28,7 @@ class HomeViewController: UIViewController {
         self.title = "Home"
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Help", style: .plain, target: self, action: #selector(sendMail))
         
         expenseChart.isUserInteractionEnabled = false
         expenseChart.drawEntryLabelsEnabled = false
@@ -83,8 +95,43 @@ class HomeViewController: UIViewController {
         }
     }
     
+    @objc func sendMail() {
+        let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: Support.addExpense.rawValue, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Support.refundMoney.rawValue, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
+        
+        present(alertController, animated: true)
+    }
+    
+    private func setComposerMessage(action: UIAlertAction) {
+        guard MFMailComposeViewController.canSendMail() else {
+            assertionFailure("Mail services are not available")
+            return
+        }
+        
+        let composer = MFMailComposeViewController()
+        composer.mailComposeDelegate = self
+        composer.setToRecipients([Support.Constants.email])
+        
+        composer.setSubject(action.title ?? Support.other.rawValue)
+        present(composer, animated: true)
+    }
+    
     @IBAction func addButtonTapped(_ sender: Any) {
         let expenseVC = ViewControllerFactory.shared.viewController(for: .expense)
         navigationController?.pushViewController(expenseVC, animated: true)
+    }
+}
+
+extension HomeViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        guard error == nil else {
+            controller.dismiss(animated: true)
+            return
+        }
+        
+        controller.dismiss(animated: true)
     }
 }
