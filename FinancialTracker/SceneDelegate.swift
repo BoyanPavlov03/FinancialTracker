@@ -24,9 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         FirebaseHandler.shared.checkAuthorisedState { user in
             if let user = user {
                 if user.balance != nil {
-                    let homeVC = ViewControllerFactory.shared.viewController(for: .home)
-                    navVC.pushViewController(homeVC, animated: true)
-                    window.rootViewController = navVC
+                    let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar)
+                    window.rootViewController = tabBarVC
                 } else {
                     let balanceVC = ViewControllerFactory.shared.viewController(for: .balance)
                     navVC.pushViewController(balanceVC, animated: true)

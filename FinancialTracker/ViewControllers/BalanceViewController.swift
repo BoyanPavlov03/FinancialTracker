@@ -53,8 +53,9 @@ class BalanceViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                let homeVC = ViewControllerFactory.shared.viewController(for: .home)
-                self.navigationController?.pushViewController(homeVC, animated: true)
+                let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar)
+                self.view.window?.rootViewController = tabBarVC
+                self.view.window?.makeKeyAndVisible()
             }
         }
     }
