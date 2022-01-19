@@ -10,11 +10,11 @@
 		703DACFE2769CFC400149626 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703DACFD2769CFC400149626 /* Firebase.swift */; };
 		703DF427277F8F2100827FE8 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 703DF426277F8F2100827FE8 /* Charts */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
+		705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705B3DB1279869D50059D832 /* ProfileViewController.swift */; };
 		7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7068D90B278896B300DFA3B3 /* Utilities.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */; };
 		70835DA0277E438A0087C3D9 /* ViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */; };
-		7086B7FA2796B6010065CE8E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7086B7F92796B6010065CE8E /* TabBarViewController.swift */; };
 		708905A52764A317000CEE4E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708905A42764A317000CEE4E /* LoginViewController.swift */; };
 		7095718627888D1A00EB6EB3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7095718527888D1A00EB6EB3 /* Extensions.swift */; };
 		709638D427649777000C152D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D327649777000C152D /* FirebaseAnalytics */; };
@@ -37,11 +37,11 @@
 /* Begin PBXFileReference section */
 		703DACFD2769CFC400149626 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
+		705B3DB1279869D50059D832 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		7068D90B278896B300DFA3B3 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewController.swift; sourceTree = "<group>"; };
 		70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerFactory.swift; sourceTree = "<group>"; };
-		7086B7F92796B6010065CE8E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 		708905A42764A317000CEE4E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		7095718527888D1A00EB6EB3 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		709638DF27649D2F000C152D /* BalanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceViewController.swift; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 				70B3335E2763DDC7002FAEB5 /* RegisterViewController.swift */,
 				7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */,
 				7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */,
-				7086B7F92796B6010065CE8E /* TabBarViewController.swift */,
+				705B3DB1279869D50059D832 /* ProfileViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -252,7 +252,7 @@
 				70B3335F2763DDC7002FAEB5 /* RegisterViewController.swift in Sources */,
 				708905A52764A317000CEE4E /* LoginViewController.swift in Sources */,
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
-				7086B7FA2796B6010065CE8E /* TabBarViewController.swift in Sources */,
+				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
