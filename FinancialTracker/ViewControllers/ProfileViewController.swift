@@ -27,13 +27,23 @@ class ProfileViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         self.tabBarItem.image = UIImage(systemName: "person")
         
-        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance else {
+        guard let user = FirebaseHandler.shared.currentUser else {
             assertionFailure("User data is nil")
             return
         }
         
         nameLabel.text = "\(user.firstName) \(user.lastName)"
         emailLabel.text = user.email
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance else {
+            assertionFailure("User data is nil")
+            return
+        }
+        
         balanceLabel.text = "Balance\n \(balance)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
     }

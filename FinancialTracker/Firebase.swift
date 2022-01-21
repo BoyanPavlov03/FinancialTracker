@@ -42,12 +42,14 @@ struct User: Codable {
     let uid: String
     var balance: Int?
     var expenses: [Expense] = []
+    var score: Double
     
-    init(firstName: String, lastName: String, email: String, uid: String) {
+    init(firstName: String, lastName: String, email: String, uid: String, score: Double) {
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.uid = uid
+        self.score = score
     }
     
     init(from decoder: Decoder) throws {
@@ -58,10 +60,11 @@ struct User: Codable {
         uid = try values.decode(String.self, forKey: .uid)
         balance = try values.decodeIfPresent(Int.self, forKey: .balance)
         expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
+        score = try values.decode(Double.self, forKey: .score)
     }
     
     enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance, expenses
+        case firstName, lastName, email, uid, balance, expenses, score
     }
 }
 
@@ -92,9 +95,8 @@ class FirebaseHandler {
         auth.addStateDidChangeListener { _, user in
             if user != nil {
                 self.getCurrentUserData { firebaseError, user in
-                    guard firebaseError == nil else {
-                        // swiftlint:disable:next force_unwrapping
-                        assertionFailure("Can't access user data: \(firebaseError!.localizedDescription)")
+                    if let firebaseError = firebaseError {
+                        assertionFailure("Can't access user data: \(firebaseError.localizedDescription)")
                         return
                     }
                     self.user = user
@@ -127,7 +129,8 @@ class FirebaseHandler {
             let lastNameKey = User.CodingKeys.lastName.rawValue
             let uidKey = User.CodingKeys.uid.rawValue
             let emailKey = User.CodingKeys.email.rawValue
-            let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: result.user.uid]
+            let scoreKey = User.CodingKeys.score.rawValue
+            let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: result.user.uid, scoreKey: 0.0] as [String: Any]
                         
             self.firestore.collection(DBCollectionKey.users.rawValue).document(result.user.uid).setData(data) { error in
                 if error != nil {
@@ -135,7 +138,7 @@ class FirebaseHandler {
                     return
                 }
                 
-                self.user = User(firstName: firstName, lastName: lastName, email: email, uid: result.user.uid)
+                self.user = User(firstName: firstName, lastName: lastName, email: email, uid: result.user.uid, score: 0)
                 completionHandler(nil, self.user)
             }
         }
@@ -235,6 +238,18 @@ class FirebaseHandler {
         } catch {
             completionHandler(FirebaseError.database(error), true)
         }
+    }
+    
+    func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let uid = self.auth.currentUser?.uid else {
+            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            return
+        }
+        
+        let score = ((time / 60) / 20).round(to: 3)
+        user.score += score
+        firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(["score": user.score], merge: true)
+        completionHandler(nil, true)
     }
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
