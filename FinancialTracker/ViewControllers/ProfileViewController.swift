@@ -8,6 +8,11 @@
 import UIKit
 import MessageUI
 
+struct Constants {
+    static let shareText = "Wanna keep track of your finance life. Click the link to install this new amazing app on the App Store:"
+    static let shareLink = "www.google.com"
+}
+
 class ProfileViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
@@ -20,7 +25,6 @@ class ProfileViewController: UIViewController {
         self.title = "Profile"
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
-        
         self.tabBarItem.image = UIImage(systemName: "person")
         
         guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance else {
@@ -28,10 +32,10 @@ class ProfileViewController: UIViewController {
             return
         }
         
-        nameLabel.text = user.firstName + " " + user.lastName
+        nameLabel.text = "\(user.firstName) \(user.lastName)"
         emailLabel.text = user.email
-        balanceLabel.text = "Balance\n" + String(balance)
-        expensesCountLabel.text = "Expenses\n" + String(user.expenses.count)
+        balanceLabel.text = "Balance\n \(balance)"
+        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
     }
     
     @objc func signOut() {
@@ -51,10 +55,7 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
-        let shareText = "Wanna keep track of your finance life. Click the link to install this new amazing app on the App Store:"
-        let shareLink = "www.google.com"
-        
-        let activityVC = UIActivityViewController(activityItems: [shareText, shareLink], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [Constants.shareText, Constants.shareLink], applicationActivities: nil)
         
         activityVC.popoverPresentationController?.sourceView = self.view
         present(activityVC, animated: true)
