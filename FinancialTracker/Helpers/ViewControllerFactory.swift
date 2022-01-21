@@ -25,6 +25,8 @@ enum ViewControllerType: String {
     case balance = "BalanceVC"
     case home = "HomeVC"
     case expense = "ExpenseVC"
+    case profile = "ProfileVC"
+    case tabBar = "TabBarVC"
 }
 
 extension ViewControllerType {

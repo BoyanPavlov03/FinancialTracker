@@ -43,6 +43,23 @@ struct User: Codable {
     var balance: Int?
     var expenses: [Expense] = []
     
+    init(firstName: String, lastName: String, email: String, uid: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+        self.uid = uid
+    }
+    
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        firstName = try values.decode(String.self, forKey: .firstName)
+        lastName = try values.decode(String.self, forKey: .lastName)
+        email = try values.decode(String.self, forKey: .email)
+        uid = try values.decode(String.self, forKey: .uid)
+        balance = try values.decodeIfPresent(Int.self, forKey: .balance)
+        expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
+    }
+    
     enum CodingKeys: String, CodingKey {
         case firstName, lastName, email, uid, balance, expenses
     }
