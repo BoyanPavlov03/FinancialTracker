@@ -32,6 +32,7 @@
 		70D37DF727633FB40067FFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF527633FB40067FFE6 /* Main.storyboard */; };
 		70D37DF927633FB50067FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF827633FB50067FFE6 /* Assets.xcassets */; };
 		70D37DFC27633FB50067FFE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DFA27633FB50067FFE6 /* LaunchScreen.storyboard */; };
+		70DA8522279C21FC002A7335 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70DA8521279C21FC002A7335 /* Currency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		70D37DF827633FB50067FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		70D37DFB27633FB50067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		70D37DFD27633FB50067FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		70DA8521279C21FC002A7335 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 				70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */,
 				7095718527888D1A00EB6EB3 /* Extensions.swift */,
 				7068D90B278896B300DFA3B3 /* Utilities.swift */,
+				70DA8521279C21FC002A7335 /* Currency.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -254,6 +257,7 @@
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
+				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,

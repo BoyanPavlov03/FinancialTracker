@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8eu-p6-ew3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8eu-p6-ew3">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -236,7 +236,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="57q-YP-bR4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2826.0869565217395" y="403.79464285714283"/>
+            <point key="canvasLocation" x="2831" y="401"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="xj3-44-478">
@@ -428,7 +428,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="cr0-VR-4LU">
-                                <rect key="frame" x="20" y="40" width="280" height="222"/>
+                                <rect key="frame" x="20" y="40" width="280" height="178"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tho-mC-WdZ">
                                         <rect key="frame" x="140" y="0.0" width="0.0" height="0.0"/>
@@ -443,7 +443,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="g1u-OT-Urq">
-                                        <rect key="frame" x="100" y="133" width="80" height="89"/>
+                                        <rect key="frame" x="100" y="133" width="80" height="45"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1JQ-hW-DPZ">
                                                 <rect key="frame" x="0.0" y="0.0" width="80" height="45"/>
@@ -453,16 +453,9 @@
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BGN" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uio-CX-1E4">
-                                                <rect key="frame" x="0.0" y="53" width="80" height="36"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                         </subviews>
                                         <constraints>
                                             <constraint firstItem="1JQ-hW-DPZ" firstAttribute="centerX" secondItem="g1u-OT-Urq" secondAttribute="centerX" id="j4X-PI-Zgo"/>
-                                            <constraint firstItem="Uio-CX-1E4" firstAttribute="centerX" secondItem="g1u-OT-Urq" secondAttribute="centerX" id="nRu-wf-URA"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
@@ -486,12 +479,18 @@
                                     <action selector="nextButtonTapped:" destination="5Ou-QW-iX9" eventType="touchUpInside" id="wCF-yv-e8H"/>
                                 </connections>
                             </button>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Law-Vp-zRB">
+                                <rect key="frame" x="15" y="248" width="290" height="216"/>
+                            </pickerView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="pHH-nV-nFO"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Law-Vp-zRB" firstAttribute="top" secondItem="1JQ-hW-DPZ" secondAttribute="bottom" constant="30" id="9nF-GX-whC"/>
                             <constraint firstItem="fOO-MP-sMf" firstAttribute="leading" secondItem="pHH-nV-nFO" secondAttribute="leading" constant="50" id="AKx-iI-J9R"/>
+                            <constraint firstItem="pHH-nV-nFO" firstAttribute="trailing" secondItem="Law-Vp-zRB" secondAttribute="trailing" constant="15" id="I63-nG-483"/>
                             <constraint firstItem="pHH-nV-nFO" firstAttribute="bottom" secondItem="fOO-MP-sMf" secondAttribute="bottom" constant="45" id="JON-tw-V8l"/>
+                            <constraint firstItem="Law-Vp-zRB" firstAttribute="leading" secondItem="pHH-nV-nFO" secondAttribute="leading" constant="15" id="Siw-Na-3Od"/>
                             <constraint firstItem="cr0-VR-4LU" firstAttribute="leading" secondItem="pHH-nV-nFO" secondAttribute="leading" constant="20" id="e9x-JM-dRx"/>
                             <constraint firstItem="pHH-nV-nFO" firstAttribute="trailing" secondItem="cr0-VR-4LU" secondAttribute="trailing" constant="20" id="nSA-zj-0gA"/>
                             <constraint firstItem="pHH-nV-nFO" firstAttribute="trailing" secondItem="fOO-MP-sMf" secondAttribute="trailing" constant="50" id="tLE-wZ-pBi"/>
@@ -501,6 +500,7 @@
                     <navigationItem key="navigationItem" id="JcE-LX-fiH"/>
                     <connections>
                         <outlet property="balanceTextField" destination="1JQ-hW-DPZ" id="hhH-Gz-5v3"/>
+                        <outlet property="currencyPicker" destination="Law-Vp-zRB" id="s8f-Vm-SJ3"/>
                         <outlet property="nextButton" destination="fOO-MP-sMf" id="VSw-30-ZZF"/>
                         <outlet property="welcomeLabel" destination="tho-mC-WdZ" id="wRT-vx-e2z"/>
                     </connections>

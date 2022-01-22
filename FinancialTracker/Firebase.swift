@@ -41,6 +41,7 @@ struct User: Codable {
     let email: String
     let uid: String
     var balance: Int?
+    var currency: Currency?
     var expenses: [Expense] = []
     var score: Double
     
@@ -59,12 +60,13 @@ struct User: Codable {
         email = try values.decode(String.self, forKey: .email)
         uid = try values.decode(String.self, forKey: .uid)
         balance = try values.decodeIfPresent(Int.self, forKey: .balance)
+        currency = try values.decodeIfPresent(Currency.self, forKey: .currency)
         expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
         score = try values.decode(Double.self, forKey: .score)
     }
     
     enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance, expenses, score
+        case firstName, lastName, email, uid, balance, currency, expenses, score
     }
 }
 
@@ -182,7 +184,7 @@ class FirebaseHandler {
         }
     }
     
-    func addBalanceToCurrentUser(_ balance: Int, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addBalanceToCurrentUser(_ balance: Int, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nill in #function."), false)
             return
@@ -190,12 +192,26 @@ class FirebaseHandler {
                 
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
+        let currencyKey = User.CodingKeys.currency.rawValue
         
         self.user.balance = balance
+        self.user.currency = currency
         
-        firestore.collection(usersKey).document(currentUser.uid).setData([balanceKey: balance], merge: true)
+        do {
+            let currencyData = try JSONEncoder().encode(currency)
+            let json = try JSONSerialization.jsonObject(with: currencyData, options: [])
+            
+            guard let currencyValue = json as? [String: Any] else {
+                assertionFailure("Couldn't cast json to dictionary.")
+                return
+            }
         
-        completionHandler(nil, true)
+            firestore.collection(usersKey).document(currentUser.uid).updateData([balanceKey: balance, currencyKey: currencyValue])
+            
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), false)
+        }
     }
     
     func addExpenseToCurrentUser(_ expenseAmount: Int, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
