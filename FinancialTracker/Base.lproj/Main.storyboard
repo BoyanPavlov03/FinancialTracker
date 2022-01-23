@@ -560,7 +560,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpm-QT-zLu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6461" y="-255"/>
+            <point key="canvasLocation" x="6456" y="-668"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="JGg-CD-k1X">
@@ -699,7 +699,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="toC-Ym-jOo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6457.5" y="507.04225352112678"/>
+            <point key="canvasLocation" x="6454" y="96"/>
         </scene>
         <!--Expense View Controller-->
         <scene sceneID="cL6-BJ-1w9">
@@ -791,7 +791,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EIo-fz-upG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7299" y="-256"/>
+            <point key="canvasLocation" x="7294" y="-669"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="ss0-uk-wND">
@@ -805,11 +805,12 @@
                     <connections>
                         <segue destination="6bj-Kv-Qto" kind="relationship" relationship="viewControllers" id="EFS-zI-TUl"/>
                         <segue destination="5Rw-0X-Uru" kind="relationship" relationship="viewControllers" id="VxT-HH-TES"/>
+                        <segue destination="ScW-xe-c5W" kind="relationship" relationship="viewControllers" id="4ZX-25-b3v"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cw9-wp-gqv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4466" y="98"/>
+            <point key="canvasLocation" x="4487" y="97"/>
         </scene>
         <!--Home-->
         <scene sceneID="vQg-u8-CFn">
@@ -828,7 +829,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iwz-Nm-R8p" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5464" y="-255"/>
+            <point key="canvasLocation" x="5460" y="-668"/>
         </scene>
         <!--Profile-->
         <scene sceneID="zMw-JC-iYg">
@@ -847,7 +848,55 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b5A-Qz-abO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5464" y="509"/>
+            <point key="canvasLocation" x="5460" y="97"/>
+        </scene>
+        <!--Currency Table View Controller-->
+        <scene sceneID="1m5-T9-gYm">
+            <objects>
+                <tableViewController storyboardIdentifier="CurrencyVC" id="cwH-bd-Cpa" customClass="CurrencyTableViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="oUd-ND-bca">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Currency" id="CfT-lc-8Lv">
+                                <rect key="frame" x="0.0" y="44.5" width="320" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="CfT-lc-8Lv" id="gpo-A4-19K">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="cwH-bd-Cpa" id="50u-km-7mg"/>
+                            <outlet property="delegate" destination="cwH-bd-Cpa" id="5TW-Bv-INB"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="T2Y-US-9iC"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="99s-7T-p2L" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6457.5" y="884.15492957746483"/>
+        </scene>
+        <!--Currency-->
+        <scene sceneID="VW5-jt-PLe">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ScW-xe-c5W" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Currency" image="dollarsign.circle" catalog="system" selectedImage="dollarsign.circle" id="SEY-to-MIK"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Wdz-cM-2dk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="cwH-bd-Cpa" kind="relationship" relationship="rootViewController" id="9PH-oO-e4m"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nwN-sq-192" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="5460" y="883.09859154929575"/>
         </scene>
     </scenes>
     <designables>
@@ -871,6 +920,7 @@
         </designable>
     </designables>
     <resources>
+        <image name="dollarsign.circle" catalog="system" width="128" height="121"/>
         <image name="envelope" catalog="system" width="128" height="93"/>
         <image name="envelope.fill" catalog="system" width="128" height="93"/>
         <image name="house" catalog="system" width="128" height="106"/>

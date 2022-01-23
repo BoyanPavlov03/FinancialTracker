@@ -257,15 +257,64 @@ class FirebaseHandler {
     }
     
     func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        guard let uid = self.auth.currentUser?.uid else {
+        guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nill in #function."), false)
             return
         }
         
         let score = ((time / 60) / 20).round(to: 3)
         user.score += score
-        firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(["score": user.score], merge: true)
+        firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(["score": user.score], merge: true)
         completionHandler(nil, true)
+    }
+    
+    func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
+            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            return
+        }
+        
+        let newBalance = (Double(balance) / currentCurrency.rate) * currency.rate
+        
+        var newExpenses: [Expense] = []
+        for expense in currentUser.expenses {
+            let newExpenseAmount = (Double(expense.amount) / currentCurrency.rate) * currency.rate
+            newExpenses.append(Expense(amount: Int(newExpenseAmount), date: expense.date, category: expense.category))
+        }
+        
+        let balanceKey = User.CodingKeys.balance.rawValue
+        let expensesKey = User.CodingKeys.expenses.rawValue
+        let currencyKey = User.CodingKeys.currency.rawValue
+        
+        do {
+            let expenseData = try JSONEncoder().encode(newExpenses)
+            let expensesJson = try JSONSerialization.jsonObject(with: expenseData, options: [])
+                          
+            guard let expensesValue = expensesJson as? [Any] else {
+                assertionFailure("Couldn't cast json to array.")
+                return
+            }
+            
+            let currencyData = try JSONEncoder().encode(currency)
+            let currencyJson = try JSONSerialization.jsonObject(with: currencyData, options: [])
+            
+            guard let currencyValue = currencyJson as? [String: Any] else {
+                assertionFailure("Couldn't cast json to dictionary.")
+                return
+            }
+                                 
+            let data = [balanceKey: newBalance, expensesKey: expensesValue, currencyKey: currencyValue] as [String: Any]
+            
+            user.currency = currency
+            user.expenses = newExpenses
+            user.balance = Int(newBalance)
+            
+            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData(data)
+            
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), false)
+        }
     }
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
