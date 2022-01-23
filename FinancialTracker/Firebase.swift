@@ -24,7 +24,7 @@ enum DBCollectionKey: String {
 }
 
 struct Expense: Codable {
-    let amount: Int
+    let amount: Double
     let date: String
     let category: Category
     
@@ -40,7 +40,7 @@ struct User: Codable {
     let lastName: String
     let email: String
     let uid: String
-    var balance: Int?
+    var balance: Double?
     var currency: Currency?
     var expenses: [Expense] = []
     var score: Double
@@ -59,7 +59,7 @@ struct User: Codable {
         lastName = try values.decode(String.self, forKey: .lastName)
         email = try values.decode(String.self, forKey: .email)
         uid = try values.decode(String.self, forKey: .uid)
-        balance = try values.decodeIfPresent(Int.self, forKey: .balance)
+        balance = try values.decodeIfPresent(Double.self, forKey: .balance)
         currency = try values.decodeIfPresent(Currency.self, forKey: .currency)
         expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
         score = try values.decode(Double.self, forKey: .score)
@@ -184,7 +184,7 @@ class FirebaseHandler {
         }
     }
     
-    func addBalanceToCurrentUser(_ balance: Int, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nill in #function."), false)
             return
@@ -214,7 +214,7 @@ class FirebaseHandler {
         }
     }
     
-    func addExpenseToCurrentUser(_ expenseAmount: Int, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addExpenseToCurrentUser(_ expenseAmount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nill in #function."), false)
             return
@@ -242,7 +242,7 @@ class FirebaseHandler {
                 return
             }
 
-            let newBalanceValue = userBalance - expenseAmount
+            let newBalanceValue = (userBalance - expenseAmount).round(to: 2)
             let expenseValue = FieldValue.arrayUnion([dictionary])
             
             firestore.collection(usersKey).document(currentUser.uid).setData([expensesKey: expenseValue, balanceKey: newBalanceValue], merge: true)
@@ -274,12 +274,12 @@ class FirebaseHandler {
             return
         }
         
-        let newBalance = (Double(balance) / currentCurrency.rate) * currency.rate
+        let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: 2)
         
         var newExpenses: [Expense] = []
         for expense in currentUser.expenses {
-            let newExpenseAmount = (Double(expense.amount) / currentCurrency.rate) * currency.rate
-            newExpenses.append(Expense(amount: Int(newExpenseAmount), date: expense.date, category: expense.category))
+            let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: 2)
+            newExpenses.append(Expense(amount: newExpenseAmount, date: expense.date, category: expense.category))
         }
         
         let balanceKey = User.CodingKeys.balance.rawValue
@@ -307,7 +307,7 @@ class FirebaseHandler {
             
             user.currency = currency
             user.expenses = newExpenses
-            user.balance = Int(newBalance)
+            user.balance = newBalance
             
             firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData(data)
             

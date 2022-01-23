@@ -48,11 +48,11 @@ class HomeViewController: UIViewController {
             return
         }
         
-        var expenses: [String: Int] = [:]
-        var totalSum = 0
+        var expenses: [String: Double] = [:]
+        var totalSum = 0.0
         for expense in expenseData {
             if expenses[expense.category.rawValue] == nil {
-                expenses[expense.category.rawValue] = 0
+                expenses[expense.category.rawValue] = 0.0
             }
             // swiftlint:disable:next force_unwrapping
             expenses[expense.category.rawValue]! += expense.amount

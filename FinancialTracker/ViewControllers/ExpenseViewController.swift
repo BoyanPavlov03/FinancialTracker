@@ -32,7 +32,7 @@ class ExpenseViewController: UIViewController {
             return
         }
         
-        guard let expenseNumber = Int(expense) else {
+        guard let expenseNumber = Double(expense) else {
             self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }

@@ -43,7 +43,7 @@ class BalanceViewController: UIViewController {
             return
         }
         
-        guard let balanceNumber = Int(balance) else {
+        guard let balanceNumber = Double(balance) else {
             self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }
