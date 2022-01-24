@@ -7,7 +7,7 @@
 
 import UIKit
 
-var startDate = Date()
+private var startDate = Date()
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -66,6 +66,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
+        // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
         FirebaseHandler.shared.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
             if let firebaseError = firebaseError {

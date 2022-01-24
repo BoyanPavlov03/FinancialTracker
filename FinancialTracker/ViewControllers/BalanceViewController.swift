@@ -15,7 +15,7 @@ class BalanceViewController: UIViewController {
     @IBOutlet var currencyPicker: UIPickerView!
     
     // MARK: - Properties
-    let currency = Currencies()
+    var currencies: [Currency] = []
     
     // MARK: - Methods
     override func viewDidLoad() {
@@ -33,6 +33,22 @@ class BalanceViewController: UIViewController {
         
         self.welcomeLabel.text = "Welcome " + firstName
         
+        getCurrencies(completionHandler: { error, data in
+            if let error = error {
+                assertionFailure(error)
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+
+            self.currencies = data
+            DispatchQueue.main.async {
+                self.currencyPicker.reloadAllComponents()
+            }
+        })
+        
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
     }
@@ -48,7 +64,7 @@ class BalanceViewController: UIViewController {
             return
         }
         
-        let selectedCurrency = currency.allCurrencies[currencyPicker.selectedRow(inComponent: 0)]
+        let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         
         FirebaseHandler.shared.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { firebaseError, _ in
             switch firebaseError {
@@ -87,7 +103,7 @@ class BalanceViewController: UIViewController {
 
 extension BalanceViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return currency.allCurrencies[row].code
+        return currencies[row].code
     }
 }
 
@@ -97,6 +113,6 @@ extension BalanceViewController: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return currency.allCurrencies.count
+        return currencies.count
     }
 }
