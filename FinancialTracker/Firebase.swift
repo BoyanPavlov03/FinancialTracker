@@ -262,7 +262,9 @@ class FirebaseHandler {
             return
         }
         
+        // A point is gained every 20 minutes
         let score = ((time / 60) / 20).round(to: 3)
+        
         user.score += score
         firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(["score": user.score], merge: true)
         completionHandler(nil, true)
