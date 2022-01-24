@@ -8,7 +8,7 @@
 import UIKit
 
 class CurrencyTableViewController: UITableViewController {
-    var currencies: [Currency] = []
+    private var currencies: [Currency] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,17 +19,17 @@ class CurrencyTableViewController: UITableViewController {
         
         self.tabBarItem.image = UIImage(systemName: "dollarsign.circle")
         
-        getCurrencies { error, data in
+        Currency.getCurrencies { error, currencies in
             if let error = error {
                 assertionFailure(error)
                 return
             }
             
-            guard let data = data else {
+            guard let currencies = currencies else {
                 return
             }
 
-            self.currencies = data
+            self.currencies = currencies
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }

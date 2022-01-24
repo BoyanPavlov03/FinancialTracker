@@ -15,7 +15,7 @@ class BalanceViewController: UIViewController {
     @IBOutlet var currencyPicker: UIPickerView!
     
     // MARK: - Properties
-    var currencies: [Currency] = []
+    private var currencies: [Currency] = []
     
     // MARK: - Methods
     override func viewDidLoad() {
@@ -33,21 +33,21 @@ class BalanceViewController: UIViewController {
         
         self.welcomeLabel.text = "Welcome " + firstName
         
-        getCurrencies(completionHandler: { error, data in
+        Currency.getCurrencies { error, currencies in
             if let error = error {
                 assertionFailure(error)
                 return
             }
             
-            guard let data = data else {
+            guard let currencies = currencies else {
                 return
             }
 
-            self.currencies = data
+            self.currencies = currencies
             DispatchQueue.main.async {
                 self.currencyPicker.reloadAllComponents()
             }
-        })
+        }
         
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
