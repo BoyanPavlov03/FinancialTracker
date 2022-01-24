@@ -12,6 +12,10 @@ class BalanceViewController: UIViewController {
     @IBOutlet var balanceTextField: UITextField!
     @IBOutlet var nextButton: UIButton!
     @IBOutlet var welcomeLabel: UILabel!
+    @IBOutlet var currencyPicker: UIPickerView!
+    
+    // MARK: - Properties
+    let currency = Currencies()
     
     // MARK: - Methods
     override func viewDidLoad() {
@@ -29,6 +33,8 @@ class BalanceViewController: UIViewController {
         
         self.welcomeLabel.text = "Welcome " + firstName
         
+        currencyPicker.delegate = self
+        currencyPicker.dataSource = self
     }
     
     @IBAction func nextButtonTapped(_ sender: Any) {
@@ -37,12 +43,14 @@ class BalanceViewController: UIViewController {
             return
         }
         
-        guard let balanceNumber = Int(balance) else {
+        guard let balanceNumber = Double(balance) else {
             self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }
         
-        FirebaseHandler.shared.addBalanceToCurrentUser(balanceNumber) { firebaseError, _ in
+        let selectedCurrency = currency.allCurrencies[currencyPicker.selectedRow(inComponent: 0)]
+        
+        FirebaseHandler.shared.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }
@@ -74,5 +82,21 @@ class BalanceViewController: UIViewController {
                 }
             }
         }
+    }
+}
+
+extension BalanceViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return currency.allCurrencies[row].code
+    }
+}
+
+extension BalanceViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return currency.allCurrencies.count
     }
 }

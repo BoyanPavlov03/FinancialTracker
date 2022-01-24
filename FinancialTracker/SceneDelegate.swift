@@ -7,6 +7,8 @@
 
 import UIKit
 
+var startDate = Date()
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
@@ -60,14 +62,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
+        startDate = Date.init()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
+        let timeActive = startDate.timeIntervalSinceNow * -1
+        FirebaseHandler.shared.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
+            if let firebaseError = firebaseError {
+                assertionFailure(firebaseError.localizedDescription)
+            }
+        }
     }
 
 }

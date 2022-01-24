@@ -11,6 +11,7 @@
 		703DF427277F8F2100827FE8 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 703DF426277F8F2100827FE8 /* Charts */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
 		705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705B3DB1279869D50059D832 /* ProfileViewController.swift */; };
+		70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */; };
 		7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7068D90B278896B300DFA3B3 /* Utilities.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */; };
@@ -32,12 +33,14 @@
 		70D37DF727633FB40067FFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF527633FB40067FFE6 /* Main.storyboard */; };
 		70D37DF927633FB50067FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF827633FB50067FFE6 /* Assets.xcassets */; };
 		70D37DFC27633FB50067FFE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DFA27633FB50067FFE6 /* LaunchScreen.storyboard */; };
+		70DA8522279C21FC002A7335 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70DA8521279C21FC002A7335 /* Currency.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		703DACFD2769CFC400149626 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		705B3DB1279869D50059D832 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTableViewController.swift; sourceTree = "<group>"; };
 		7068D90B278896B300DFA3B3 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewController.swift; sourceTree = "<group>"; };
@@ -55,6 +58,7 @@
 		70D37DF827633FB50067FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		70D37DFB27633FB50067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		70D37DFD27633FB50067FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		70DA8521279C21FC002A7335 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +93,7 @@
 				70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */,
 				7095718527888D1A00EB6EB3 /* Extensions.swift */,
 				7068D90B278896B300DFA3B3 /* Utilities.swift */,
+				70DA8521279C21FC002A7335 /* Currency.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -103,6 +108,7 @@
 				7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */,
 				7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */,
 				705B3DB1279869D50059D832 /* ProfileViewController.swift */,
+				70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -254,9 +260,11 @@
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
+				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
+				70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */,
 				7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */,
 				7095718627888D1A00EB6EB3 /* Extensions.swift in Sources */,
 				70D37DF027633FB40067FFE6 /* AppDelegate.swift in Sources */,
