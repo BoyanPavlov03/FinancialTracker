@@ -12,67 +12,6 @@ struct Links {
     static let ratesCurrencyApi = "https://open.er-api.com/v6/latest"
 }
 
-class Currencies {
-    var allCurrencies: [Currency] = []
-    
-    init() {
-        let sem = DispatchSemaphore.init(value: 0)
-        
-        if let jsonLink = URL(string: Links.symbolCurrencyApi) {
-            URLSession.shared.dataTask(with: jsonLink) { data, _, error in
-                defer { sem.signal() }
-                guard error == nil else {
-                    assertionFailure("Couldn't load json.")
-                    return
-                }
-                
-                guard let data = data else {
-                    return
-                }
-
-                do {
-                    let result = try JSONDecoder().decode([String: Currency].self, from: data)
-                    var beforeSorted: [Currency] = []
-                    beforeSorted.append(contentsOf: result.values)
-                    self.allCurrencies = beforeSorted.sorted { $0.code < $1.code }
-                } catch {
-                    assertionFailure(error.localizedDescription)
-                }
-            }.resume()
-            
-            sem.wait()
-        }
-        
-        if let jsonLink = URL(string: Links.ratesCurrencyApi) {
-            URLSession.shared.dataTask(with: jsonLink) { data, _, error in
-                defer { sem.signal() }
-                guard error == nil else {
-                    assertionFailure("Couldn't load json.")
-                    return
-                }
-                
-                guard let data = data else {
-                    return
-                }
-
-                do {
-                    let result = try JSONDecoder().decode(Currency.ExchangeRates.self, from: data)
-                    for iterrator in 0..<self.allCurrencies.count {
-                        let code = self.allCurrencies[iterrator].code
-                        if let rate = result.rates[code] {
-                            self.allCurrencies[iterrator].rate = rate
-                        }
-                    }
-                } catch {
-                    assertionFailure(error.localizedDescription)
-                }
-            }.resume()
-            
-            sem.wait()
-        }
-    }
-}
-
 struct Currency: Codable {
     let name: String
     let symbolNative: String
@@ -99,5 +38,53 @@ extension Currency {
         symbolNative = try values.decode(String.self, forKey: .symbolNative)
         code = try values.decode(String.self, forKey: .code)
         rate = try values.decodeIfPresent(Double.self, forKey: .rate) ?? 0
+    }
+    
+    static func getCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
+        var allCurrencies: [Currency] = []
+        
+        if let jsonLink = URL(string: Links.symbolCurrencyApi) {
+            URLSession.shared.dataTask(with: jsonLink) { data, _, error in
+                guard error == nil else {
+                    completionHandler("Couldn't load json.", nil)
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let result = try JSONDecoder().decode([String: Currency].self, from: data)
+                        var beforeSorted: [Currency] = []
+                        beforeSorted.append(contentsOf: result.values)
+                        allCurrencies = beforeSorted.sorted { $0.code < $1.code }
+                    } catch {
+                        completionHandler(error.localizedDescription, nil)
+                    }
+                }
+            }.resume()
+        }
+        
+        if let jsonLink = URL(string: Links.ratesCurrencyApi) {
+            URLSession.shared.dataTask(with: jsonLink) { data, _, error in
+                guard error == nil else {
+                    completionHandler("Couldn't load json.", nil)
+                    return
+                }
+                
+                if let data = data {
+                    do {
+                        let result = try JSONDecoder().decode(Currency.ExchangeRates.self, from: data)
+                        for iterrator in 0..<allCurrencies.count {
+                            let code = allCurrencies[iterrator].code
+                            if let rate = result.rates[code] {
+                                allCurrencies[iterrator].rate = rate
+                            }
+                        }
+                        completionHandler(nil, allCurrencies)
+                    } catch {
+                        completionHandler(error.localizedDescription, nil)
+                    }
+                }
+            }.resume()
+        }
     }
 }
