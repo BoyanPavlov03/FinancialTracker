@@ -560,7 +560,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpm-QT-zLu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6456" y="-668"/>
+            <point key="canvasLocation" x="4905" y="513"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="JGg-CD-k1X">
@@ -699,7 +699,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="toC-Ym-jOo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6454" y="96"/>
+            <point key="canvasLocation" x="5814" y="512"/>
         </scene>
         <!--Expense View Controller-->
         <scene sceneID="cL6-BJ-1w9">
@@ -791,12 +791,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EIo-fz-upG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7294" y="-669"/>
+            <point key="canvasLocation" x="4905" y="1278"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="ss0-uk-wND">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarVC" id="bhE-vr-BeO" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarVC" id="bhE-vr-BeO" customClass="TabBarController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ht4-R5-Zbx">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -806,11 +806,12 @@
                         <segue destination="6bj-Kv-Qto" kind="relationship" relationship="viewControllers" id="EFS-zI-TUl"/>
                         <segue destination="5Rw-0X-Uru" kind="relationship" relationship="viewControllers" id="VxT-HH-TES"/>
                         <segue destination="ScW-xe-c5W" kind="relationship" relationship="viewControllers" id="4ZX-25-b3v"/>
+                        <segue destination="PgS-xw-C2c" kind="relationship" relationship="viewControllers" id="nWD-p9-s5i"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cw9-wp-gqv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4487" y="97"/>
+            <point key="canvasLocation" x="6439" y="-1092"/>
         </scene>
         <!--Home-->
         <scene sceneID="vQg-u8-CFn">
@@ -829,7 +830,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iwz-Nm-R8p" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5460" y="-668"/>
+            <point key="canvasLocation" x="4905" y="-294"/>
         </scene>
         <!--Profile-->
         <scene sceneID="zMw-JC-iYg">
@@ -848,7 +849,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b5A-Qz-abO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5460" y="97"/>
+            <point key="canvasLocation" x="5814" y="-294"/>
         </scene>
         <!--Currency Table View Controller-->
         <scene sceneID="1m5-T9-gYm">
@@ -877,7 +878,118 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="99s-7T-p2L" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6457.5" y="884.15492957746483"/>
+            <point key="canvasLocation" x="6960" y="512"/>
+        </scene>
+        <!--Premium View Controller-->
+        <scene sceneID="ehg-YQ-yk3">
+            <objects>
+                <viewController storyboardIdentifier="PremiumVC" id="KWq-p7-YxS" customClass="PremiumViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eJQ-VQ-0g8">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="4Vd-aP-ugL">
+                                <rect key="frame" x="72.5" y="64" width="175.5" height="36"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upgrade" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cdc-b2-9Kd">
+                                        <rect key="frame" x="0.0" y="0.0" width="113" height="36"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NFI-JK-fOe">
+                                        <rect key="frame" x="123" y="0.0" width="52.5" height="36"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="PRO"/>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="x9s-Uu-Ybh">
+                                <rect key="frame" x="25" y="130" width="283.5" height="92"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="uUb-Po-jli">
+                                        <rect key="frame" x="0.0" y="0.0" width="283.5" height="20"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="vZz-tw-aWK">
+                                                <rect key="frame" x="0.0" y="2" width="20" height="16.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="20" id="3eb-i3-FiX"/>
+                                                    <constraint firstAttribute="width" constant="20" id="cK5-rE-Mqf"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Different kinds of charts" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OoG-VL-E62">
+                                                <rect key="frame" x="35" y="0.0" width="248.5" height="20"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="DJn-la-INO">
+                                        <rect key="frame" x="0.0" y="36" width="283.5" height="20"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pc3-Su-2YL">
+                                                <rect key="frame" x="0.0" y="2" width="20" height="16.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="8Y2-46-1pz"/>
+                                                    <constraint firstAttribute="height" constant="20" id="BAX-gP-DP5"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More expense categories" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xyO-nU-C3l">
+                                                <rect key="frame" x="35" y="0.0" width="248.5" height="20"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Vr6-tZ-Gre">
+                                        <rect key="frame" x="0.0" y="72" width="283.5" height="20"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="8s2-i5-4nR">
+                                                <rect key="frame" x="0.0" y="2" width="20" height="16.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="IP2-zl-Aqb"/>
+                                                    <constraint firstAttribute="height" constant="20" id="aKR-DW-5nZ"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="More financial recommendations" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dn7-VS-51E">
+                                                <rect key="frame" x="35" y="0.0" width="248.5" height="20"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F2a-QY-ncn">
+                                <rect key="frame" x="74.5" y="262" width="171.5" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Unlock Premium $6.99" cornerStyle="capsule">
+                                    <color key="baseBackgroundColor" systemColor="systemIndigoColor"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="upgradeButtonTapped:" destination="KWq-p7-YxS" eventType="touchUpInside" id="UhI-VS-dE2"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="SGv-EH-Swf"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="x9s-Uu-Ybh" firstAttribute="top" secondItem="4Vd-aP-ugL" secondAttribute="bottom" constant="30" id="6AS-n8-XhF"/>
+                            <constraint firstItem="4Vd-aP-ugL" firstAttribute="top" secondItem="SGv-EH-Swf" secondAttribute="top" constant="20" id="Glr-1u-KeR"/>
+                            <constraint firstItem="4Vd-aP-ugL" firstAttribute="centerX" secondItem="SGv-EH-Swf" secondAttribute="centerX" id="dWI-ph-Imx"/>
+                            <constraint firstItem="F2a-QY-ncn" firstAttribute="centerX" secondItem="SGv-EH-Swf" secondAttribute="centerX" id="eZZ-2L-h7e"/>
+                            <constraint firstItem="x9s-Uu-Ybh" firstAttribute="leading" secondItem="SGv-EH-Swf" secondAttribute="leading" constant="25" id="gm6-Lt-1gf"/>
+                            <constraint firstItem="F2a-QY-ncn" firstAttribute="top" secondItem="x9s-Uu-Ybh" secondAttribute="bottom" constant="40" id="rcA-Ey-3Mb"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="oLa-62-9fg"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rM2-Py-zNR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7907" y="512"/>
         </scene>
         <!--Currency-->
         <scene sceneID="VW5-jt-PLe">
@@ -896,7 +1008,26 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nwN-sq-192" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5460" y="883.09859154929575"/>
+            <point key="canvasLocation" x="6960" y="-294"/>
+        </scene>
+        <!--Premium-->
+        <scene sceneID="FYN-jf-lWE">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PgS-xw-C2c" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Premium" image="star" catalog="system" selectedImage="star" id="U33-yL-Kci"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="7kA-8q-SAh">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="KWq-p7-YxS" kind="relationship" relationship="rootViewController" id="cg5-q8-E9A"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OXf-Xm-AiG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7907" y="-295"/>
         </scene>
     </scenes>
     <designables>
@@ -920,6 +1051,7 @@
         </designable>
     </designables>
     <resources>
+        <image name="checkmark" catalog="system" width="128" height="114"/>
         <image name="dollarsign.circle" catalog="system" width="128" height="121"/>
         <image name="envelope" catalog="system" width="128" height="93"/>
         <image name="envelope.fill" catalog="system" width="128" height="93"/>
@@ -927,11 +1059,15 @@
         <image name="key.fill" catalog="system" width="83" height="128"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
+        <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray2Color">
             <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemIndigoColor">
+            <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tintColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

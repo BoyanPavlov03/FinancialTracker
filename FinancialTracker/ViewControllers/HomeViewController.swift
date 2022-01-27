@@ -55,14 +55,14 @@ class HomeViewController: UIViewController {
                 expenses[expense.category.rawValue] = 0.0
             }
             // swiftlint:disable:next force_unwrapping
-            expenses[expense.category.rawValue]! += expense.amount
+            expenses[expense.category.rawValue]! += expense.amount.round(to: 2)
             totalSum += expense.amount
         }
                 
         var dataEntries: [ChartDataEntry] = []
         
         for expense in expenses {
-            let dataEntry = PieChartDataEntry(value: Double(expense.value), label: expense.key, data: expense.key as AnyObject)
+            let dataEntry = PieChartDataEntry(value: expense.value, label: expense.key, data: expense.key as AnyObject)
             dataEntries.append(dataEntry)
         }
         
@@ -72,7 +72,7 @@ class HomeViewController: UIViewController {
         
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         let format = NumberFormatter()
-        format.numberStyle = .currency
+        format.numberStyle = .decimal
         let formatter = DefaultValueFormatter(formatter: format)
         pieChartData.setValueFormatter(formatter)
         

@@ -44,6 +44,7 @@ struct User: Codable {
     var currency: Currency?
     var expenses: [Expense] = []
     var score: Double
+    var premium: Bool
     
     init(firstName: String, lastName: String, email: String, uid: String, score: Double) {
         self.firstName = firstName
@@ -51,6 +52,7 @@ struct User: Codable {
         self.email = email
         self.uid = uid
         self.score = score
+        self.premium = false
     }
     
     init(from decoder: Decoder) throws {
@@ -63,10 +65,11 @@ struct User: Codable {
         currency = try values.decodeIfPresent(Currency.self, forKey: .currency)
         expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
         score = try values.decode(Double.self, forKey: .score)
+        premium = try values.decode(Bool.self, forKey: .premium)
     }
     
     enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance, currency, expenses, score
+        case firstName, lastName, email, uid, balance, currency, expenses, score, premium
     }
 }
 
@@ -317,6 +320,18 @@ class FirebaseHandler {
         } catch {
             completionHandler(FirebaseError.database(error), false)
         }
+    }
+    
+    func boughtPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            return
+        }
+        
+        let premiumKey = User.CodingKeys.premium.rawValue
+        
+        firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData([premiumKey: true], merge: true)
+        completionHandler(nil, true)
     }
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
