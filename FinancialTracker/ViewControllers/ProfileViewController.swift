@@ -19,6 +19,10 @@ class ProfileViewController: UIViewController {
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var expensesCountLabel: UILabel!
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,18 +31,20 @@ class ProfileViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         self.tabBarItem.image = UIImage(systemName: "person")
         
-        guard let user = FirebaseHandler.shared.currentUser else {
+        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
         
         nameLabel.text = "\(user.firstName) \(user.lastName)"
         emailLabel.text = user.email
+        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(updateData), name: NotificationCenterConstants.refreshProfile, object: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+    @objc func updateData(notification: NSNotification) {
         guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return

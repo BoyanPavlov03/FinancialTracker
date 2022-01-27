@@ -8,6 +8,11 @@
 import UIKit
 import Charts
 
+struct NotificationCenterConstants {
+    static let refreshHome = Notification.Name(rawValue: "refreshHome")
+    static let refreshProfile = Notification.Name(rawValue: "refreshProfile")
+}
+
 enum Support: String {
     case addExpense = "Problem adding an expense"
     case refundMoney = "Want a refund"
@@ -20,6 +25,10 @@ enum Support: String {
 
 class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,15 +44,15 @@ class HomeViewController: UIViewController {
         expenseChart.drawHoleEnabled = true
         expenseChart.rotationAngle = 0
         expenseChart.rotationEnabled = false
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         
-        customizeChart(expenseData: FirebaseHandler.shared.currentUser?.expenses ?? [])
+        customizeChart(notification: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(customizeChart), name: NotificationCenterConstants.refreshHome, object: nil)
     }
     
-    private func customizeChart(expenseData: [Expense]) {
+    @objc func customizeChart(notification: NSNotification?) {
+        let expenseData = FirebaseHandler.shared.currentUser?.expenses ?? []
+        
         guard !expenseData.isEmpty else {
             return
         }

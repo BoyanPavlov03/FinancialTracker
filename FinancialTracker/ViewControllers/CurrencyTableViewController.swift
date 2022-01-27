@@ -76,6 +76,9 @@ class CurrencyTableViewController: UITableViewController {
                 if let firebaseError = firebaseError {
                     assertionFailure(firebaseError.localizedDescription)
                 }
+                
+                NotificationCenter.default.post(name: NotificationCenterConstants.refreshHome, object: nil)
+                NotificationCenter.default.post(name: NotificationCenterConstants.refreshProfile, object: nil)
             }
         }))
         

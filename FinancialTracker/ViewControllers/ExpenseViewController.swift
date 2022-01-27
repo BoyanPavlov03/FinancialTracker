@@ -50,6 +50,7 @@ class ExpenseViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
+                NotificationCenter.default.post(name: NotificationCenterConstants.refreshHome, object: nil)
                 self.navigationController?.popViewController(animated: true)
             }
         }
