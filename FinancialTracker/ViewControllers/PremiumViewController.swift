@@ -61,7 +61,7 @@ class PremiumViewController: UIViewController {
 extension PremiumViewController: SKProductsRequestDelegate {
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         if let product = response.products.first {
-            self.purchase(product: product)
+            purchase(product: product)
         }
     }
 }
@@ -80,6 +80,7 @@ extension PremiumViewController: SKPaymentTransactionObserver {
                 }
                 
                 guard var viewControllers = self.tabBarController?.viewControllers else { return }
+                // Remove the premium tab as the user now owns it
                 viewControllers.remove(at: 3)
                 self.tabBarController?.viewControllers = viewControllers
                 

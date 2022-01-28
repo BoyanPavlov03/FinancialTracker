@@ -189,7 +189,7 @@ class FirebaseHandler {
     
     func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
             return
         }
                 
@@ -219,7 +219,7 @@ class FirebaseHandler {
     
     func addExpenseToCurrentUser(_ expenseAmount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
             return
         }
                 
@@ -261,7 +261,7 @@ class FirebaseHandler {
     
     func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
             return
         }
         
@@ -275,7 +275,7 @@ class FirebaseHandler {
     
     func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
-            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
             return
         }
         
@@ -324,19 +324,18 @@ class FirebaseHandler {
     
     func boughtPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nill in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
             return
         }
         
         let premiumKey = User.CodingKeys.premium.rawValue
-        
         firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData([premiumKey: true], merge: true)
         completionHandler(nil, true)
     }
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let uid = self.auth.currentUser?.uid else {
-            completionHandler(FirebaseError.access("Current user is nill in #function."), nil)
+            completionHandler(FirebaseError.access("Current user is nil in #function."), nil)
             return
         }
         

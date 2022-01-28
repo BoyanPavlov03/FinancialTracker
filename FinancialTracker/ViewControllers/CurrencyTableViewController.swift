@@ -10,6 +10,8 @@ import UIKit
 class CurrencyTableViewController: UITableViewController {
     private var currencies: [Currency] = []
     
+    weak var updateDelegate: UpdateDataDelegate!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -77,8 +79,7 @@ class CurrencyTableViewController: UITableViewController {
                     assertionFailure(firebaseError.localizedDescription)
                 }
                 
-                NotificationCenter.default.post(name: NotificationCenterConstants.refreshHome, object: nil)
-                NotificationCenter.default.post(name: NotificationCenterConstants.refreshProfile, object: nil)
+                self.updateDelegate.updateData()
             }
         }))
         

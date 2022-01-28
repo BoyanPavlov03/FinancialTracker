@@ -17,6 +17,8 @@ class ExpenseViewController: UIViewController {
     @IBOutlet var expenseAmountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
     
+    weak var updateDelegate: UpdateDataDelegate!
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,7 +52,7 @@ class ExpenseViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                NotificationCenter.default.post(name: NotificationCenterConstants.refreshHome, object: nil)
+                self.updateDelegate.updateData()
                 self.navigationController?.popViewController(animated: true)
             }
         }

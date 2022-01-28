@@ -19,10 +19,6 @@ class ProfileViewController: UIViewController {
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var expensesCountLabel: UILabel!
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -41,17 +37,16 @@ class ProfileViewController: UIViewController {
         balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateData), name: NotificationCenterConstants.refreshProfile, object: nil)
+        setUpDelegate()
     }
     
-    @objc func updateData(notification: NSNotification) {
-        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
-            assertionFailure("User data is nil")
+    private func setUpDelegate() {
+        guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
+            assertionFailure("Couldn't cast to CurrencyTableViewController")
             return
         }
         
-        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
-        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
+        currencyVC.updateDelegate = self
     }
     
     @objc func signOut() {
@@ -110,5 +105,17 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
         }
         
         controller.dismiss(animated: true)
+    }
+}
+
+extension ProfileViewController: UpdateDataDelegate {
+    func updateData() {
+        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
+            assertionFailure("User data is nil")
+            return
+        }
+        
+        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
     }
 }

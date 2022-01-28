@@ -8,9 +8,8 @@
 import UIKit
 import Charts
 
-struct NotificationCenterConstants {
-    static let refreshHome = Notification.Name(rawValue: "refreshHome")
-    static let refreshProfile = Notification.Name(rawValue: "refreshProfile")
+protocol UpdateDataDelegate: AnyObject {
+    func updateData()
 }
 
 enum Support: String {
@@ -25,10 +24,6 @@ enum Support: String {
 
 class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,12 +40,20 @@ class HomeViewController: UIViewController {
         expenseChart.rotationAngle = 0
         expenseChart.rotationEnabled = false
         
-        customizeChart(notification: nil)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(customizeChart), name: NotificationCenterConstants.refreshHome, object: nil)
+        updateChart()
+        setUpDelegate()
     }
     
-    @objc func customizeChart(notification: NSNotification?) {
+    private func setUpDelegate() {
+        guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
+            assertionFailure("Couldn't cast to CurrencyTableViewController")
+            return
+        }
+        
+        currencyVC.updateDelegate = self
+    }
+    
+    func updateChart() {
         let expenseData = FirebaseHandler.shared.currentUser?.expenses ?? []
         
         guard !expenseData.isEmpty else {
@@ -105,7 +108,17 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func addButtonTapped(_ sender: Any) {
-        let expenseVC = ViewControllerFactory.shared.viewController(for: .expense)
+        guard let expenseVC = ViewControllerFactory.shared.viewController(for: .expense) as? ExpenseViewController else {
+            assertionFailure("Couldn't cast to ExpenseViewController")
+            return
+        }
+        expenseVC.updateDelegate = self
         navigationController?.pushViewController(expenseVC, animated: true)
+    }
+}
+
+extension HomeViewController: UpdateDataDelegate {
+    func updateData() {
+        updateChart()
     }
 }
