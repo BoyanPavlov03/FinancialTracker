@@ -22,22 +22,17 @@ class PremiumViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         
         self.tabBarItem.image = UIImage(systemName: "star")
+        
+        SKPaymentQueue.default().add(self)
     }
     
     @IBAction func upgradeButtonTapped(_ sender: Any) {
         if SKPaymentQueue.canMakePayments() {
-            let set: Set<String> = [Product.premium.rawValue]
+            let paymentRequest = SKMutablePayment()
+            paymentRequest.productIdentifier = Product.premium.rawValue
             
-            let productRequest = SKProductsRequest(productIdentifiers: set)
-            productRequest.delegate = self
-            productRequest.start()
+            SKPaymentQueue.default().add(paymentRequest)
         }
-    }
-    
-    private func purchase(product: SKProduct) {
-        let payment = SKPayment(product: product)
-        SKPaymentQueue.default().add(self)
-        SKPaymentQueue.default().add(payment)
     }
     
     @objc func signOut() {
@@ -56,14 +51,6 @@ class PremiumViewController: UIViewController {
         }
     }
 
-}
-
-extension PremiumViewController: SKProductsRequestDelegate {
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        if let product = response.products.first {
-            purchase(product: product)
-        }
-    }
 }
 
 extension PremiumViewController: SKPaymentTransactionObserver {
