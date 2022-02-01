@@ -139,6 +139,7 @@ class FirebaseHandler {
             let emailKey = User.CodingKeys.email.rawValue
             let scoreKey = User.CodingKeys.score.rawValue
             let premiumKey = User.CodingKeys.premium.rawValue
+            // swiftlint:disable:next line_length
             let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: result.user.uid, scoreKey: 0.0, premiumKey: false] as [String: Any]
                         
             self.firestore.collection(DBCollectionKey.users.rawValue).document(result.user.uid).setData(data) { error in
@@ -161,21 +162,22 @@ class FirebaseHandler {
             }
 
             self.getCurrentUserData { firebaseError, user in
-                switch firebaseError {
-                case .database(let error):
-                    completionHandler(FirebaseError.database(error), user)
-                case .unknown:
-                    completionHandler(FirebaseError.unknown, user)
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), user)
-                case .none:
+                if let firebaseError = firebaseError {
+                    switch firebaseError {
+                    case .database(let error):
+                        completionHandler(FirebaseError.database(error), user)
+                    case .unknown:
+                        completionHandler(FirebaseError.unknown, user)
+                    case .access(let error):
+                        completionHandler(FirebaseError.access(error), user)
+                    case .auth, .signOut:
+                        assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
+                        // swiftlint:disable:next unneeded_break_in_switch
+                        break
+                    }
+                } else {
                     self.user = user
                     completionHandler(nil, user)
-                case .auth, .signOut:
-                    // swiftlint:disable:next force_unwrapping
-                    assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
                 }
             }
         }

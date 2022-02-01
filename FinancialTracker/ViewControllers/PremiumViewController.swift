@@ -66,11 +66,8 @@ extension PremiumViewController: SKPaymentTransactionObserver {
                     }
                 }
                 
-                guard var viewControllers = self.tabBarController?.viewControllers else { return }
                 // Remove the premium tab as the user now owns it
-                viewControllers.remove(at: 3)
-                self.tabBarController?.viewControllers = viewControllers
-                
+                self.tabBarController?.viewControllers?.remove(at: 3)
             case .failed:
                 SKPaymentQueue.default().finishTransaction(transaction)
             default:

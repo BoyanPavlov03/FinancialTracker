@@ -18,10 +18,8 @@ class TabBarController: UITabBarController {
         }
         
         if currentUser.premium {
-            guard var viewControllers = self.viewControllers else { return }
             // Remove the premium tab as the user owns it
-            viewControllers.remove(at: 3)
-            self.viewControllers = viewControllers
+            self.viewControllers?.remove(at: 3)
         }
     }
     
