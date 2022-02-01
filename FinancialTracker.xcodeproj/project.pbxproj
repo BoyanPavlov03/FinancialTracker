@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7036707527A72386005388A5 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 7036707427A72386005388A5 /* FirebaseMessaging */; };
 		703DACFE2769CFC400149626 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703DACFD2769CFC400149626 /* Firebase.swift */; };
 		703DF427277F8F2100827FE8 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 703DF426277F8F2100827FE8 /* Charts */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
@@ -40,6 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7036707627A7267E005388A5 /* FinancialTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinancialTracker.entitlements; sourceTree = "<group>"; };
 		703DACFD2769CFC400149626 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		705B3DB1279869D50059D832 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7036707527A72386005388A5 /* FirebaseMessaging in Frameworks */,
 				709638D827649777000C152D /* FirebaseDatabase in Frameworks */,
 				709638DA27649777000C152D /* FirebaseFirestore in Frameworks */,
 				703DF427277F8F2100827FE8 /* Charts in Frameworks */,
@@ -150,6 +153,7 @@
 		70D37DEE27633FB40067FFE6 /* FinancialTracker */ = {
 			isa = PBXGroup;
 			children = (
+				7036707627A7267E005388A5 /* FinancialTracker.entitlements */,
 				707C5DD5276D16B30097A522 /* Helpers */,
 				70580548276892FD009515BE /* Cutsom UI */,
 				70D0D6CA2766227600ED0060 /* ViewControllers */,
@@ -190,6 +194,7 @@
 				709638DB27649777000C152D /* FirebaseFunctions */,
 				709638DD27649777000C152D /* FirebaseStorage */,
 				703DF426277F8F2100827FE8 /* Charts */,
+				7036707427A72386005388A5 /* FirebaseMessaging */,
 			);
 			productName = FinancialTracker;
 			productReference = 70D37DEC27633FB40067FFE6 /* FinancialTracker.app */;
@@ -436,6 +441,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FinancialTracker/FinancialTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6E38FUWW9U;
@@ -464,6 +470,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = FinancialTracker/FinancialTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6E38FUWW9U;
@@ -530,6 +537,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7036707427A72386005388A5 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 709638D227649777000C152D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
 		703DF426277F8F2100827FE8 /* Charts */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 703DF425277F8F2100827FE8 /* XCRemoteSwiftPackageReference "Charts" */;

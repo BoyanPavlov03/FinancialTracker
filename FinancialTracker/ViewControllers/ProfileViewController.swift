@@ -41,12 +41,27 @@ class ProfileViewController: UIViewController {
     }
     
     private func setUpDelegate() {
-        guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
+        guard let currencyNav = self.tabBarController?.viewControllers?[2] as? UINavigationController else {
+            assertionFailure("Couldn't cast to NavigationController")
+            return
+        }
+        
+        guard let currencyVC = currencyNav.topViewController as? CurrencyTableViewController else {
             assertionFailure("Couldn't cast to CurrencyTableViewController")
             return
         }
         
-        currencyVC.updateDelegate = self
+        currencyVC.delegateForProfile = self
+    }
+    
+    private func updateBalanceAndExpenses() {
+        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
+            assertionFailure("User data is nil")
+            return
+        }
+        
+        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
     }
     
     @objc func signOut() {
@@ -77,7 +92,6 @@ class ProfileViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: Support.addExpense.rawValue, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: Support.refundMoney.rawValue, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
         
         present(alertController, animated: true)
     }
@@ -108,14 +122,8 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
     }
 }
 
-extension ProfileViewController: UpdateDataDelegate {
-    func updateData() {
-        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
-        }
-        
-        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
-        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
+extension ProfileViewController: CurrencyTableViewControllerDelegate {
+    func currencyTableViewControllerUpdatedCurrency(sender: CurrencyTableViewController) {        
+        updateBalanceAndExpenses()
     }
 }

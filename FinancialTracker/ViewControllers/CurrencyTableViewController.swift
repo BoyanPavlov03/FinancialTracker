@@ -7,10 +7,15 @@
 
 import UIKit
 
+protocol CurrencyTableViewControllerDelegate: AnyObject {
+    func currencyTableViewControllerUpdatedCurrency(sender: CurrencyTableViewController)
+}
+
 class CurrencyTableViewController: UITableViewController {
     private var currencies: [Currency] = []
     
-    weak var updateDelegate: UpdateDataDelegate!
+    weak var delegateForHome: CurrencyTableViewControllerDelegate?
+    weak var delegateForProfile: CurrencyTableViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +84,8 @@ class CurrencyTableViewController: UITableViewController {
                     assertionFailure(firebaseError.localizedDescription)
                 }
                 
-                self.updateDelegate.updateData()
+                self.delegateForHome?.currencyTableViewControllerUpdatedCurrency(sender: self)
+                self.delegateForProfile?.currencyTableViewControllerUpdatedCurrency(sender: self)
             }
         }))
         

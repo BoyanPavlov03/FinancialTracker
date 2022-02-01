@@ -41,50 +41,78 @@ extension Currency {
     }
     
     static func getCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
-        var allCurrencies: [Currency] = []
-        
-        if let jsonLink = URL(string: Links.symbolCurrencyApi) {
-            URLSession.shared.dataTask(with: jsonLink) { data, _, error in
-                guard error == nil else {
-                    completionHandler("Couldn't load json.", nil)
+        fetchFirstJson { error, allCurrencies in
+            if let error = error {
+                completionHandler(error, nil)
+                return
+            }
+            
+            guard let allCurrencies = allCurrencies else {
+                return
+            }
+            
+            fetchSecondJson(currencies: allCurrencies) { error, allCurrencies in
+                if let error = error {
+                    completionHandler(error, nil)
                     return
                 }
                 
-                if let data = data {
-                    do {
-                        let result = try JSONDecoder().decode([String: Currency].self, from: data)
-                        var beforeSorted: [Currency] = []
-                        beforeSorted.append(contentsOf: result.values)
-                        allCurrencies = beforeSorted.sorted { $0.code < $1.code }
-                    } catch {
-                        completionHandler(error.localizedDescription, nil)
-                    }
-                }
-            }.resume()
+                completionHandler(nil, allCurrencies)
+            }
         }
-        
-        if let jsonLink = URL(string: Links.ratesCurrencyApi) {
-            URLSession.shared.dataTask(with: jsonLink) { data, _, error in
-                guard error == nil else {
-                    completionHandler("Couldn't load json.", nil)
-                    return
+    }
+}
+
+private func fetchFirstJson(completionHandler: @escaping (String?, [Currency]?) -> Void) {
+    var allCurrencies: [Currency] = []
+    
+    if let jsonLink = URL(string: Links.symbolCurrencyApi) {
+        URLSession.shared.dataTask(with: jsonLink) { data, _, error in
+            guard error == nil else {
+                completionHandler("Couldn't load json.", nil)
+                return
+            }
+            
+            if let data = data {
+                do {
+                    let result = try JSONDecoder().decode([String: Currency].self, from: data)
+                    var beforeSorted: [Currency] = []
+                    beforeSorted.append(contentsOf: result.values)
+                    allCurrencies = beforeSorted.sorted { $0.code < $1.code }
+                    
+                    completionHandler(nil, allCurrencies)
+                } catch {
+                    completionHandler(error.localizedDescription, nil)
                 }
-                
-                if let data = data {
-                    do {
-                        let result = try JSONDecoder().decode(Currency.ExchangeRates.self, from: data)
-                        for iterrator in 0..<allCurrencies.count {
-                            let code = allCurrencies[iterrator].code
-                            if let rate = result.rates[code] {
-                                allCurrencies[iterrator].rate = rate
-                            }
+            }
+        }.resume()
+    }
+}
+
+private func fetchSecondJson(currencies: [Currency], completionHandler: @escaping (String?, [Currency]?) -> Void) {
+    var allCurrencies: [Currency] = currencies
+    
+    if let jsonLink = URL(string: Links.ratesCurrencyApi) {
+        URLSession.shared.dataTask(with: jsonLink) { data, _, error in
+            guard error == nil else {
+                completionHandler("Couldn't load json.", nil)
+                return
+            }
+            
+            if let data = data {
+                do {
+                    let result = try JSONDecoder().decode(Currency.ExchangeRates.self, from: data)
+                    for iterrator in 0..<allCurrencies.count {
+                        let code = allCurrencies[iterrator].code
+                        if let rate = result.rates[code] {
+                            allCurrencies[iterrator].rate = rate
                         }
-                        completionHandler(nil, allCurrencies)
-                    } catch {
-                        completionHandler(error.localizedDescription, nil)
                     }
+                    completionHandler(nil, allCurrencies)
+                } catch {
+                    completionHandler(error.localizedDescription, nil)
                 }
-            }.resume()
-        }
+            }
+        }.resume()
     }
 }

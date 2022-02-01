@@ -8,10 +8,6 @@
 import UIKit
 import Charts
 
-protocol UpdateDataDelegate: AnyObject {
-    func updateData()
-}
-
 enum Support: String {
     case addExpense = "Problem adding an expense"
     case refundMoney = "Want a refund"
@@ -45,12 +41,17 @@ class HomeViewController: UIViewController {
     }
     
     private func setUpDelegate() {
-        guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
+        guard let currencyNav = self.tabBarController?.viewControllers?[2] as? UINavigationController else {
+            assertionFailure("Couldn't cast to NavigationController")
+            return
+        }
+        
+        guard let currencyVC = currencyNav.topViewController as? CurrencyTableViewController else {
             assertionFailure("Couldn't cast to CurrencyTableViewController")
             return
         }
         
-        currencyVC.updateDelegate = self
+        currencyVC.delegateForHome = self
     }
     
     func updateChart() {
@@ -112,13 +113,19 @@ class HomeViewController: UIViewController {
             assertionFailure("Couldn't cast to ExpenseViewController")
             return
         }
-        expenseVC.updateDelegate = self
+        expenseVC.delegate = self
         navigationController?.pushViewController(expenseVC, animated: true)
     }
 }
 
-extension HomeViewController: UpdateDataDelegate {
-    func updateData() {
+extension HomeViewController: ExpenseViewControllerDelegate {
+    func expenseViewControllerUpdatedChart(sender: ExpenseViewController) {
+        updateChart()
+    }
+}
+
+extension HomeViewController: CurrencyTableViewControllerDelegate {
+    func currencyTableViewControllerUpdatedCurrency(sender: CurrencyTableViewController) {
         updateChart()
     }
 }
