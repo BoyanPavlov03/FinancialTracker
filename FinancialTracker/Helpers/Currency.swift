@@ -41,7 +41,7 @@ extension Currency {
     }
     
     static func getCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
-        fetchFirstJson { error, allCurrencies in
+        fetchCurrencies { error, allCurrencies in
             if let error = error {
                 completionHandler(error, nil)
                 return
@@ -51,7 +51,7 @@ extension Currency {
                 return
             }
             
-            fetchSecondJson(currencies: allCurrencies) { error, allCurrencies in
+            fetchCurrencyRates(currencies: allCurrencies) { error, allCurrencies in
                 if let error = error {
                     completionHandler(error, nil)
                     return
@@ -63,7 +63,7 @@ extension Currency {
     }
 }
 
-private func fetchFirstJson(completionHandler: @escaping (String?, [Currency]?) -> Void) {
+private func fetchCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
     var allCurrencies: [Currency] = []
     
     if let jsonLink = URL(string: Links.symbolCurrencyApi) {
@@ -89,7 +89,7 @@ private func fetchFirstJson(completionHandler: @escaping (String?, [Currency]?) 
     }
 }
 
-private func fetchSecondJson(currencies: [Currency], completionHandler: @escaping (String?, [Currency]?) -> Void) {
+private func fetchCurrencyRates(currencies: [Currency], completionHandler: @escaping (String?, [Currency]?) -> Void) {
     var allCurrencies: [Currency] = currencies
     
     if let jsonLink = URL(string: Links.ratesCurrencyApi) {

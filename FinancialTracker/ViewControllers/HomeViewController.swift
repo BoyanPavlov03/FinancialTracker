@@ -37,21 +37,13 @@ class HomeViewController: UIViewController {
         expenseChart.rotationEnabled = false
         
         updateChart()
-        setUpDelegate()
     }
     
-    private func setUpDelegate() {
-        guard let currencyNav = self.tabBarController?.viewControllers?[2] as? UINavigationController else {
-            assertionFailure("Couldn't cast to NavigationController")
-            return
+    override func viewDidAppear(_ animated: Bool) {
+        if let checker = FirebaseHandler.shared.changeTracker["Home"], checker {
+            updateChart()
+            FirebaseHandler.shared.changeTracker["Home"] = false
         }
-        
-        guard let currencyVC = currencyNav.topViewController as? CurrencyTableViewController else {
-            assertionFailure("Couldn't cast to CurrencyTableViewController")
-            return
-        }
-        
-        currencyVC.delegateForHome = self
     }
     
     func updateChart() {
@@ -113,19 +105,7 @@ class HomeViewController: UIViewController {
             assertionFailure("Couldn't cast to ExpenseViewController")
             return
         }
-        expenseVC.delegate = self
+
         navigationController?.pushViewController(expenseVC, animated: true)
-    }
-}
-
-extension HomeViewController: ExpenseViewControllerDelegate {
-    func expenseViewControllerUpdatedChart(sender: ExpenseViewController) {
-        updateChart()
-    }
-}
-
-extension HomeViewController: CurrencyTableViewControllerDelegate {
-    func currencyTableViewControllerUpdatedCurrency(sender: CurrencyTableViewController) {
-        updateChart()
     }
 }

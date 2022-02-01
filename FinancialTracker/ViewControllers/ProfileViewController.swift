@@ -37,21 +37,13 @@ class ProfileViewController: UIViewController {
         balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         
-        setUpDelegate()
     }
     
-    private func setUpDelegate() {
-        guard let currencyNav = self.tabBarController?.viewControllers?[2] as? UINavigationController else {
-            assertionFailure("Couldn't cast to NavigationController")
-            return
+    override func viewDidAppear(_ animated: Bool) {
+        if let checker = FirebaseHandler.shared.changeTracker["Profile"], checker {
+            updateBalanceAndExpenses()
+            FirebaseHandler.shared.changeTracker["Profile"] = false
         }
-        
-        guard let currencyVC = currencyNav.topViewController as? CurrencyTableViewController else {
-            assertionFailure("Couldn't cast to CurrencyTableViewController")
-            return
-        }
-        
-        currencyVC.delegateForProfile = self
     }
     
     private func updateBalanceAndExpenses() {
@@ -60,7 +52,7 @@ class ProfileViewController: UIViewController {
             return
         }
         
-        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        balanceLabel.text = "Balance\n \(balance.round(to: 2))\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
     }
     
@@ -119,11 +111,5 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
         }
         
         controller.dismiss(animated: true)
-    }
-}
-
-extension ProfileViewController: CurrencyTableViewControllerDelegate {
-    func currencyTableViewControllerUpdatedCurrency(sender: CurrencyTableViewController) {        
-        updateBalanceAndExpenses()
     }
 }

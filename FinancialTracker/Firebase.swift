@@ -83,6 +83,7 @@ class FirebaseHandler {
         
         return user
     }
+    var changeTracker: [String: Bool] = [:]
     
     // MARK: - Private properties
     private var user: User!
@@ -104,7 +105,9 @@ class FirebaseHandler {
                         assertionFailure("Can't access user data: \(firebaseError.localizedDescription)")
                         return
                     }
-                    self.user = user
+                    self.changeTracker["Home"] = false
+                    self.changeTracker["Profile"] = false
+                    
                     completionHandler(user)
                 }
             } else {
@@ -135,7 +138,8 @@ class FirebaseHandler {
             let uidKey = User.CodingKeys.uid.rawValue
             let emailKey = User.CodingKeys.email.rawValue
             let scoreKey = User.CodingKeys.score.rawValue
-            let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: result.user.uid, scoreKey: 0.0] as [String: Any]
+            let premiumKey = User.CodingKeys.premium.rawValue
+            let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: result.user.uid, scoreKey: 0.0, premiumKey: false] as [String: Any]
                         
             self.firestore.collection(DBCollectionKey.users.rawValue).document(result.user.uid).setData(data) { error in
                 if error != nil {
@@ -189,16 +193,13 @@ class FirebaseHandler {
     
     func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
                 
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         let currencyKey = User.CodingKeys.currency.rawValue
-        
-        self.user.balance = balance
-        self.user.currency = currency
         
         do {
             let currencyData = try JSONEncoder().encode(currency)
@@ -219,7 +220,7 @@ class FirebaseHandler {
     
     func addExpenseToCurrentUser(_ expenseAmount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
                 
@@ -227,7 +228,7 @@ class FirebaseHandler {
         let expensesKey = User.CodingKeys.expenses.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         
-        let formatedDate = today.formatDate("MMM DD, YYYY")
+        let formatedDate = today.formatDate("hh:mm:ss, MMM dd, yyyy")
         
         let expense = Expense(amount: expenseAmount, date: formatedDate, category: category)
                 
@@ -250,9 +251,6 @@ class FirebaseHandler {
             
             firestore.collection(usersKey).document(currentUser.uid).setData([expensesKey: expenseValue, balanceKey: newBalanceValue], merge: true)
             
-            self.user.expenses.append(expense)
-            self.user.balance = newBalanceValue
-            
             completionHandler(nil, true)
         } catch {
             completionHandler(FirebaseError.database(error), true)
@@ -261,7 +259,7 @@ class FirebaseHandler {
     
     func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
         
@@ -275,7 +273,7 @@ class FirebaseHandler {
     
     func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
-            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
         
@@ -322,9 +320,9 @@ class FirebaseHandler {
         }
     }
     
-    func boughtPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nil in #function."), false)
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
         
@@ -335,11 +333,11 @@ class FirebaseHandler {
     
     private func getCurrentUserData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let uid = self.auth.currentUser?.uid else {
-            completionHandler(FirebaseError.access("Current user is nil in #function."), nil)
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), nil)
             return
         }
-        
-        self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).getDocument { document, error in
+                
+        self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).addSnapshotListener { document, error in
             guard error == nil else {
                 completionHandler(FirebaseError.database(error), nil)
                 return
@@ -353,6 +351,10 @@ class FirebaseHandler {
             do {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                 let user = try JSONDecoder().decode(User.self, from: data)
+                self.user = user
+                self.changeTracker["Home"] = true
+                self.changeTracker["Profile"] = true
+                
                 completionHandler(nil, user)
             } catch {
                 completionHandler(FirebaseError.database(error), nil)

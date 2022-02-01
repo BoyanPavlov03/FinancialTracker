@@ -7,10 +7,6 @@
 
 import UIKit
 
-protocol ExpenseViewControllerDelegate: AnyObject {
-    func expenseViewControllerUpdatedChart(sender: ExpenseViewController)
-}
-
 enum Category: String, CaseIterable, Codable {
     case transport = "Transport"
     case grocery = "Grocery"
@@ -20,9 +16,7 @@ enum Category: String, CaseIterable, Codable {
 class ExpenseViewController: UIViewController {
     @IBOutlet var expenseAmountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
-    
-    weak var delegate: ExpenseViewControllerDelegate?
-        
+            
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,7 +50,6 @@ class ExpenseViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                self.delegate?.expenseViewControllerUpdatedChart(sender: self)
                 self.navigationController?.popViewController(animated: true)
             }
         }

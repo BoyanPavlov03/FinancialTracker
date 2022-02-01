@@ -59,7 +59,7 @@ extension PremiumViewController: SKPaymentTransactionObserver {
             switch transaction.transactionState {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
-                FirebaseHandler.shared.boughtPremium { firebaseError, _ in
+                FirebaseHandler.shared.buyPremium { firebaseError, _ in
                     if let firebaseError = firebaseError {
                         assertionFailure(firebaseError.localizedDescription)
                         return
