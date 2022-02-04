@@ -7,12 +7,6 @@
 
 import UIKit
 
-enum Category: String, CaseIterable, Codable {
-    case transport = "Transport"
-    case grocery = "Grocery"
-    case other = "Other"
-}
-
 class ExpenseViewController: UIViewController {
     @IBOutlet var expenseAmountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!

@@ -37,13 +37,8 @@ class HomeViewController: UIViewController {
         expenseChart.rotationEnabled = false
         
         updateChart()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        if let checker = FirebaseHandler.shared.changeTracker["Home"], checker {
-            updateChart()
-            FirebaseHandler.shared.changeTracker["Home"] = false
-        }
+        
+        FirebaseHandler.shared.addDelegate(self)
     }
     
     func updateChart() {
@@ -73,7 +68,16 @@ class HomeViewController: UIViewController {
         
         let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "")
         
-        pieChartDataSet.colors = randomColors(dataPoints: expenses.count)
+        var colors: [UIColor] = []
+        expenses.forEach { key, _ in
+            guard let category = Category(rawValue: key) else {
+                assertionFailure("Category doesn't exist.")
+                return
+            }
+            colors.append(category.color)
+        }
+
+        pieChartDataSet.colors = colors
         
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
         let format = NumberFormatter()
@@ -107,5 +111,11 @@ class HomeViewController: UIViewController {
         }
 
         navigationController?.pushViewController(expenseVC, animated: true)
+    }
+}
+
+extension HomeViewController: FirebaseHandlerDelegate {
+    func firebaseHandlerDidUserChange(sender: FirebaseHandler) {
+        updateChart()
     }
 }

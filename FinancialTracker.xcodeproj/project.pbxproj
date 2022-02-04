@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7014A78027AC1F8B00E6A2DB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7014A77F27AC1F8A00E6A2DB /* User.swift */; };
+		7014A78627AC207100E6A2DB /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7014A78527AC207100E6A2DB /* Expense.swift */; };
 		7036707527A72386005388A5 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 7036707427A72386005388A5 /* FirebaseMessaging */; };
 		703DACFE2769CFC400149626 /* Firebase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703DACFD2769CFC400149626 /* Firebase.swift */; };
 		703DF427277F8F2100827FE8 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 703DF426277F8F2100827FE8 /* Charts */; };
@@ -18,6 +20,7 @@
 		7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7068D90B278896B300DFA3B3 /* Utilities.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */; };
+		707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F853C27AD55740053555B /* DelegatesCollection.swift */; };
 		70835DA0277E438A0087C3D9 /* ViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */; };
 		708905A52764A317000CEE4E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708905A42764A317000CEE4E /* LoginViewController.swift */; };
 		708FF39327A4456000151112 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 708FF39227A4456000151112 /* StoreKit.framework */; };
@@ -41,6 +44,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7014A77F27AC1F8A00E6A2DB /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		7014A78527AC207100E6A2DB /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
 		7036707627A7267E005388A5 /* FinancialTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinancialTracker.entitlements; sourceTree = "<group>"; };
 		703DACFD2769CFC400149626 /* Firebase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Firebase.swift; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
@@ -51,6 +56,7 @@
 		7068D90B278896B300DFA3B3 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewController.swift; sourceTree = "<group>"; };
+		707F853C27AD55740053555B /* DelegatesCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatesCollection.swift; sourceTree = "<group>"; };
 		70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerFactory.swift; sourceTree = "<group>"; };
 		708905A42764A317000CEE4E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		708FF39227A4456000151112 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -89,6 +95,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7014A77E27AC1F6200E6A2DB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				70DA8521279C21FC002A7335 /* Currency.swift */,
+				7014A77F27AC1F8A00E6A2DB /* User.swift */,
+				7014A78527AC207100E6A2DB /* Expense.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		70580548276892FD009515BE /* Cutsom UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,7 +119,7 @@
 				70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */,
 				7095718527888D1A00EB6EB3 /* Extensions.swift */,
 				7068D90B278896B300DFA3B3 /* Utilities.swift */,
-				70DA8521279C21FC002A7335 /* Currency.swift */,
+				707F853C27AD55740053555B /* DelegatesCollection.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -157,6 +173,7 @@
 				707C5DD5276D16B30097A522 /* Helpers */,
 				70580548276892FD009515BE /* Cutsom UI */,
 				70D0D6CA2766227600ED0060 /* ViewControllers */,
+				7014A77E27AC1F6200E6A2DB /* Models */,
 				703DACFD2769CFC400149626 /* Firebase.swift */,
 				70D37DEF27633FB40067FFE6 /* AppDelegate.swift */,
 				70D37DF127633FB40067FFE6 /* SceneDelegate.swift */,
@@ -281,11 +298,13 @@
 				70B3335F2763DDC7002FAEB5 /* RegisterViewController.swift in Sources */,
 				70607F7227A1EB80005ED7F7 /* PremiumViewController.swift in Sources */,
 				70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */,
+				7014A78627AC207100E6A2DB /* Expense.swift in Sources */,
 				708905A52764A317000CEE4E /* LoginViewController.swift in Sources */,
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
 				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
+				707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
@@ -295,6 +314,7 @@
 				70D37DF027633FB40067FFE6 /* AppDelegate.swift in Sources */,
 				70835DA0277E438A0087C3D9 /* ViewControllerFactory.swift in Sources */,
 				70D37DF227633FB40067FFE6 /* SceneDelegate.swift in Sources */,
+				7014A78027AC1F8B00E6A2DB /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

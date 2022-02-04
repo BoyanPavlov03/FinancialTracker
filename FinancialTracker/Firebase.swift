@@ -23,54 +23,8 @@ enum DBCollectionKey: String {
     case users
 }
 
-struct Expense: Codable {
-    let amount: Double
-    let date: String
-    let category: Category
-    
-    enum CodingKeys: String, CodingKey {
-        case amount
-        case date
-        case category
-    }
-}
-
-struct User: Codable {
-    let firstName: String
-    let lastName: String
-    let email: String
-    let uid: String
-    var balance: Double?
-    var currency: Currency?
-    var expenses: [Expense] = []
-    var score: Double
-    var premium: Bool
-    
-    init(firstName: String, lastName: String, email: String, uid: String, score: Double) {
-        self.firstName = firstName
-        self.lastName = lastName
-        self.email = email
-        self.uid = uid
-        self.score = score
-        self.premium = false
-    }
-    
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        firstName = try values.decode(String.self, forKey: .firstName)
-        lastName = try values.decode(String.self, forKey: .lastName)
-        email = try values.decode(String.self, forKey: .email)
-        uid = try values.decode(String.self, forKey: .uid)
-        balance = try values.decodeIfPresent(Double.self, forKey: .balance)
-        currency = try values.decodeIfPresent(Currency.self, forKey: .currency)
-        expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
-        score = try values.decode(Double.self, forKey: .score)
-        premium = try values.decode(Bool.self, forKey: .premium)
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance, currency, expenses, score, premium
-    }
+protocol FirebaseHandlerDelegate: AnyObject {
+    func firebaseHandlerDidUserChange(sender: FirebaseHandler)
 }
 
 class FirebaseHandler {
@@ -83,12 +37,12 @@ class FirebaseHandler {
         
         return user
     }
-    var changeTracker: [String: Bool] = [:]
     
     // MARK: - Private properties
     private var user: User!
     private let firestore = Firestore.firestore()
     private let auth = Auth.auth()
+    private let delegatesCollection = DelegatesCollection<FirebaseHandlerDelegate>()
     
     private var signedIn: Bool {
         return auth.currentUser != nil
@@ -105,8 +59,6 @@ class FirebaseHandler {
                         assertionFailure("Can't access user data: \(firebaseError.localizedDescription)")
                         return
                     }
-                    self.changeTracker["Home"] = false
-                    self.changeTracker["Profile"] = false
                     
                     completionHandler(user)
                 }
@@ -354,13 +306,25 @@ class FirebaseHandler {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.user = user
-                self.changeTracker["Home"] = true
-                self.changeTracker["Profile"] = true
+                
+                self.delegatesCollection.forEach { delegate in
+                    delegate.firebaseHandlerDidUserChange(sender: self)
+                }
                 
                 completionHandler(nil, user)
             } catch {
                 completionHandler(FirebaseError.database(error), nil)
             }
         }
+    }
+    
+    // MARK: - DelegatesCollection Methods
+    
+    func addDelegate(_ delegate: FirebaseHandlerDelegate) {
+        delegatesCollection.add(delegate: delegate)
+    }
+    
+    func removeDelegate(_ delegate: FirebaseHandlerDelegate) {
+        delegatesCollection.remove(delegate: delegate)
     }
 }

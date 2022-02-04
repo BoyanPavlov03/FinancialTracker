@@ -16,6 +16,7 @@ struct Constants {
 class ProfileViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
+    @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var expensesCountLabel: UILabel!
     
@@ -36,14 +37,9 @@ class ProfileViewController: UIViewController {
         emailLabel.text = user.email
         balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
+        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
         
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        if let checker = FirebaseHandler.shared.changeTracker["Profile"], checker {
-            updateBalanceAndExpenses()
-            FirebaseHandler.shared.changeTracker["Profile"] = false
-        }
+        FirebaseHandler.shared.addDelegate(self)
     }
     
     private func updateBalanceAndExpenses() {
@@ -54,6 +50,7 @@ class ProfileViewController: UIViewController {
         
         balanceLabel.text = "Balance\n \(balance.round(to: 2))\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
+        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
     }
     
     @objc func signOut() {
@@ -111,5 +108,11 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
         }
         
         controller.dismiss(animated: true)
+    }
+}
+
+extension ProfileViewController: FirebaseHandlerDelegate {
+    func firebaseHandlerDidUserChange(sender: FirebaseHandler) {
+        updateBalanceAndExpenses()
     }
 }
