@@ -20,6 +20,8 @@ enum Support: String {
 
 class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
+
+    var databaseManager: DatabaseManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,11 +40,11 @@ class HomeViewController: UIViewController {
         
         updateChart()
         
-        FirebaseHandler.shared.addDelegate(self)
+        databaseManager?.addDelegate(self)
     }
     
     func updateChart() {
-        let expenseData = FirebaseHandler.shared.currentUser?.expenses ?? []
+        let expenseData = databaseManager?.currentUser?.expenses ?? []
         
         guard !expenseData.isEmpty else {
             return
@@ -89,7 +91,7 @@ class HomeViewController: UIViewController {
     }
     
     @objc func signOut() {
-        FirebaseHandler.shared.signOut { firebaseError, _ in
+        databaseManager?.authManager?.signOut { firebaseError, _ in
             if let firebaseError = firebaseError {
                 switch firebaseError {
                 case .signOut(let error):
@@ -109,13 +111,14 @@ class HomeViewController: UIViewController {
             assertionFailure("Couldn't cast to ExpenseViewController")
             return
         }
-
+        
+        expenseVC.databaseManager = databaseManager
         navigationController?.pushViewController(expenseVC, animated: true)
     }
 }
 
-extension HomeViewController: FirebaseHandlerDelegate {
-    func firebaseHandlerDidUserChange(sender: FirebaseHandler) {
+extension HomeViewController: DatabaseManagerDelegate {
+    func databaseManagerDidUserChange(sender: DatabaseManager) {
         updateChart()
     }
 }

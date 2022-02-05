@@ -12,6 +12,8 @@ private var startDate = Date()
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    let authManager = AuthManager()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -22,19 +24,34 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         let navVC = ViewControllerFactory.shared.navController
-        
-        FirebaseHandler.shared.checkAuthorisedState { user in
+                
+        authManager.checkAuthorisedState { user in
             if let user = user {
                 if user.balance != nil {
-                    let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar)
+                    guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
+                        assertionFailure("Couldn't cast to TabBarController.")
+                        return
+                    }
+                    
+                    tabBarVC.setAuthManager(self.authManager)
                     window.rootViewController = tabBarVC
                 } else {
-                    let balanceVC = ViewControllerFactory.shared.viewController(for: .balance)
+                    guard let balanceVC = ViewControllerFactory.shared.viewController(for: .balance) as? BalanceViewController else {
+                        assertionFailure("Couldn't cast to BalanceViewController.")
+                        return
+                    }
+                    
+                    balanceVC.databaseManager = self.authManager.databaseManager
                     navVC.pushViewController(balanceVC, animated: true)
                     window.rootViewController = navVC
                 }
             } else {
-                let entryVC = ViewControllerFactory.shared.viewController(for: .entry)
+                guard let entryVC = ViewControllerFactory.shared.viewController(for: .entry) as? EntryViewController else {
+                    assertionFailure("Couldn't cast to EntryViewController.")
+                    return
+                }
+                
+                entryVC.authManager = self.authManager
                 navVC.pushViewController(entryVC, animated: true)
                 window.rootViewController = navVC
             }
@@ -68,7 +85,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
-        FirebaseHandler.shared.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
+        authManager.databaseManager.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
             if let firebaseError = firebaseError {
                 assertionFailure(firebaseError.localizedDescription)
             }

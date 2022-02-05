@@ -12,6 +12,8 @@ class EntryViewController: UIViewController {
     @IBOutlet var loginButton: UIButton!
     @IBOutlet var registerButton: UIButton!
     
+    var authManager: AuthManager?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -20,12 +22,20 @@ class EntryViewController: UIViewController {
     }
     
     @IBAction func logInButtonTapped(_ sender: Any) {
-        let loginVC = ViewControllerFactory.shared.viewController(for: .login)
+        guard let loginVC = ViewControllerFactory.shared.viewController(for: .login) as? LoginViewController else {
+            assertionFailure("Couldn't parse to LoginViewController.")
+            return
+        }
+        loginVC.authManager = authManager
         navigationController?.pushViewController(loginVC, animated: true)
     }
     
     @IBAction func registerButtonTapped(_ sender: Any) {
-        let registerVC = ViewControllerFactory.shared.viewController(for: .register)
+        guard let registerVC = ViewControllerFactory.shared.viewController(for: .register) as? RegisterViewController else {
+            assertionFailure("Couldn't parse to RegisterViewController.")
+            return
+        }
+        registerVC.authManager = authManager
         navigationController?.pushViewController(registerVC, animated: true)
     }
     

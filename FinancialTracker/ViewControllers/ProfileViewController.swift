@@ -20,6 +20,8 @@ class ProfileViewController: UIViewController {
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var expensesCountLabel: UILabel!
     
+    var databaseManager: DatabaseManager?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,7 +30,7 @@ class ProfileViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         self.tabBarItem.image = UIImage(systemName: "person")
         
-        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
+        guard let user = databaseManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
@@ -39,11 +41,11 @@ class ProfileViewController: UIViewController {
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
         
-        FirebaseHandler.shared.addDelegate(self)
+        databaseManager?.addDelegate(self)
     }
     
     private func updateBalanceAndExpenses() {
-        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
+        guard let user = databaseManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
@@ -54,7 +56,7 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func signOut() {
-        FirebaseHandler.shared.signOut { firebaseError, _ in
+        databaseManager?.authManager?.signOut { firebaseError, _ in
             if let firebaseError = firebaseError {
                 switch firebaseError {
                 case .signOut(let error):
@@ -111,8 +113,8 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
     }
 }
 
-extension ProfileViewController: FirebaseHandlerDelegate {
-    func firebaseHandlerDidUserChange(sender: FirebaseHandler) {
+extension ProfileViewController: DatabaseManagerDelegate {
+    func databaseManagerDidUserChange(sender: DatabaseManager) {
         updateBalanceAndExpenses()
     }
 }

@@ -10,6 +10,8 @@ import UIKit
 class CurrencyTableViewController: UITableViewController {
     private var currencies: [Currency] = []
     
+    var databaseManager: DatabaseManager?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -55,7 +57,7 @@ class CurrencyTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let user = FirebaseHandler.shared.currentUser, let currency = user.currency else {
+        guard let user = databaseManager?.currentUser, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
@@ -72,7 +74,7 @@ class CurrencyTableViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Confirm", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
-            FirebaseHandler.shared.changeCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
+            self.databaseManager?.changeCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
                 if let firebaseError = firebaseError {
                     assertionFailure(firebaseError.localizedDescription)
                 }
@@ -83,7 +85,7 @@ class CurrencyTableViewController: UITableViewController {
     }
 
     @objc func signOut() {
-        FirebaseHandler.shared.signOut { firebaseError, _ in
+        databaseManager?.authManager?.signOut { firebaseError, _ in
             if let firebaseError = firebaseError {
                 switch firebaseError {
                 case .signOut(let error):

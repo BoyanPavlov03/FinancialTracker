@@ -29,19 +29,6 @@ enum Category: String, CaseIterable, Codable {
     
     case other = "Other"
     
-    static var allCases: [Category] {
-        guard let premium = FirebaseHandler.shared.currentUser?.premium else {
-            assertionFailure("User data is nil.")
-            return []
-        }
-        
-        if premium {
-            return [.grocery, .transport, .taxes, .travel, .utility, .other]
-        } else {
-            return [.grocery, .transport, .other]
-        }
-    }
-    
     var color: UIColor {
         switch self {
         case .transport:

@@ -13,6 +13,8 @@ class LoginViewController: UIViewController {
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var loginButton: UIButton!
     
+    var authManager: AuthManager?
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,8 +42,7 @@ class LoginViewController: UIViewController {
             self.present(UIAlertController.create(title: "Missing Password", message: "Please fill in your password"), animated: true)
             return
         }
-        
-        FirebaseHandler.shared.logInUser(email: email, password: password) { firebaseError, _ in
+        authManager?.logInUser(email: email, password: password) { firebaseError, _ in
             if let firebaseError = firebaseError {
                 switch firebaseError {
                 case .auth(let error):

@@ -21,11 +21,12 @@
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* ExpenseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */; };
 		707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F853C27AD55740053555B /* DelegatesCollection.swift */; };
+		707F854127AED1410053555B /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F854027AED1410053555B /* AuthManager.swift */; };
+		707F854327AED2010053555B /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F854227AED2010053555B /* DatabaseManager.swift */; };
 		70835DA0277E438A0087C3D9 /* ViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */; };
 		708905A52764A317000CEE4E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708905A42764A317000CEE4E /* LoginViewController.swift */; };
 		708FF39327A4456000151112 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 708FF39227A4456000151112 /* StoreKit.framework */; };
 		7095718627888D1A00EB6EB3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7095718527888D1A00EB6EB3 /* Extensions.swift */; };
-		709638D427649777000C152D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D327649777000C152D /* FirebaseAnalytics */; };
 		709638D627649777000C152D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D527649777000C152D /* FirebaseAuth */; };
 		709638D827649777000C152D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D727649777000C152D /* FirebaseDatabase */; };
 		709638DA27649777000C152D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 709638D927649777000C152D /* FirebaseFirestore */; };
@@ -57,6 +58,8 @@
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseViewController.swift; sourceTree = "<group>"; };
 		707F853C27AD55740053555B /* DelegatesCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatesCollection.swift; sourceTree = "<group>"; };
+		707F854027AED1410053555B /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		707F854227AED2010053555B /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerFactory.swift; sourceTree = "<group>"; };
 		708905A42764A317000CEE4E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		708FF39227A4456000151112 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -86,7 +89,6 @@
 				703DF427277F8F2100827FE8 /* Charts in Frameworks */,
 				708FF39327A4456000151112 /* StoreKit.framework in Frameworks */,
 				709638DC27649777000C152D /* FirebaseFunctions in Frameworks */,
-				709638D427649777000C152D /* FirebaseAnalytics in Frameworks */,
 				709638D627649777000C152D /* FirebaseAuth in Frameworks */,
 				709638DE27649777000C152D /* FirebaseStorage in Frameworks */,
 			);
@@ -135,10 +137,10 @@
 		70D0D6CA2766227600ED0060 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				708905A42764A317000CEE4E /* LoginViewController.swift */,
-				709638DF27649D2F000C152D /* BalanceViewController.swift */,
 				70D37DF327633FB40067FFE6 /* EntryViewController.swift */,
+				708905A42764A317000CEE4E /* LoginViewController.swift */,
 				70B3335E2763DDC7002FAEB5 /* RegisterViewController.swift */,
+				709638DF27649D2F000C152D /* BalanceViewController.swift */,
 				7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */,
 				7076B1EE277CD92A005C83F9 /* ExpenseViewController.swift */,
 				705B3DB1279869D50059D832 /* ProfileViewController.swift */,
@@ -175,6 +177,8 @@
 				70D0D6CA2766227600ED0060 /* ViewControllers */,
 				7014A77E27AC1F6200E6A2DB /* Models */,
 				703DACFD2769CFC400149626 /* Firebase.swift */,
+				707F854027AED1410053555B /* AuthManager.swift */,
+				707F854227AED2010053555B /* DatabaseManager.swift */,
 				70D37DEF27633FB40067FFE6 /* AppDelegate.swift */,
 				70D37DF127633FB40067FFE6 /* SceneDelegate.swift */,
 				70D37DF527633FB40067FFE6 /* Main.storyboard */,
@@ -204,7 +208,6 @@
 			);
 			name = FinancialTracker;
 			packageProductDependencies = (
-				709638D327649777000C152D /* FirebaseAnalytics */,
 				709638D527649777000C152D /* FirebaseAuth */,
 				709638D727649777000C152D /* FirebaseDatabase */,
 				709638D927649777000C152D /* FirebaseFirestore */,
@@ -299,7 +302,9 @@
 				70607F7227A1EB80005ED7F7 /* PremiumViewController.swift in Sources */,
 				70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */,
 				7014A78627AC207100E6A2DB /* Expense.swift in Sources */,
+				707F854327AED2010053555B /* DatabaseManager.swift in Sources */,
 				708905A52764A317000CEE4E /* LoginViewController.swift in Sources */,
+				707F854127AED1410053555B /* AuthManager.swift in Sources */,
 				703DACFE2769CFC400149626 /* Firebase.swift in Sources */,
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
@@ -566,11 +571,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 703DF425277F8F2100827FE8 /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = Charts;
-		};
-		709638D327649777000C152D /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 709638D227649777000C152D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
 		};
 		709638D527649777000C152D /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
