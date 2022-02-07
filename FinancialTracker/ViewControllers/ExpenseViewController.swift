@@ -11,9 +11,9 @@ class ExpenseViewController: UIViewController {
     @IBOutlet var expenseAmountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
             
-    var databaseManager: DatabaseManager?
+    var authManager: AuthManager?
     var categoryCases: [Category] {
-        guard let premium = databaseManager?.currentUser?.premium else {
+        guard let premium = authManager?.currentUser?.premium else {
             assertionFailure("User data is nil.")
             return []
         }
@@ -46,7 +46,7 @@ class ExpenseViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        databaseManager?.addExpenseToCurrentUser(expenseNumber, category: selectedCategory) { firebaseError, _ in
+        authManager?.addExpenseToCurrentUser(expenseNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }

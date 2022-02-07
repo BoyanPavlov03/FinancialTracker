@@ -10,7 +10,7 @@ import UIKit
 class CurrencyTableViewController: UITableViewController {
     private var currencies: [Currency] = []
     
-    var databaseManager: DatabaseManager?
+    var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +55,7 @@ class CurrencyTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let user = databaseManager?.currentUser, let currency = user.currency else {
+        guard let user = authManager?.currentUser, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
@@ -72,7 +72,7 @@ class CurrencyTableViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Confirm", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
-            self.databaseManager?.changeCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
+            self.authManager?.changeCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
                 if let firebaseError = firebaseError {
                     assertionFailure(firebaseError.localizedDescription)
                 }

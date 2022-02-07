@@ -177,8 +177,41 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
+    func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("User data is nil \(#function)."), nil)
+            return
+        }
+        
+        self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).addSnapshotListener { document, error in
+            guard error == nil else {
+                completionHandler(FirebaseError.database(error), nil)
+                return
+            }
+            
+            guard let json = document?.data() else {
+                completionHandler(FirebaseError.unknown, nil)
+                return
+            }
+            
+            do {
+                let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                let user = try JSONDecoder().decode(User.self, from: data)
+                self.currentUser = user
+                                
+                self.delegatesCollection.forEach { delegate in
+                    delegate.databaseManagerDidUserChange(sender: self)
+                }
+            
+                completionHandler(nil, user)
+            } catch {
+                completionHandler(FirebaseError.database(error), nil)
+            }
+        }
+    }
+    
     func getCurrentUserData(uid: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
-        self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).addSnapshotListener { document, error in
+        self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).getDocument { document, error in
             guard error == nil else {
                 completionHandler(FirebaseError.database(error), nil)
                 return

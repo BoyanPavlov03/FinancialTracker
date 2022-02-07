@@ -14,7 +14,7 @@ enum Product: String {
 
 class PremiumViewController: UIViewController {
 
-    var databaseManager: DatabaseManager?
+    var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +42,7 @@ extension PremiumViewController: SKPaymentTransactionObserver {
             switch transaction.transactionState {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
-                databaseManager?.buyPremium { firebaseError, _ in
+                authManager?.buyPremium { firebaseError, _ in
                     if let firebaseError = firebaseError {
                         assertionFailure(firebaseError.localizedDescription)
                         return

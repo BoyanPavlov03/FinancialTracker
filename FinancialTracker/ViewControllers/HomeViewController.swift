@@ -22,7 +22,7 @@ class HomeViewController: UIViewController {
     @IBOutlet var expenseChart: PieChartView!
     @IBOutlet var expenseDividerSegmentedControl: UISegmentedControl!
     
-    var databaseManager: DatabaseManager?
+    var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,11 +40,11 @@ class HomeViewController: UIViewController {
         
         dividerControlDidChange(expenseDividerSegmentedControl)
         
-        databaseManager?.addDelegate(self)
+        authManager?.addDelegate(self)
     }
     
     private func checkIfPremium() {
-        if let premium = databaseManager?.currentUser?.premium, premium, expenseDividerSegmentedControl.numberOfSegments == 2 {
+        if let premium = authManager?.currentUser?.premium, premium, expenseDividerSegmentedControl.numberOfSegments == 2 {
             expenseDividerSegmentedControl.insertSegment(withTitle: "Week", at: 1, animated: true)
             expenseDividerSegmentedControl.insertSegment(withTitle: "Month", at: 2, animated: true)
             expenseDividerSegmentedControl.insertSegment(withTitle: "Year", at: 3, animated: true)
@@ -56,29 +56,29 @@ class HomeViewController: UIViewController {
         case 0:
             let start = Date().startOfDay
             guard let end = Date().endOfDay else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: databaseManager?.currentUser?.expenses ?? [])
+            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
             updateChart(expenseData: expenses)
         case 1:
-            guard let premium = databaseManager?.currentUser?.premium, premium else {
-                updateChart(expenseData: databaseManager?.currentUser?.expenses ?? [])
+            guard let premium = authManager?.currentUser?.premium, premium else {
+                updateChart(expenseData: authManager?.currentUser?.expenses ?? [])
                 return
             }
             guard let start = Date().startOfWeek else { return }
             guard let end = Date().endOfWeek else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: databaseManager?.currentUser?.expenses ?? [])
+            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
             updateChart(expenseData: expenses)
         case 2:
             guard let start = Date().startOfMonth else { return }
             guard let end = Date().endOfMonth else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: databaseManager?.currentUser?.expenses ?? [])
+            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
             updateChart(expenseData: expenses)
         case 3:
             guard let start = Date().startOfYear else { return }
             guard let end = Date().endOfYear else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: databaseManager?.currentUser?.expenses ?? [])
+            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
             updateChart(expenseData: expenses)
         case 4:
-            updateChart(expenseData: databaseManager?.currentUser?.expenses ?? [])
+            updateChart(expenseData: authManager?.currentUser?.expenses ?? [])
         default:
             break
         }
@@ -138,7 +138,7 @@ class HomeViewController: UIViewController {
             return
         }
         
-        expenseVC.databaseManager = databaseManager
+        expenseVC.authManager = authManager
         navigationController?.pushViewController(expenseVC, animated: true)
     }
 }

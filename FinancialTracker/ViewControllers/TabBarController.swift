@@ -9,14 +9,9 @@ import UIKit
 
 class TabBarController: UITabBarController {
     private var authManager: AuthManager?
-    private var databaseManager: DatabaseManager?
     
     func setAuthManager(_ authManager: AuthManager) {
         self.authManager = authManager
-    }
-    
-    func setDatabaseManager(_ databaseManager: DatabaseManager) {
-        self.databaseManager = databaseManager
     }
     
     override func viewDidLoad() {
@@ -24,7 +19,7 @@ class TabBarController: UITabBarController {
         
         setupChildViewControllers()
         
-        guard let currentUser = databaseManager?.currentUser else {
+        guard let currentUser = authManager?.currentUser else {
             assertionFailure("User data is nil")
             return
         }
@@ -32,6 +27,25 @@ class TabBarController: UITabBarController {
         if currentUser.premium {
             // Remove the premium tab as the user owns it
             self.viewControllers?.remove(at: 3)
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        authManager?.firestoreDidChangeData { firebaseError, _ in
+            if let firebaseError = firebaseError {
+                switch firebaseError {
+                case .access(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
+                case .database(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                default:
+                    self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
+                }
+            }
         }
     }
     
@@ -45,16 +59,16 @@ class TabBarController: UITabBarController {
                 let signOutButton = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
                 switch navigationController.topViewController {
                 case let homeVC as HomeViewController:
-                    homeVC.databaseManager = databaseManager
+                    homeVC.authManager = authManager
                     homeVC.navigationItem.rightBarButtonItem = signOutButton
                 case let profileVC as ProfileViewController:
-                    profileVC.databaseManager = databaseManager
+                    profileVC.authManager = authManager
                     profileVC.navigationItem.rightBarButtonItem = signOutButton
                 case let currencyVC as CurrencyTableViewController:
-                    currencyVC.databaseManager = databaseManager
+                    currencyVC.authManager = authManager
                     currencyVC.navigationItem.rightBarButtonItem = signOutButton
                 case let premiumVC as PremiumViewController:
-                    premiumVC.databaseManager = databaseManager
+                    premiumVC.authManager = authManager
                     premiumVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
                     break

@@ -20,7 +20,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var expensesCountLabel: UILabel!
     
-    var databaseManager: DatabaseManager?
+    var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +29,7 @@ class ProfileViewController: UIViewController {
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.tabBarItem.image = UIImage(systemName: "person")
         
-        guard let user = databaseManager?.currentUser, let balance = user.balance, let currency = user.currency else {
+        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
@@ -40,11 +40,11 @@ class ProfileViewController: UIViewController {
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
         
-        databaseManager?.addDelegate(self)
+        authManager?.addDelegate(self)
     }
     
     private func updateBalanceAndExpenses() {
-        guard let user = databaseManager?.currentUser, let balance = user.balance, let currency = user.currency else {
+        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }

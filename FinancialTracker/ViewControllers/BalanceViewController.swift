@@ -16,7 +16,6 @@ class BalanceViewController: UIViewController {
     
     // MARK: - Properties
     private var currencies: [Currency] = []
-    var databaseManager: DatabaseManager?
     var authManager: AuthManager?
     
     // MARK: - Methods
@@ -28,7 +27,7 @@ class BalanceViewController: UIViewController {
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         
-        guard let firstName = databaseManager?.currentUser?.firstName else {
+        guard let firstName = authManager?.currentUser?.firstName else {
             assertionFailure("User data is nil")
             return
         }
@@ -68,7 +67,7 @@ class BalanceViewController: UIViewController {
         
         let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         
-        databaseManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { firebaseError, _ in
+        authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }
@@ -84,10 +83,9 @@ class BalanceViewController: UIViewController {
                     return
                 }
                 
-                guard let authManager = self.authManager, let databaseManager = self.databaseManager else { return }
+                guard let authManager = self.authManager else { return }
                 
                 tabBarVC.setAuthManager(authManager)
-                tabBarVC.setDatabaseManager(databaseManager)
                 self.view.window?.rootViewController = tabBarVC
                 self.view.window?.makeKeyAndVisible()
             }
