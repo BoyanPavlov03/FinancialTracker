@@ -13,7 +13,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    let authManager = AuthManager()
+    private let authManager: AuthManager
+    private let databaseManager: DatabaseManager
+    
+    override init() {
+        self.databaseManager = DatabaseManager()
+        self.authManager = AuthManager(databaseManager: databaseManager)
+    }
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -34,6 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     }
                     
                     tabBarVC.setAuthManager(self.authManager)
+                    tabBarVC.setDatabaseManager(self.databaseManager)
                     window.rootViewController = tabBarVC
                 } else {
                     guard let balanceVC = ViewControllerFactory.shared.viewController(for: .balance) as? BalanceViewController else {
@@ -41,7 +48,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         return
                     }
                     
-                    balanceVC.databaseManager = self.authManager.databaseManager
+                    balanceVC.databaseManager = self.databaseManager
+                    balanceVC.authManager = self.authManager
                     navVC.pushViewController(balanceVC, animated: true)
                     window.rootViewController = navVC
                 }
@@ -85,7 +93,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
-        authManager.databaseManager.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
+        databaseManager.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
             if let firebaseError = firebaseError {
                 assertionFailure(firebaseError.localizedDescription)
             }

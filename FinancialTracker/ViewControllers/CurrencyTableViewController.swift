@@ -17,8 +17,6 @@ class CurrencyTableViewController: UITableViewController {
 
         self.title = "Currency"
         self.navigationItem.setHidesBackButton(true, animated: true)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
-        
         self.tabBarItem.image = UIImage(systemName: "dollarsign.circle")
         
         Currency.getCurrencies { error, currencies in
@@ -83,21 +81,4 @@ class CurrencyTableViewController: UITableViewController {
         
         present(alertVC, animated: true)
     }
-
-    @objc func signOut() {
-        databaseManager?.authManager?.signOut { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .signOut(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                case .database, .unknown, .access, .auth:
-                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
-                }
-            }
-        }
-    }
-
 }

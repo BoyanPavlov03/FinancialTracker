@@ -17,6 +17,7 @@ class BalanceViewController: UIViewController {
     // MARK: - Properties
     private var currencies: [Currency] = []
     var databaseManager: DatabaseManager?
+    var authManager: AuthManager?
     
     // MARK: - Methods
     override func viewDidLoad() {
@@ -78,7 +79,15 @@ class BalanceViewController: UIViewController {
                 // swiftlint:disable:next unneeded_break_in_switch
                 break
             case .none:
-                let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar)
+                guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
+                    assertionFailure("Couldn't parse to TabBarController.")
+                    return
+                }
+                
+                guard let authManager = self.authManager, let databaseManager = self.databaseManager else { return }
+                
+                tabBarVC.setAuthManager(authManager)
+                tabBarVC.setDatabaseManager(databaseManager)
                 self.view.window?.rootViewController = tabBarVC
                 self.view.window?.makeKeyAndVisible()
             }
@@ -86,7 +95,7 @@ class BalanceViewController: UIViewController {
     }
     
     @objc func signOut() {
-        databaseManager?.authManager?.signOut { firebaseError, _ in
+        authManager?.signOut { firebaseError, _ in
             if let firebaseError = firebaseError {
                 switch firebaseError {
                 case .signOut(let error):

@@ -17,11 +17,11 @@ class ExpenseViewController: UIViewController {
             assertionFailure("User data is nil.")
             return []
         }
-        var array: [Category] = [.grocery, .transport]
+        var categories: [Category] = [.grocery, .transport]
         
-        array.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
+        categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
         
-        return array
+        return categories
     }
     
     override func viewDidLoad() {

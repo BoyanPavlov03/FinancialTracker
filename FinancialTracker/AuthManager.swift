@@ -9,12 +9,25 @@ import Foundation
 import Firebase
 import FirebaseAuth
 
+enum FirebaseError: Error {
+    case auth(Error?)
+    case database(Error?)
+    case signOut(Error?)
+    case access(String?)
+    case unknown
+}
+
+enum DBCollectionKey: String {
+    case users
+}
+
 class AuthManager {
-    private let auth = Auth.auth()
-    private(set) var databaseManager: DatabaseManager = DatabaseManager()
+    private let auth: Auth
+    private let databaseManager: DatabaseManager
     
-    init() {
-        self.databaseManager.setAuthManager(authManager: self)
+    init(databaseManager: DatabaseManager) {
+        self.auth = Auth.auth()
+        self.databaseManager = databaseManager
     }
     
     func checkAuthorisedState(completionHandler: @escaping (User?) -> Void) {

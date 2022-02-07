@@ -18,13 +18,8 @@ class DatabaseManager {
     private let delegatesCollection = DelegatesCollection<DatabaseManagerDelegate>()
  
     private(set) var currentUser: User?
-    private(set) var authManager: AuthManager?
     
     init() {}
-    
-    func setAuthManager(authManager: AuthManager) {
-        self.authManager = authManager
-    }
     
     func createUser(firstName: String, lastName: String, email: String, uid: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         let firstNameKey = User.CodingKeys.firstName.rawValue

@@ -520,15 +520,25 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="u1q-Nj-b4F">
+                                <rect key="frame" x="20" y="54" width="280" height="32"/>
+                                <segments>
+                                    <segment title="Today"/>
+                                    <segment title="All"/>
+                                </segments>
+                                <connections>
+                                    <action selector="dividerControlDidChange:" destination="z9v-lM-IuL" eventType="valueChanged" id="s5R-0L-q2S"/>
+                                </connections>
+                            </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="AzB-Ee-J8A">
-                                <rect key="frame" x="20" y="84" width="280" height="285"/>
+                                <rect key="frame" x="20" y="95" width="280" height="313"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q6x-Sw-bed" customClass="PieChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="0.0" width="280" height="185"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="280" height="213"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3r-Je-feF">
-                                        <rect key="frame" x="40" y="235" width="200" height="50"/>
+                                        <rect key="frame" x="40" y="263" width="200" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="SFo-AO-gdI"/>
                                         </constraints>
@@ -550,15 +560,19 @@
                         <viewLayoutGuide key="safeArea" id="A2i-Ah-hWy"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="40" id="MYh-1d-Tns"/>
+                            <constraint firstItem="u1q-Nj-b4F" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="10" id="3iX-ux-RGh"/>
+                            <constraint firstItem="u1q-Nj-b4F" firstAttribute="trailing" secondItem="AzB-Ee-J8A" secondAttribute="trailing" id="RbW-LF-n0j"/>
                             <constraint firstItem="AzB-Ee-J8A" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="20" id="VWR-w5-1If"/>
-                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="AzB-Ee-J8A" secondAttribute="bottom" constant="150" id="XJn-Qe-Jhz"/>
                             <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="AzB-Ee-J8A" secondAttribute="trailing" constant="20" id="eNj-47-MsF"/>
+                            <constraint firstItem="u1q-Nj-b4F" firstAttribute="leading" secondItem="AzB-Ee-J8A" secondAttribute="leading" id="kfS-uR-63N"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="AzB-Ee-J8A" secondAttribute="bottom" constant="111" id="nK3-5s-JZr"/>
+                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="51" id="qBd-3v-8zG"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HAk-SP-DEM"/>
                     <connections>
                         <outlet property="expenseChart" destination="q6x-Sw-bed" id="ExH-Q3-Rcb"/>
+                        <outlet property="expenseDividerSegmentedControl" destination="u1q-Nj-b4F" id="hRV-Pl-0YQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpm-QT-zLu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1059,22 +1073,22 @@
     </scenes>
     <designables>
         <designable name="2gT-XN-b5k">
-            <size key="intrinsicContentSize" width="100" height="18.5"/>
+            <size key="intrinsicContentSize" width="164" height="38.5"/>
         </designable>
         <designable name="5Fu-ny-t7c">
-            <size key="intrinsicContentSize" width="100.5" height="18.5"/>
+            <size key="intrinsicContentSize" width="163.5" height="38.5"/>
         </designable>
         <designable name="7Ej-Wj-Ox2">
-            <size key="intrinsicContentSize" width="102.5" height="18.5"/>
+            <size key="intrinsicContentSize" width="165.5" height="38.5"/>
         </designable>
         <designable name="D5G-uC-FGk">
-            <size key="intrinsicContentSize" width="72.5" height="18.5"/>
+            <size key="intrinsicContentSize" width="137.5" height="38.5"/>
         </designable>
         <designable name="jYP-cS-Ihx">
-            <size key="intrinsicContentSize" width="72.5" height="18.5"/>
+            <size key="intrinsicContentSize" width="137.5" height="38.5"/>
         </designable>
         <designable name="tvk-ML-w8e">
-            <size key="intrinsicContentSize" width="100" height="18.5"/>
+            <size key="intrinsicContentSize" width="165" height="38.5"/>
         </designable>
     </designables>
     <resources>

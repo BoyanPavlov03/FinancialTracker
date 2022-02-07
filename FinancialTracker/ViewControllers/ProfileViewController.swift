@@ -27,7 +27,6 @@ class ProfileViewController: UIViewController {
 
         self.title = "Profile"
         self.navigationItem.setHidesBackButton(true, animated: true)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         self.tabBarItem.image = UIImage(systemName: "person")
         
         guard let user = databaseManager?.currentUser, let balance = user.balance, let currency = user.currency else {
@@ -53,22 +52,6 @@ class ProfileViewController: UIViewController {
         balanceLabel.text = "Balance\n \(balance.round(to: 2))\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
-    }
-    
-    @objc func signOut() {
-        databaseManager?.authManager?.signOut { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .signOut(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                case .database, .unknown, .access, .auth:
-                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
-                }
-            }
-        }
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {

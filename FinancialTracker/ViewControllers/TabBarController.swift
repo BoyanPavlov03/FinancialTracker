@@ -8,10 +8,15 @@
 import UIKit
 
 class TabBarController: UITabBarController {
-    var authManager: AuthManager?
+    private var authManager: AuthManager?
+    private var databaseManager: DatabaseManager?
     
     func setAuthManager(_ authManager: AuthManager) {
         self.authManager = authManager
+    }
+    
+    func setDatabaseManager(_ databaseManager: DatabaseManager) {
+        self.databaseManager = databaseManager
     }
     
     override func viewDidLoad() {
@@ -19,7 +24,7 @@ class TabBarController: UITabBarController {
         
         setupChildViewControllers()
         
-        guard let currentUser = authManager?.databaseManager.currentUser else {
+        guard let currentUser = databaseManager?.currentUser else {
             assertionFailure("User data is nil")
             return
         }
@@ -37,16 +42,37 @@ class TabBarController: UITabBarController {
 
         for viewController in viewControllers {
             if let navigationController = viewController as? UINavigationController {
+                let signOutButton = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
                 switch navigationController.topViewController {
                 case let homeVC as HomeViewController:
-                    homeVC.databaseManager = authManager?.databaseManager
+                    homeVC.databaseManager = databaseManager
+                    homeVC.navigationItem.rightBarButtonItem = signOutButton
                 case let profileVC as ProfileViewController:
-                    profileVC.databaseManager = authManager?.databaseManager
+                    profileVC.databaseManager = databaseManager
+                    profileVC.navigationItem.rightBarButtonItem = signOutButton
                 case let currencyVC as CurrencyTableViewController:
-                    currencyVC.databaseManager = authManager?.databaseManager
+                    currencyVC.databaseManager = databaseManager
+                    currencyVC.navigationItem.rightBarButtonItem = signOutButton
                 case let premiumVC as PremiumViewController:
-                    premiumVC.databaseManager = authManager?.databaseManager
+                    premiumVC.databaseManager = databaseManager
+                    premiumVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
+                    break
+                }
+            }
+        }
+    }
+    
+    @objc func signOut() {
+        authManager?.signOut { firebaseError, _ in
+            if let firebaseError = firebaseError {
+                switch firebaseError {
+                case .signOut(let error):
+                    guard let error = error else { return }
+                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+                case .database, .unknown, .access, .auth:
+                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
+                    // swiftlint:disable:next unneeded_break_in_switch
                     break
                 }
             }
