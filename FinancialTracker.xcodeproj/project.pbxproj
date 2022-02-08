@@ -169,7 +169,6 @@
 		70D37DEE27633FB40067FFE6 /* FinancialTracker */ = {
 			isa = PBXGroup;
 			children = (
-				7036707627A7267E005388A5 /* FinancialTracker.entitlements */,
 				707C5DD5276D16B30097A522 /* Helpers */,
 				70580548276892FD009515BE /* Cutsom UI */,
 				70D0D6CA2766227600ED0060 /* ViewControllers */,
@@ -183,6 +182,7 @@
 				70D37DFA27633FB50067FFE6 /* LaunchScreen.storyboard */,
 				70D37DFD27633FB50067FFE6 /* Info.plist */,
 				70B333602763E5A2002FAEB5 /* GoogleService-Info.plist */,
+				7036707627A7267E005388A5 /* FinancialTracker.entitlements */,
 			);
 			path = FinancialTracker;
 			sourceTree = "<group>";

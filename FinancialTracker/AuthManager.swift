@@ -127,100 +127,38 @@ class AuthManager {
     }
     
     func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addBalanceToCurrentUser(balance, currency: currency) { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), false)
-                case .database(let error):
-                    completionHandler(FirebaseError.database(error), false)
-                default:
-                    completionHandler(FirebaseError.unknown, false)
-                }
-            } else {
-                completionHandler(nil, true)
-            }
+        databaseManager.addBalanceToCurrentUser(balance, currency: currency) { firebaseError, success in
+            completionHandler(firebaseError, success)
         }
     }
     
     func addExpenseToCurrentUser(_ expenseAmount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addExpenseToCurrentUser(expenseAmount, category: category) { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .database(let error):
-                    completionHandler(FirebaseError.database(error), false)
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), false)
-                default:
-                    completionHandler(FirebaseError.unknown, false)
-                }
-            } else {
-                completionHandler(nil, true)
-            }
+        databaseManager.addExpenseToCurrentUser(expenseAmount, category: category) { firebaseError, success in
+            completionHandler(firebaseError, success)
         }
     }
     
     func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addScoreToUserBasedOnTime(time) { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), false)
-                default:
-                    completionHandler(FirebaseError.unknown, false)
-                }
-            } else {
-                completionHandler(nil, true)
-            }
+        databaseManager.addScoreToUserBasedOnTime(time) { firebaseError, success in
+            completionHandler(firebaseError, success)
         }
     }
     
     func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.changeCurrency(currency) { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .database(let error):
-                    completionHandler(FirebaseError.database(error), false)
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), false)
-                default:
-                    completionHandler(FirebaseError.unknown, false)
-                }
-            } else {
-                completionHandler(nil, true)
-            }
+        databaseManager.changeCurrency(currency) { firebaseError, success in
+            completionHandler(firebaseError, success)
         }
     }
     
     func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.buyPremium { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), false)
-                default:
-                    completionHandler(FirebaseError.unknown, false)
-                }
-            } else {
-                completionHandler(nil, true)
-            }
+        databaseManager.buyPremium { firebaseError, success in
+            completionHandler(firebaseError, success)
         }
     }
     
     func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         databaseManager.firestoreDidChangeData { firebaseError, user in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .database(let error):
-                    completionHandler(FirebaseError.database(error), nil)
-                case .access(let error):
-                    completionHandler(FirebaseError.access(error), nil)
-                default:
-                    completionHandler(FirebaseError.unknown, nil)
-                }
-            } else {
-                completionHandler(nil, user)
-            }
+            completionHandler(firebaseError, user)
         }
     }
     
