@@ -7,15 +7,22 @@
 
 import UIKit
 
-enum Category: String, CaseIterable, Codable {
-    case transport = "Transport"
-    case grocery = "Grocery"
-    case other = "Other"
-}
-
 class ExpenseViewController: UIViewController {
     @IBOutlet var expenseAmountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
+            
+    var authManager: AuthManager?
+    var categoryCases: [Category] {
+        guard let premium = authManager?.currentUser?.premium else {
+            assertionFailure("User data is nil.")
+            return []
+        }
+        var categories: [Category] = [.grocery, .transport]
+        
+        categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
+        
+        return categories
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,9 +44,9 @@ class ExpenseViewController: UIViewController {
             return
         }
         
-        let selectedCategory = Category.allCases[categoryPicker.selectedRow(inComponent: 0)]
+        let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        FirebaseHandler.shared.addExpenseToCurrentUser(expenseNumber, category: selectedCategory) { firebaseError, _ in
+        authManager?.addExpenseToCurrentUser(expenseNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }
@@ -62,12 +69,12 @@ extension ExpenseViewController: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return Category.allCases.count
+        return categoryCases.count
     }
 }
 
 extension ExpenseViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return Category.allCases[row].rawValue
+        return categoryCases[row].rawValue
     }
 }

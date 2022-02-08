@@ -15,6 +15,8 @@ class RegisterViewController: UIViewController {
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var registerButton: UIButton!
     
+    var authManager: AuthManager?
+    
     // MARK: - Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,7 +69,7 @@ class RegisterViewController: UIViewController {
             return
         }
         
-        FirebaseHandler.shared.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { firebaseError, _ in
+        authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { firebaseError, _ in
             
             if let firebaseError = firebaseError {
                 switch firebaseError {

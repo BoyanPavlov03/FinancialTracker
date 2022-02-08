@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct Links {
-    static let symbolCurrencyApi = "https://raw.githubusercontent.com/mansourcodes/country-databases/main/currency-details.json"
-    static let ratesCurrencyApi = "https://open.er-api.com/v6/latest"
+enum Links: String {
+    case symbolCurrencyApi = "https://raw.githubusercontent.com/mansourcodes/country-databases/main/currency-details.json"
+    case ratesCurrencyApi = "https://open.er-api.com/v6/latest"
 }
 
 struct Currency: Codable {
@@ -66,10 +66,10 @@ extension Currency {
 private func fetchCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
     var allCurrencies: [Currency] = []
     
-    if let jsonLink = URL(string: Links.symbolCurrencyApi) {
+    if let jsonLink = URL(string: Links.symbolCurrencyApi.rawValue) {
         URLSession.shared.dataTask(with: jsonLink) { data, _, error in
             guard error == nil else {
-                completionHandler("Couldn't load json.", nil)
+                completionHandler(error?.localizedDescription, nil)
                 return
             }
             
@@ -92,20 +92,20 @@ private func fetchCurrencies(completionHandler: @escaping (String?, [Currency]?)
 private func fetchCurrencyRates(currencies: [Currency], completionHandler: @escaping (String?, [Currency]?) -> Void) {
     var allCurrencies: [Currency] = currencies
     
-    if let jsonLink = URL(string: Links.ratesCurrencyApi) {
+    if let jsonLink = URL(string: Links.ratesCurrencyApi.rawValue) {
         URLSession.shared.dataTask(with: jsonLink) { data, _, error in
             guard error == nil else {
-                completionHandler("Couldn't load json.", nil)
+                completionHandler(error?.localizedDescription, nil)
                 return
             }
             
             if let data = data {
                 do {
                     let result = try JSONDecoder().decode(Currency.ExchangeRates.self, from: data)
-                    for iterrator in 0..<allCurrencies.count {
-                        let code = allCurrencies[iterrator].code
+                    for iterator in 0..<allCurrencies.count {
+                        let code = allCurrencies[iterator].code
                         if let rate = result.rates[code] {
-                            allCurrencies[iterrator].rate = rate
+                            allCurrencies[iterator].rate = rate
                         }
                     }
                     completionHandler(nil, allCurrencies)

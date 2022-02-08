@@ -16,52 +16,42 @@ struct Constants {
 class ProfileViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
+    @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var expensesCountLabel: UILabel!
+    
+    var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "Profile"
         self.navigationItem.setHidesBackButton(true, animated: true)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         self.tabBarItem.image = UIImage(systemName: "person")
         
-        guard let user = FirebaseHandler.shared.currentUser else {
+        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
         
         nameLabel.text = "\(user.firstName) \(user.lastName)"
         emailLabel.text = user.email
+        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
+        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
+        
+        authManager?.addDelegate(self)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        guard let user = FirebaseHandler.shared.currentUser, let balance = user.balance, let currency = user.currency else {
+    private func updateBalanceAndExpenses() {
+        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
         
-        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        balanceLabel.text = "Balance\n \(balance.round(to: 2))\(currency.symbolNative)"
         expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
-    }
-    
-    @objc func signOut() {
-        FirebaseHandler.shared.signOut { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .signOut(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                case .database, .unknown, .access, .auth:
-                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
-                }
-            }
-        }
+        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
@@ -76,7 +66,6 @@ class ProfileViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: Support.addExpense.rawValue, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: Support.refundMoney.rawValue, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alertController.popoverPresentationController?.barButtonItem = self.navigationItem.leftBarButtonItem
         
         present(alertController, animated: true)
     }
@@ -104,5 +93,11 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
         }
         
         controller.dismiss(animated: true)
+    }
+}
+
+extension ProfileViewController: DatabaseManagerDelegate {
+    func databaseManagerDidUserChange(sender: DatabaseManager) {
+        updateBalanceAndExpenses()
     }
 }
