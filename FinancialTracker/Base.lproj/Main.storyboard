@@ -521,7 +521,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="u1q-Nj-b4F">
-                                <rect key="frame" x="20" y="54" width="280" height="32"/>
+                                <rect key="frame" x="20" y="114" width="280" height="31"/>
                                 <segments>
                                     <segment title="Today"/>
                                     <segment title="All"/>
@@ -531,48 +531,69 @@
                                 </connections>
                             </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="AzB-Ee-J8A">
-                                <rect key="frame" x="20" y="95" width="280" height="313"/>
+                                <rect key="frame" x="20" y="174" width="280" height="275"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q6x-Sw-bed" customClass="PieChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="0.0" width="280" height="213"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="280" height="275"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3r-Je-feF">
+                                                <rect key="frame" x="212" y="187" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="3pM-cX-Rb6"/>
+                                                    <constraint firstAttribute="height" constant="50" id="SFo-AO-gdI"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" image="plus" catalog="system" cornerStyle="capsule"/>
+                                                <connections>
+                                                    <action selector="addButtonTapped:" destination="z9v-lM-IuL" eventType="touchUpInside" id="9ay-Ny-6cv"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                    </view>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3r-Je-feF">
-                                        <rect key="frame" x="40" y="263" width="200" height="50"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="SFo-AO-gdI"/>
+                                            <constraint firstItem="X3r-Je-feF" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="q6x-Sw-bed" secondAttribute="leading" constant="20" symbolic="YES" id="USZ-AO-TLl"/>
+                                            <constraint firstItem="X3r-Je-feF" firstAttribute="bottom" secondItem="q6x-Sw-bed" secondAttribute="bottomMargin" constant="-30" id="iCY-oS-7q1"/>
+                                            <constraint firstItem="X3r-Je-feF" firstAttribute="trailing" secondItem="q6x-Sw-bed" secondAttribute="trailingMargin" constant="-10" id="izt-fc-H5m"/>
                                         </constraints>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="filled" title="Add expense" cornerStyle="capsule"/>
-                                        <connections>
-                                            <action selector="addButtonTapped:" destination="z9v-lM-IuL" eventType="touchUpInside" id="sc3-gT-Jmd"/>
-                                        </connections>
-                                    </button>
+                                    </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="X3r-Je-feF" secondAttribute="trailing" constant="40" id="3Ts-xD-mXa"/>
                                     <constraint firstAttribute="trailing" secondItem="q6x-Sw-bed" secondAttribute="trailing" id="BN7-E0-thK"/>
                                     <constraint firstItem="q6x-Sw-bed" firstAttribute="leading" secondItem="AzB-Ee-J8A" secondAttribute="leading" id="ZZr-jd-hal"/>
-                                    <constraint firstItem="X3r-Je-feF" firstAttribute="leading" secondItem="AzB-Ee-J8A" secondAttribute="leading" constant="40" id="rEK-gn-CKF"/>
                                 </constraints>
                             </stackView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="sL5-w0-HK1">
+                                <rect key="frame" x="40" y="54" width="240" height="32"/>
+                                <segments>
+                                    <segment title="Expenses"/>
+                                    <segment title="Incomes"/>
+                                </segments>
+                                <connections>
+                                    <action selector="expenseOrIncomeControlDidChange:" destination="z9v-lM-IuL" eventType="valueChanged" id="VSc-3R-Cv8"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="A2i-Ah-hWy"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="u1q-Nj-b4F" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="10" id="3iX-ux-RGh"/>
+                            <constraint firstItem="u1q-Nj-b4F" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="70" id="3iX-ux-RGh"/>
+                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="top" secondItem="u1q-Nj-b4F" secondAttribute="bottom" constant="30" id="EXL-E3-2Zk"/>
+                            <constraint firstItem="sL5-w0-HK1" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="10" id="K8O-0r-iEv"/>
+                            <constraint firstItem="sL5-w0-HK1" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="40" id="KuB-Wh-fG3"/>
                             <constraint firstItem="u1q-Nj-b4F" firstAttribute="trailing" secondItem="AzB-Ee-J8A" secondAttribute="trailing" id="RbW-LF-n0j"/>
                             <constraint firstItem="AzB-Ee-J8A" firstAttribute="leading" secondItem="A2i-Ah-hWy" secondAttribute="leading" constant="20" id="VWR-w5-1If"/>
                             <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="AzB-Ee-J8A" secondAttribute="trailing" constant="20" id="eNj-47-MsF"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="trailing" secondItem="sL5-w0-HK1" secondAttribute="trailing" constant="40" id="iWP-2e-QDA"/>
                             <constraint firstItem="u1q-Nj-b4F" firstAttribute="leading" secondItem="AzB-Ee-J8A" secondAttribute="leading" id="kfS-uR-63N"/>
-                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="AzB-Ee-J8A" secondAttribute="bottom" constant="111" id="nK3-5s-JZr"/>
-                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="51" id="qBd-3v-8zG"/>
+                            <constraint firstItem="A2i-Ah-hWy" firstAttribute="bottom" secondItem="AzB-Ee-J8A" secondAttribute="bottom" constant="70" id="nK3-5s-JZr"/>
+                            <constraint firstItem="AzB-Ee-J8A" firstAttribute="top" secondItem="A2i-Ah-hWy" secondAttribute="top" constant="130" id="qBd-3v-8zG"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HAk-SP-DEM"/>
                     <connections>
-                        <outlet property="expenseChart" destination="q6x-Sw-bed" id="ExH-Q3-Rcb"/>
                         <outlet property="expenseDividerSegmentedControl" destination="u1q-Nj-b4F" id="hRV-Pl-0YQ"/>
+                        <outlet property="expenseOrIncomeSegmentedControl" destination="sL5-w0-HK1" id="McE-In-P9D"/>
+                        <outlet property="transactionChart" destination="q6x-Sw-bed" id="q7v-Hf-kcl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dpm-QT-zLu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -600,13 +621,6 @@
                                     <constraint firstAttribute="height" constant="1" id="bLf-cj-TqD"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ui4-ka-Qa0">
-                                <rect key="frame" x="159.5" y="160.5" width="1" height="100"/>
-                                <color key="backgroundColor" systemColor="systemGray2Color"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="1" id="hvz-Lb-FWQ"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LB1-BA-2hy">
                                 <rect key="frame" x="0.0" y="260.5" width="320" height="1"/>
                                 <color key="backgroundColor" systemColor="systemGray2Color"/>
@@ -615,18 +629,9 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ex0-1S-O7G">
-                                <rect key="frame" x="30" y="170.5" width="100" height="80"/>
+                                <rect key="frame" x="110" y="170.5" width="100" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="IHn-lO-Lhf"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4aJ-up-f7m">
-                                <rect key="frame" x="190" y="170.5" width="100" height="80"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="8cr-tv-pWK"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -704,22 +709,16 @@
                         <viewLayoutGuide key="safeArea" id="Ghv-QR-cps"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="LB1-BA-2hy" firstAttribute="top" secondItem="Ui4-ka-Qa0" secondAttribute="bottom" id="1TT-ey-nae"/>
                             <constraint firstItem="Ex0-1S-O7G" firstAttribute="top" secondItem="rER-1G-C1Y" secondAttribute="bottom" constant="10" id="3kq-HF-li9"/>
-                            <constraint firstItem="4aJ-up-f7m" firstAttribute="top" secondItem="rER-1G-C1Y" secondAttribute="bottom" constant="10" id="7cB-Ys-0jx"/>
                             <constraint firstItem="Hzx-T6-Gna" firstAttribute="top" secondItem="Lem-xz-i2Y" secondAttribute="bottom" constant="20" id="9ZA-xU-jpc"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="trailing" secondItem="rER-1G-C1Y" secondAttribute="trailing" id="Bv2-J6-Gdn"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="top" secondItem="Ex0-1S-O7G" secondAttribute="bottom" constant="10" id="D1P-D0-JsW"/>
-                            <constraint firstItem="Ex0-1S-O7G" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" multiplier="0.5" id="DKX-yx-7Dw"/>
+                            <constraint firstItem="Ex0-1S-O7G" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="DKX-yx-7Dw"/>
                             <constraint firstItem="Ghv-QR-cps" firstAttribute="bottom" secondItem="Xpu-EO-7LU" secondAttribute="bottom" constant="20" id="Hl1-EJ-lpC"/>
                             <constraint firstItem="rER-1G-C1Y" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" id="K6p-SS-xmC"/>
-                            <constraint firstItem="Ui4-ka-Qa0" firstAttribute="top" secondItem="rER-1G-C1Y" secondAttribute="bottom" id="L4r-7a-w7L"/>
-                            <constraint firstItem="Ui4-ka-Qa0" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="RqK-5Q-rGT"/>
                             <constraint firstItem="Hzx-T6-Gna" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" constant="15" id="ScQ-6z-SQm"/>
                             <constraint firstItem="Xpu-EO-7LU" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="Wry-zR-MDo"/>
-                            <constraint firstItem="4aJ-up-f7m" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" multiplier="1.5" id="YzQ-V3-QE4"/>
                             <constraint firstItem="tg1-SH-rKn" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="aAd-u5-dJ7"/>
-                            <constraint firstItem="LB1-BA-2hy" firstAttribute="top" secondItem="4aJ-up-f7m" secondAttribute="bottom" constant="10" id="atb-SQ-EuF"/>
                             <constraint firstItem="tg1-SH-rKn" firstAttribute="top" secondItem="LB1-BA-2hy" secondAttribute="bottom" constant="40.5" id="cun-MG-rzL"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="leading" secondItem="rER-1G-C1Y" secondAttribute="leading" id="g5b-FW-qTE"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="top" secondItem="rER-1G-C1Y" secondAttribute="bottom" constant="100" id="i61-FN-8jC"/>
@@ -733,7 +732,6 @@
                     <connections>
                         <outlet property="balanceLabel" destination="Ex0-1S-O7G" id="B3p-Py-GBA"/>
                         <outlet property="emailLabel" destination="De5-an-VcW" id="u2Q-RI-oth"/>
-                        <outlet property="expensesCountLabel" destination="4aJ-up-f7m" id="r0P-rl-MCw"/>
                         <outlet property="nameLabel" destination="Lem-xz-i2Y" id="JvJ-lx-r5v"/>
                         <outlet property="userTypeLabel" destination="HOV-av-t1m" id="nH6-39-i6f"/>
                     </connections>
@@ -742,16 +740,26 @@
             </objects>
             <point key="canvasLocation" x="5814" y="512"/>
         </scene>
-        <!--Expense View Controller-->
+        <!--Transaction View Controller-->
         <scene sceneID="cL6-BJ-1w9">
             <objects>
-                <viewController storyboardIdentifier="ExpenseVC" id="b7g-Yl-nAD" customClass="ExpenseViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TransactionVC" id="b7g-Yl-nAD" customClass="TransactionViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="q1q-IL-8nA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mne-9f-nWG">
+                                <rect key="frame" x="39.5" y="30" width="241" height="32"/>
+                                <segments>
+                                    <segment title="Expense" width="120"/>
+                                    <segment title="Income" width="120"/>
+                                </segments>
+                                <connections>
+                                    <action selector="expenseOrIncomeSegmentedControlTapped:" destination="b7g-Yl-nAD" eventType="valueChanged" id="Xc8-nG-amQ"/>
+                                </connections>
+                            </segmentedControl>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Pr0-rS-gKx">
-                                <rect key="frame" x="20" y="40" width="280" height="411"/>
+                                <rect key="frame" x="20" y="81" width="280" height="411"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="p3q-AX-Da2">
                                         <rect key="frame" x="73.5" y="0.0" width="133.5" height="64.5"/>
@@ -806,7 +814,7 @@
                                         </constraints>
                                         <buttonConfiguration key="configuration" style="filled" title="Add" cornerStyle="capsule"/>
                                         <connections>
-                                            <action selector="addExpenseButtonTapped:" destination="b7g-Yl-nAD" eventType="touchUpInside" id="sra-dy-k2f"/>
+                                            <action selector="addTransactionButtonTapped:" destination="b7g-Yl-nAD" eventType="touchUpInside" id="Dda-FL-mdd"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -819,15 +827,18 @@
                         <viewLayoutGuide key="safeArea" id="WWg-FQ-spc"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="Pr0-rS-gKx" firstAttribute="top" secondItem="WWg-FQ-spc" secondAttribute="top" constant="40" id="QSO-zy-jaR"/>
+                            <constraint firstItem="mne-9f-nWG" firstAttribute="top" secondItem="WWg-FQ-spc" secondAttribute="top" constant="30" id="3kD-Zr-unc"/>
+                            <constraint firstItem="Pr0-rS-gKx" firstAttribute="top" secondItem="mne-9f-nWG" secondAttribute="bottom" constant="20" id="Odk-Jo-vlK"/>
                             <constraint firstItem="Pr0-rS-gKx" firstAttribute="leading" secondItem="WWg-FQ-spc" secondAttribute="leading" constant="20" id="Z2c-QI-4fo"/>
+                            <constraint firstItem="mne-9f-nWG" firstAttribute="centerX" secondItem="WWg-FQ-spc" secondAttribute="centerX" id="rH3-cG-pgL"/>
                             <constraint firstItem="WWg-FQ-spc" firstAttribute="trailing" secondItem="Pr0-rS-gKx" secondAttribute="trailing" constant="20" id="szb-Ii-U3C"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="gYI-5C-5Xc"/>
                     <connections>
+                        <outlet property="amountTextField" destination="tfj-uH-X1O" id="8iv-px-W4M"/>
                         <outlet property="categoryPicker" destination="jrK-Uu-rgV" id="Ruv-Ni-r4Z"/>
-                        <outlet property="expenseAmountTextField" destination="tfj-uH-X1O" id="k5U-UL-i16"/>
+                        <outlet property="expenseOrIncomeSegmentedControl" destination="mne-9f-nWG" id="2de-p2-ALj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EIo-fz-upG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1100,6 +1111,7 @@
         <image name="key.fill" catalog="system" width="83" height="128"/>
         <image name="person" catalog="system" width="128" height="117"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

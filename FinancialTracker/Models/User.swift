@@ -15,6 +15,7 @@ struct User {
     var balance: Double?
     var currency: Currency?
     var expenses: [Expense] = []
+    var incomes: [Income] = []
     var score: Double
     var premium: Bool
     
@@ -38,11 +39,12 @@ extension User: Codable {
         balance = try values.decodeIfPresent(Double.self, forKey: .balance)
         currency = try values.decodeIfPresent(Currency.self, forKey: .currency)
         expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
+        incomes = try values.decodeIfPresent([Income].self, forKey: .incomes) ?? []
         score = try values.decode(Double.self, forKey: .score)
         premium = try values.decode(Bool.self, forKey: .premium)
     }
     
     enum CodingKeys: String, CodingKey {
-        case firstName, lastName, email, uid, balance, currency, expenses, score, premium
+        case firstName, lastName, email, uid, balance, currency, expenses, score, premium, incomes
     }
 }
