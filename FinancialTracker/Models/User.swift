@@ -14,8 +14,8 @@ struct User {
     let uid: String
     var balance: Double?
     var currency: Currency?
-    var expenses: [Expense] = []
-    var incomes: [Income] = []
+    var expenses: [Transaction] = []
+    var incomes: [Transaction] = []
     var score: Double
     var premium: Bool
     
@@ -38,8 +38,8 @@ extension User: Codable {
         uid = try values.decode(String.self, forKey: .uid)
         balance = try values.decodeIfPresent(Double.self, forKey: .balance)
         currency = try values.decodeIfPresent(Currency.self, forKey: .currency)
-        expenses = try values.decodeIfPresent([Expense].self, forKey: .expenses) ?? []
-        incomes = try values.decodeIfPresent([Income].self, forKey: .incomes) ?? []
+        expenses = try values.decodeIfPresent([Transaction].self, forKey: .expenses) ?? []
+        incomes = try values.decodeIfPresent([Transaction].self, forKey: .incomes) ?? []
         score = try values.decode(Double.self, forKey: .score)
         premium = try values.decode(Bool.self, forKey: .premium)
     }

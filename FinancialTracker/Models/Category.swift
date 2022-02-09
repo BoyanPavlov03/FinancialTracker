@@ -7,8 +7,8 @@
 
 import UIKit
 
-protocol Category: Codable {
-    var color: UIColor { get }
+protocol Category {
+    var getRawValue: String { get }
 }
 
 enum ExpenseCategory: String, CaseIterable, Category, Codable {
@@ -20,6 +20,10 @@ enum ExpenseCategory: String, CaseIterable, Category, Codable {
     case travel = "Travel"
     
     case other = "Other"
+    
+    var getRawValue: String {
+        return self.rawValue
+    }
     
     var color: UIColor {
         switch self {
@@ -48,6 +52,10 @@ enum IncomeCategory: String, CaseIterable, Category, Codable {
     case government = "Government Payments"
     
     case other = "Other"
+    
+    var getRawValue: String {
+        return self.rawValue
+    }
     
     var color: UIColor {
         switch self {

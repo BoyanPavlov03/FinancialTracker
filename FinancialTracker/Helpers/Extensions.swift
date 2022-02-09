@@ -78,21 +78,10 @@ extension Date {
         var newData: [Transaction] = []
         
         for transaction in data {
-            switch transaction {
-            case let transaction as Income:
-                if let date = stringToDate(transaction.date) {
-                    if date.isBetweeen(date: self, andDate: endDate) {
-                        newData.append(transaction)
-                    }
+            if let date = stringToDate(transaction.date) {
+                if date.isBetweeen(date: self, andDate: endDate) {
+                    newData.append(transaction)
                 }
-            case let transaction as Expense:
-                if let date = stringToDate(transaction.date) {
-                    if date.isBetweeen(date: self, andDate: endDate) {
-                        newData.append(transaction)
-                    }
-                }
-            default:
-                break
             }
         }
         

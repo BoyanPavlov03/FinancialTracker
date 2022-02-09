@@ -82,7 +82,7 @@ class DatabaseManager {
         do {
             if let category = category as? ExpenseCategory {
                 let expenseKey = User.CodingKeys.expenses.rawValue
-                let expense = Expense(amount: amount, date: formatedDate, category: category)
+                let expense = Transaction(amount: amount, date: formatedDate, category: category)
                 
                 let expenseData = try JSONEncoder().encode(expense)
                 let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
@@ -103,7 +103,7 @@ class DatabaseManager {
                 firestore.collection(usersKey).document(currentUser.uid).setData([expenseKey: expenseValue, balanceKey: newBalanceValue], merge: true)
             } else if let category = category as? IncomeCategory {
                 let incomeKey = User.CodingKeys.incomes.rawValue
-                let income = Income(amount: amount, date: formatedDate, category: category)
+                let income = Transaction(amount: amount, date: formatedDate, category: category)
                 
                 let incomeData = try JSONEncoder().encode(income)
                 let json = try JSONSerialization.jsonObject(with: incomeData, options: [])
@@ -152,16 +152,16 @@ class DatabaseManager {
         
         let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: 2)
         
-        var newExpenses: [Expense] = []
+        var newExpenses: [Transaction] = []
         for expense in currentUser.expenses {
             let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: 2)
-            newExpenses.append(Expense(amount: newExpenseAmount, date: expense.date, category: expense.category))
+            newExpenses.append(Transaction(amount: newExpenseAmount, date: expense.date, category: expense.category))
         }
         
-        var newIncomes: [Income] = []
+        var newIncomes: [Transaction] = []
         for income in currentUser.incomes {
             let newIncomeAmount = ((income.amount / currentCurrency.rate) * currency.rate).round(to: 2)
-            newIncomes.append(Income(amount: newIncomeAmount, date: income.date, category: income.category))
+            newIncomes.append(Transaction(amount: newIncomeAmount, date: income.date, category: income.category))
         }
         
         let balanceKey = User.CodingKeys.balance.rawValue
@@ -262,6 +262,7 @@ class DatabaseManager {
             
             do {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                print(data)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.currentUser = user
                 

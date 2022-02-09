@@ -7,38 +7,40 @@
 
 import UIKit
 
-protocol Transaction: Codable {
-    func transactionType() -> String
-}
-
-struct Expense: Transaction {
-    let amount: Double
-    let date: String
-    let category: ExpenseCategory
-        
+struct Transaction: Codable {
+    var amount: Double
+    var date: String
+    var category: Category
+    
     enum CodingKeys: String, CodingKey {
-        case amount
-        case date
-        case category
+        case amount, date, category
     }
     
-    func transactionType() -> String {
-        return "expense"
-    }
-}
-
-struct Income: Transaction {
-    let amount: Double
-    let date: String
-    let category: IncomeCategory
-        
-    enum CodingKeys: String, CodingKey {
-        case amount
-        case date
-        case category
+    init(amount: Double, date: String, category: Category) {
+        self.amount = amount
+        self.date = date
+        self.category = category
     }
     
-    func transactionType() -> String {
-        return "income"
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        amount = try values.decode(Double.self, forKey: .amount)
+        date = try values.decode(String.self, forKey: .date)
+        if let expense = try? values.decode(ExpenseCategory.self, forKey: .category) {
+            category = expense
+        } else {
+            category = try values.decode(IncomeCategory.self, forKey: .category)
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(amount, forKey: .amount)
+        try container.encode(date, forKey: .date)
+        if let expense = category as? ExpenseCategory {
+            try container.encode(expense, forKey: .category)
+        } else if let income = category as? IncomeCategory {
+            try container.encode(income, forKey: .category)
+        }
     }
 }

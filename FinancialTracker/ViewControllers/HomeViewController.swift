@@ -111,24 +111,12 @@ class HomeViewController: UIViewController {
         var transactions: [String: Double] = [:]
         var totalSum = 0.0
         for transaction in transactionData {
-            switch transaction {
-            case let transaction as Expense:
-                if transactions[transaction.category.rawValue] == nil {
-                    transactions[transaction.category.rawValue] = 0.0
-                }
-                // swiftlint:disable:next force_unwrapping
-                transactions[transaction.category.rawValue]! += transaction.amount
-                totalSum += transaction.amount
-            case let transaction as Income:
-                if transactions[transaction.category.rawValue] == nil {
-                    transactions[transaction.category.rawValue] = 0.0
-                }
-                // swiftlint:disable:next force_unwrapping
-                transactions[transaction.category.rawValue]! += transaction.amount
-                totalSum += transaction.amount
-            default:
-                break
+            if transactions[transaction.category.getRawValue] == nil {
+                transactions[transaction.category.getRawValue] = 0.0
             }
+            // swiftlint:disable:next force_unwrapping
+            transactions[transaction.category.getRawValue]! += transaction.amount
+            totalSum += transaction.amount
         }
         let sortedTransactions = transactions.sorted { $0.key < $1.key }
                 
