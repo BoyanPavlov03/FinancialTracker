@@ -66,7 +66,7 @@ extension Date {
     func formatDate(_ format: String) -> String {
         let dateformat = DateFormatter()
         dateformat.dateFormat = format
-        dateformat.locale = Locale(identifier: "bg_BG")
+
         return dateformat.string(from: self)
     }
     
@@ -75,23 +75,23 @@ extension Date {
     }
     
     func transactionBetweenTwoDates(till endDate: Date, data: [Transaction]) -> [Transaction] {
-        var newData: [Transaction] = []
+        var newTransactions: [Transaction] = []
         
         for transaction in data {
             if let date = stringToDate(transaction.date) {
                 if date.isBetweeen(date: self, andDate: endDate) {
-                    newData.append(transaction)
+                    newTransactions.append(transaction)
                 }
             }
         }
         
-        return newData
+        return newTransactions
     }
     
     func stringToDate(_ string: String) -> Date? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "hh:mm:ss, MMM dd, yyyy"
-        dateFormatter.locale = Locale(identifier: "bg_BG")
+        dateFormatter.dateFormat = "hh:mm:ss, MM/dd/yyyy"
+
         return dateFormatter.date(from: string)
     }
 }

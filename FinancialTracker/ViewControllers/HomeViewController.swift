@@ -18,6 +18,14 @@ enum Support: String {
     }
 }
 
+enum TimePeriodDivider: Int {
+    case today
+    case week
+    case month
+    case year
+    case all
+}
+
 class HomeViewController: UIViewController {
     @IBOutlet var transactionChart: PieChartView!
     @IBOutlet var expenseDividerSegmentedControl: UISegmentedControl!
@@ -64,17 +72,13 @@ class HomeViewController: UIViewController {
         return data
     }
     
-    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
-        dividerControlDidChange(expenseDividerSegmentedControl)
-    }
-    
-    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
+    private func periodDivider(_ period: Int) {
+        switch period {
+        case TimePeriodDivider.today.rawValue:
             let start = Date().startOfDay
             guard let end = Date().endOfDay else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
-        case 1:
+        case TimePeriodDivider.week.rawValue:
             guard let premium = authManager?.currentUser?.premium, premium else {
                 updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
                 return
@@ -82,15 +86,15 @@ class HomeViewController: UIViewController {
             guard let start = Date().startOfWeek else { return }
             guard let end = Date().endOfWeek else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
-        case 2:
+        case TimePeriodDivider.month.rawValue:
             guard let start = Date().startOfMonth else { return }
             guard let end = Date().endOfMonth else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
-        case 3:
+        case TimePeriodDivider.year.rawValue:
             guard let start = Date().startOfYear else { return }
             guard let end = Date().endOfYear else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
-        case 4:
+        case TimePeriodDivider.all.rawValue:
             if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
                 updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
             } else {
@@ -101,7 +105,7 @@ class HomeViewController: UIViewController {
         }
     }
     
-    func updateChart(transactionData: [Transaction]) {
+    private func updateChart(transactionData: [Transaction]) {
         guard !transactionData.isEmpty else {
             transactionChart.data = nil
             transactionChart.notifyDataSetChanged()
@@ -160,6 +164,14 @@ class HomeViewController: UIViewController {
         
         transactionVC.authManager = authManager
         navigationController?.pushViewController(transactionVC, animated: true)
+    }
+    
+    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(expenseDividerSegmentedControl.selectedSegmentIndex)
+    }
+    
+    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(sender.selectedSegmentIndex)
     }
 }
 

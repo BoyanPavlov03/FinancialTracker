@@ -77,7 +77,7 @@ class DatabaseManager {
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         
-        let formatedDate = today.formatDate("hh:mm:ss, MMM dd, yyyy")
+        let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
         
         do {
             if let category = category as? ExpenseCategory {
