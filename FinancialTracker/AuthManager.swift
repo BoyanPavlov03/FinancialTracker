@@ -132,8 +132,8 @@ class AuthManager {
         }
     }
     
-    func addExpenseToCurrentUser(_ expenseAmount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addExpenseToCurrentUser(expenseAmount, category: category) { firebaseError, success in
+    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addTransactionToCurrentUser(amount, category: category) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }

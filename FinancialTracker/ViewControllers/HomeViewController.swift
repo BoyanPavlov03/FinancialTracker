@@ -18,9 +18,18 @@ enum Support: String {
     }
 }
 
+enum TimePeriodDivider: Int {
+    case today
+    case week
+    case month
+    case year
+    case all
+}
+
 class HomeViewController: UIViewController {
-    @IBOutlet var expenseChart: PieChartView!
+    @IBOutlet var transactionChart: PieChartView!
     @IBOutlet var expenseDividerSegmentedControl: UISegmentedControl!
+    @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     
     var authManager: AuthManager?
     
@@ -32,14 +41,16 @@ class HomeViewController: UIViewController {
     
         checkIfPremium()
         
-        expenseChart.isUserInteractionEnabled = false
-        expenseChart.drawEntryLabelsEnabled = false
-        expenseChart.drawHoleEnabled = true
-        expenseChart.rotationAngle = 0
-        expenseChart.rotationEnabled = false
+        transactionChart.highlightPerTapEnabled = false
+        transactionChart.drawEntryLabelsEnabled = false
+        transactionChart.drawHoleEnabled = true
+        transactionChart.rotationAngle = 0
+        transactionChart.rotationEnabled = false
         
-        dividerControlDidChange(expenseDividerSegmentedControl)
-        
+        let format = NumberFormatter()
+        format.numberStyle = .decimal
+        transactionChart.data?.setValueFormatter(DefaultValueFormatter(formatter: format))
+            
         authManager?.addDelegate(self)
     }
     
@@ -51,95 +62,116 @@ class HomeViewController: UIViewController {
         }
     }
     
-    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case 0:
+    private func expenseOrIncome(start: Date, end: Date) -> [Transaction] {
+        var data: [Transaction] = []
+        if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
+            data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.expenses ?? [])
+        } else {
+            data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.incomes ?? [])
+        }
+        return data
+    }
+    
+    private func periodDivider(_ period: Int) {
+        switch period {
+        case TimePeriodDivider.today.rawValue:
             let start = Date().startOfDay
             guard let end = Date().endOfDay else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
-            updateChart(expenseData: expenses)
-        case 1:
+            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+        case TimePeriodDivider.week.rawValue:
             guard let premium = authManager?.currentUser?.premium, premium else {
-                updateChart(expenseData: authManager?.currentUser?.expenses ?? [])
+                updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
                 return
             }
             guard let start = Date().startOfWeek else { return }
             guard let end = Date().endOfWeek else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
-            updateChart(expenseData: expenses)
-        case 2:
+            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+        case TimePeriodDivider.month.rawValue:
             guard let start = Date().startOfMonth else { return }
             guard let end = Date().endOfMonth else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
-            updateChart(expenseData: expenses)
-        case 3:
+            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+        case TimePeriodDivider.year.rawValue:
             guard let start = Date().startOfYear else { return }
             guard let end = Date().endOfYear else { return }
-            let expenses = start.expensesBetweenTwoDates(till: end, expenses: authManager?.currentUser?.expenses ?? [])
-            updateChart(expenseData: expenses)
-        case 4:
-            updateChart(expenseData: authManager?.currentUser?.expenses ?? [])
+            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+        case TimePeriodDivider.all.rawValue:
+            if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
+                updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+            } else {
+                updateChart(transactionData: authManager?.currentUser?.incomes ?? [])
+            }
         default:
             break
         }
     }
     
-    func updateChart(expenseData: [Expense]) {
-        guard !expenseData.isEmpty else {
-            expenseChart.data = nil
-            expenseChart.notifyDataSetChanged()
+    private func updateChart(transactionData: [Transaction]) {
+        guard !transactionData.isEmpty else {
+            transactionChart.data = nil
+            transactionChart.notifyDataSetChanged()
             return
         }
         
-        var expenses: [String: Double] = [:]
+        var transactions: [String: Double] = [:]
         var totalSum = 0.0
-        for expense in expenseData {
-            if expenses[expense.category.rawValue] == nil {
-                expenses[expense.category.rawValue] = 0.0
+        for transaction in transactionData {
+            if transactions[transaction.category.getRawValue] == nil {
+                transactions[transaction.category.getRawValue] = 0.0
             }
             // swiftlint:disable:next force_unwrapping
-            expenses[expense.category.rawValue]! += expense.amount.round(to: 2)
-            totalSum += expense.amount
+            transactions[transaction.category.getRawValue]! += transaction.amount
+            totalSum += transaction.amount
         }
-        let sortedExpenses = expenses.sorted { $0.key < $1.key }
-        
+        let sortedTransactions = transactions.sorted { $0.key < $1.key }
+                
         var dataEntries: [ChartDataEntry] = []
         
-        for expense in sortedExpenses {
-            let dataEntry = PieChartDataEntry(value: expense.value, label: expense.key, data: expense.key as AnyObject)
+        for transaction in sortedTransactions {
+            let dataEntry = PieChartDataEntry(value: transaction.value.round(to: 2), label: transaction.key, data: transaction.key as AnyObject)
             dataEntries.append(dataEntry)
         }
         
         let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "")
         
         var colors: [UIColor] = []
-        sortedExpenses.forEach { key, _ in
-            guard let category = Category(rawValue: key) else {
-                assertionFailure("Category doesn't exist.")
-                return
+        sortedTransactions.forEach { key, _ in
+            if let category = ExpenseCategory(rawValue: key) {
+                colors.append(category.color)
+            } else if let category = IncomeCategory(rawValue: key) {
+                colors.append(category.color)
             }
-            colors.append(category.color)
         }
 
         pieChartDataSet.colors = colors
         
         let pieChartData = PieChartData(dataSet: pieChartDataSet)
-        let format = NumberFormatter()
-        format.numberStyle = .decimal
-        let formatter = DefaultValueFormatter(formatter: format)
-        pieChartData.setValueFormatter(formatter)
+        transactionChart.data = pieChartData
         
-        expenseChart.data = pieChartData
+        guard let symbol = authManager?.currentUser?.currency?.symbolNative else {
+            return
+        }
+        let attributes = [NSAttributedString.Key.font: UIFont(name: "Tamil Sangam MN", size: 25.0)]
+        let myString = "\(totalSum.round(to: 2))\(String(describing: symbol))"
+        let totalSumString = NSAttributedString(string: myString, attributes: attributes as [NSAttributedString.Key: Any])
+        transactionChart.centerAttributedText = totalSumString
     }
     
     @IBAction func addButtonTapped(_ sender: Any) {
-        guard let expenseVC = ViewControllerFactory.shared.viewController(for: .expense) as? ExpenseViewController else {
-            assertionFailure("Couldn't cast to ExpenseViewController")
+        guard let transactionVC = ViewControllerFactory.shared.viewController(for: .transaction) as? TransactionViewController else {
+            assertionFailure("Couldn't cast to TransactionViewController")
             return
         }
         
-        expenseVC.authManager = authManager
-        navigationController?.pushViewController(expenseVC, animated: true)
+        transactionVC.authManager = authManager
+        navigationController?.pushViewController(transactionVC, animated: true)
+    }
+    
+    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(expenseDividerSegmentedControl.selectedSegmentIndex)
+    }
+    
+    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(sender.selectedSegmentIndex)
     }
 }
 

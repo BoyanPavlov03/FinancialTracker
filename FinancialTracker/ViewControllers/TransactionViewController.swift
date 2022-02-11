@@ -7,46 +7,56 @@
 
 import UIKit
 
-class ExpenseViewController: UIViewController {
-    @IBOutlet var expenseAmountTextField: UITextField!
+class TransactionViewController: UIViewController {
+    @IBOutlet var amountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
-            
+    @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
+    
     var authManager: AuthManager?
     var categoryCases: [Category] {
         guard let premium = authManager?.currentUser?.premium else {
             assertionFailure("User data is nil.")
             return []
         }
-        var categories: [Category] = [.grocery, .transport]
         
-        categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
-        
-        return categories
+        if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
+            var categories: [ExpenseCategory] = [.grocery, .transport]
+            categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
+            return categories
+        } else {
+            var categories: [IncomeCategory] = [.salary, .gift]
+            categories.append(contentsOf: premium ? [.items, .interest, .government, .other] : [.other])
+            return categories
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Add Expense"
+        title = "Add Transaction"
         
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
     }
     
-    @IBAction func addExpenseButtonTapped(_ sender: Any) {
-        guard let expense = expenseAmountTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !expense.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing Amount", message: "Please fill in the amount of the expense"), animated: true)
+    @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: Any) {
+        categoryPicker.reloadAllComponents()
+    }
+    
+    @IBAction func addTransactionButtonTapped(_ sender: Any) {
+        guard let amount = amountTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !amount.isEmpty else {
+            self.present(UIAlertController.create(title: "Missing Amount", message: "Please fill in the amount."), animated: true)
             return
         }
         
-        guard let expenseNumber = Double(expense) else {
+        guard let amountNumber = Double(amount) else {
             self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addExpenseToCurrentUser(expenseNumber, category: selectedCategory) { firebaseError, _ in
+        authManager?.addTransactionToCurrentUser(amountNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }
@@ -63,7 +73,7 @@ class ExpenseViewController: UIViewController {
     }
 }
 
-extension ExpenseViewController: UIPickerViewDataSource {
+extension TransactionViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -73,8 +83,13 @@ extension ExpenseViewController: UIPickerViewDataSource {
     }
 }
 
-extension ExpenseViewController: UIPickerViewDelegate {
+extension TransactionViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return categoryCases[row].rawValue
+        if let expense = categoryCases as? [ExpenseCategory] {
+            return expense[row].rawValue
+        } else if let income = categoryCases as? [IncomeCategory] {
+            return income[row].rawValue
+        }
+        return ""
     }
 }

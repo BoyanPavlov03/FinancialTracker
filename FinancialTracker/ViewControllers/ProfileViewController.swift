@@ -18,7 +18,6 @@ class ProfileViewController: UIViewController {
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
-    @IBOutlet var expensesCountLabel: UILabel!
     
     var authManager: AuthManager?
     
@@ -37,7 +36,6 @@ class ProfileViewController: UIViewController {
         nameLabel.text = "\(user.firstName) \(user.lastName)"
         emailLabel.text = user.email
         balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
-        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
         
         authManager?.addDelegate(self)
@@ -50,7 +48,6 @@ class ProfileViewController: UIViewController {
         }
         
         balanceLabel.text = "Balance\n \(balance.round(to: 2))\(currency.symbolNative)"
-        expensesCountLabel.text = "Expenses\n \(user.expenses.count)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
     }
     

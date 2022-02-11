@@ -68,38 +68,61 @@ class DatabaseManager {
         }
     }
     
-    func addExpenseToCurrentUser(_ expenseAmount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
                 
         let usersKey = DBCollectionKey.users.rawValue
-        let expensesKey = User.CodingKeys.expenses.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         
-        let formatedDate = today.formatDate("hh:mm:ss, MMM dd, yyyy")
+        let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
         
-        let expense = Expense(amount: expenseAmount, date: formatedDate, category: category)
-                
         do {
-            let expenseData = try JSONEncoder().encode(expense)
-            let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
-            
-            guard let dictionary = json as? [String: Any] else {
-                assertionFailure("Couldn't cast json to dictionary.")
-                return
-            }
-                        
-            guard let userBalance = self.currentUser?.balance else {
-                assertionFailure("User hasn't entered balance yet.")
-                return
-            }
+            if let category = category as? ExpenseCategory {
+                let expenseKey = User.CodingKeys.expenses.rawValue
+                let expense = Transaction(amount: amount, date: formatedDate, category: category)
+                
+                let expenseData = try JSONEncoder().encode(expense)
+                let json = try JSONSerialization.jsonObject(with: expenseData, options: [])
+                
+                guard let dictionary = json as? [String: Any] else {
+                    assertionFailure("Couldn't cast json to dictionary.")
+                    return
+                }
+                            
+                guard let userBalance = self.currentUser?.balance else {
+                    assertionFailure("User hasn't entered balance yet.")
+                    return
+                }
 
-            let newBalanceValue = (userBalance - expenseAmount).round(to: 2)
-            let expenseValue = FieldValue.arrayUnion([dictionary])
-            
-            firestore.collection(usersKey).document(currentUser.uid).setData([expensesKey: expenseValue, balanceKey: newBalanceValue], merge: true)
+                let newBalanceValue = (userBalance - amount).round(to: 2)
+                let expenseValue = FieldValue.arrayUnion([dictionary])
+                
+                firestore.collection(usersKey).document(currentUser.uid).setData([expenseKey: expenseValue, balanceKey: newBalanceValue], merge: true)
+            } else if let category = category as? IncomeCategory {
+                let incomeKey = User.CodingKeys.incomes.rawValue
+                let income = Transaction(amount: amount, date: formatedDate, category: category)
+                
+                let incomeData = try JSONEncoder().encode(income)
+                let json = try JSONSerialization.jsonObject(with: incomeData, options: [])
+                
+                guard let dictionary = json as? [String: Any] else {
+                    assertionFailure("Couldn't cast json to dictionary.")
+                    return
+                }
+                            
+                guard let userBalance = self.currentUser?.balance else {
+                    assertionFailure("User hasn't entered balance yet.")
+                    return
+                }
+
+                let newBalanceValue = (userBalance + amount).round(to: 2)
+                let incomeValue = FieldValue.arrayUnion([dictionary])
+                
+                firestore.collection(usersKey).document(currentUser.uid).setData([incomeKey: incomeValue, balanceKey: newBalanceValue], merge: true)
+            }
             
             completionHandler(nil, true)
         } catch {
@@ -129,17 +152,32 @@ class DatabaseManager {
         
         let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: 2)
         
-        var newExpenses: [Expense] = []
+        var newExpenses: [Transaction] = []
         for expense in currentUser.expenses {
             let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: 2)
-            newExpenses.append(Expense(amount: newExpenseAmount, date: expense.date, category: expense.category))
+            newExpenses.append(Transaction(amount: newExpenseAmount, date: expense.date, category: expense.category))
+        }
+        
+        var newIncomes: [Transaction] = []
+        for income in currentUser.incomes {
+            let newIncomeAmount = ((income.amount / currentCurrency.rate) * currency.rate).round(to: 2)
+            newIncomes.append(Transaction(amount: newIncomeAmount, date: income.date, category: income.category))
         }
         
         let balanceKey = User.CodingKeys.balance.rawValue
         let expensesKey = User.CodingKeys.expenses.rawValue
         let currencyKey = User.CodingKeys.currency.rawValue
+        let incomesKey = User.CodingKeys.incomes.rawValue
         
         do {
+            let incomeData = try JSONEncoder().encode(newIncomes)
+            let incomesJson = try JSONSerialization.jsonObject(with: incomeData, options: [])
+                          
+            guard let incomesValue = incomesJson as? [Any] else {
+                assertionFailure("Couldn't cast json to array.")
+                return
+            }
+            
             let expenseData = try JSONEncoder().encode(newExpenses)
             let expensesJson = try JSONSerialization.jsonObject(with: expenseData, options: [])
                           
@@ -156,7 +194,7 @@ class DatabaseManager {
                 return
             }
                                  
-            let data = [balanceKey: newBalance, expensesKey: expensesValue, currencyKey: currencyValue] as [String: Any]
+            let data = [balanceKey: newBalance, expensesKey: expensesValue, incomesKey: incomesValue, currencyKey: currencyValue] as [String: Any]
             
             firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData(data)
             
@@ -224,6 +262,7 @@ class DatabaseManager {
             
             do {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                print(data)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.currentUser = user
                 

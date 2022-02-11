@@ -24,7 +24,7 @@ enum ViewControllerType: String {
     case login = "LoginVC"
     case balance = "BalanceVC"
     case home = "HomeVC"
-    case expense = "ExpenseVC"
+    case transaction = "TransactionVC"
     case profile = "ProfileVC"
     case tabBar = "TabBarVC"
     case premium = "PremiumVC"
