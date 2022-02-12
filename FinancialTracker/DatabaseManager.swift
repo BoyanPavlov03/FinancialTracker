@@ -262,7 +262,6 @@ class DatabaseManager {
             
             do {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
-                print(data)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.currentUser = user
                 

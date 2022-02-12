@@ -46,6 +46,11 @@ class ProfileViewController: UIViewController {
             assertionFailure("User data is nil")
             return
         }
+        if balance < 0 {
+            balanceLabel.textColor = .red
+        } else if balance > 3000 {
+            balanceLabel.textColor = .green
+        }
         
         balanceLabel.text = "Balance\n \(balance.round(to: 2))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
