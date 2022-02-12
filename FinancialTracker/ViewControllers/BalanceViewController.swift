@@ -85,6 +85,7 @@ class BalanceViewController: UIViewController {
                 
                 guard let authManager = self.authManager else { return }
                 
+                tabBarVC.justMadeAccount()
                 tabBarVC.setAuthManager(authManager)
                 self.view.window?.rootViewController = tabBarVC
                 self.view.window?.makeKeyAndVisible()
