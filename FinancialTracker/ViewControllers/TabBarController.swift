@@ -47,6 +47,7 @@ class TabBarController: UITabBarController {
         
         if didJustMadeAccount {
             self.present(UIAlertController.create(title: "Welcome", message: FinanceTips.start), animated: true)
+            didJustMadeAccount = false
         }
         
         authManager?.firestoreDidChangeData { firebaseError, user in
