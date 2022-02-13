@@ -67,6 +67,10 @@ class TabBarController: UITabBarController {
                     return
                 }
 
+                if !user.premium {
+                    return
+                }
+                
                 if user.expenses.isEmpty, user.incomes.isEmpty {
                     return
                 }
