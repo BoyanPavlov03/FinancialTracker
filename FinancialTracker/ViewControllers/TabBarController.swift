@@ -7,23 +7,33 @@
 
 import UIKit
 
-struct FinanceTips {
-    static let lowBalance = "Be careful with your finances. Try to spend less on things you don't need!"
-    static let goodBalance = "You are doing great! Keep doing so!"
-    static let needToInvest = "You have a lot of money stored. You can invest some of them in crypto or shares."
-    static let start = "We are delighted to have you on board. In here you can keep track of your finances. Be careful how you spend your money."
+enum FinanceTips: Double {
+    case lowBalance = 100.0
+    case goodBalance = 1000.0
+    case needToInvest = 3000.0
+    case start = 0.0
+    
+    var description: String {
+        switch self {
+        case .lowBalance:
+            return "Be careful with your finances. Try to spend less on things you don't need!"
+        case .goodBalance:
+            return "You are doing great! Keep doing so!"
+        case .needToInvest:
+            return "You have a lot of money stored. You can invest some of them in crypto or shares."
+        case .start:
+            return "We are delighted to have you on board. In here you can keep track of your finances. Be careful how you spend your money."
+        }
+    }
 }
 
 class TabBarController: UITabBarController {
     private var authManager: AuthManager?
-    private var didJustMadeAccount = false
+    var accountCreated = false
     
-    func setAuthManager(_ authManager: AuthManager) {
+    func setAuthManager(_ authManager: AuthManager, accountCreated: Bool) {
         self.authManager = authManager
-    }
-    
-    func justMadeAccount() {
-        self.didJustMadeAccount = true
+        self.accountCreated = accountCreated
     }
     
     override func viewDidLoad() {
@@ -45,9 +55,9 @@ class TabBarController: UITabBarController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if didJustMadeAccount {
-            self.present(UIAlertController.create(title: "Welcome", message: FinanceTips.start), animated: true)
-            didJustMadeAccount = false
+        if accountCreated {
+            self.present(UIAlertController.create(title: "Welcome", message: FinanceTips.start.description), animated: true)
+            accountCreated = false
         }
         
         authManager?.firestoreDidChangeData { firebaseError, user in
@@ -67,7 +77,7 @@ class TabBarController: UITabBarController {
                     return
                 }
 
-                if !user.premium {
+                guard user.premium else {
                     return
                 }
                 
@@ -75,12 +85,12 @@ class TabBarController: UITabBarController {
                     return
                 }
                 
-                if balance < 100 {
-                    self.present(UIAlertController.create(title: "Low Balance", message: FinanceTips.lowBalance), animated: true)
-                } else if balance > 1000 {
-                    self.present(UIAlertController.create(title: "Good Balance", message: FinanceTips.goodBalance), animated: true)
-                } else if balance > 3000 {
-                    self.present(UIAlertController.create(title: "Need Invest", message: FinanceTips.needToInvest), animated: true)
+                if balance < FinanceTips.lowBalance.rawValue {
+                    self.present(UIAlertController.create(title: "Low Balance", message: FinanceTips.lowBalance.description), animated: true)
+                } else if balance > FinanceTips.goodBalance.rawValue {
+                    self.present(UIAlertController.create(title: "Good Balance", message: FinanceTips.goodBalance.description), animated: true)
+                } else if balance > FinanceTips.needToInvest.rawValue {
+                    self.present(UIAlertController.create(title: "Need Invest", message: FinanceTips.needToInvest.description), animated: true)
                 }
             }
         }
