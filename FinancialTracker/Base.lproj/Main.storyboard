@@ -1081,6 +1081,104 @@
             </objects>
             <point key="canvasLocation" x="7907" y="-295"/>
         </scene>
+        <!--Request Or Send View Controller-->
+        <scene sceneID="MCu-Cd-QoS">
+            <objects>
+                <viewController storyboardIdentifier="Request+SendVC" id="YzF-Ef-AuQ" customClass="RequestOrSendViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="QIL-Yr-3SS">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Mr-sW-pg3">
+                                <rect key="frame" x="40" y="111" width="240" height="323"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JzL-8t-rS6">
+                                        <rect key="frame" x="99.5" y="50" width="41.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Yl-vK-SCP">
+                                        <rect key="frame" x="86.5" y="272" width="67" height="31"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Button"/>
+                                        <connections>
+                                            <action selector="requestOrSendButtonTapped:" destination="YzF-Ef-AuQ" eventType="touchUpInside" id="GDV-Kf-urZ"/>
+                                        </connections>
+                                    </button>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="cFe-t9-1zO">
+                                        <rect key="frame" x="40" y="102.5" width="160" height="108"/>
+                                        <subviews>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="seU-7A-L7K" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="160" height="46.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="person" catalog="system"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="leftPadding">
+                                                        <real key="value" value="15"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </textField>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KVc-bc-oEf" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="61.5" width="160" height="46.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="image" keyPath="leftImage" value="dollarsign.circle" catalog="system"/>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="leftPadding">
+                                                        <real key="value" value="15"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clear" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="IUY-xr-VNK">
+                                        <rect key="frame" x="185" y="7.5" width="50" height="44.5"/>
+                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="IM3-hP-cPb"/>
+                                            <constraint firstAttribute="height" constant="50" id="SQK-d0-87D"/>
+                                        </constraints>
+                                        <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="small"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="tertiaryLabelColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="cFe-t9-1zO" secondAttribute="trailing" constant="40" id="7Zf-nR-9cx"/>
+                                    <constraint firstAttribute="trailing" secondItem="IUY-xr-VNK" secondAttribute="trailing" constant="5" id="B7c-Um-Yii"/>
+                                    <constraint firstItem="JzL-8t-rS6" firstAttribute="centerX" secondItem="7Mr-sW-pg3" secondAttribute="centerX" id="JOT-QU-iA5"/>
+                                    <constraint firstItem="cFe-t9-1zO" firstAttribute="top" secondItem="JzL-8t-rS6" secondAttribute="bottom" constant="32" id="N5p-fC-Knh"/>
+                                    <constraint firstItem="IUY-xr-VNK" firstAttribute="top" secondItem="7Mr-sW-pg3" secondAttribute="top" constant="5" id="TPm-n3-AVn"/>
+                                    <constraint firstItem="JzL-8t-rS6" firstAttribute="centerX" secondItem="3Yl-vK-SCP" secondAttribute="centerX" id="Uhz-HZ-Oaf"/>
+                                    <constraint firstAttribute="bottom" secondItem="3Yl-vK-SCP" secondAttribute="bottom" constant="20" id="WyC-Tw-8js"/>
+                                    <constraint firstItem="cFe-t9-1zO" firstAttribute="leading" secondItem="7Mr-sW-pg3" secondAttribute="leading" constant="40" id="abw-yw-nW5"/>
+                                    <constraint firstItem="JzL-8t-rS6" firstAttribute="top" secondItem="7Mr-sW-pg3" secondAttribute="top" constant="50" id="dcI-ou-bUI"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="eDa-8A-wqh"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7Mr-sW-pg3" firstAttribute="top" secondItem="eDa-8A-wqh" secondAttribute="top" constant="111" id="0P6-5z-xYC"/>
+                            <constraint firstItem="eDa-8A-wqh" firstAttribute="bottom" secondItem="7Mr-sW-pg3" secondAttribute="bottom" constant="134" id="0jO-V5-twf"/>
+                            <constraint firstItem="eDa-8A-wqh" firstAttribute="trailing" secondItem="7Mr-sW-pg3" secondAttribute="trailing" constant="40" id="Luc-8o-APA"/>
+                            <constraint firstItem="7Mr-sW-pg3" firstAttribute="leading" secondItem="eDa-8A-wqh" secondAttribute="leading" constant="40" id="qxx-MS-PlN"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="actionTypeButton" destination="3Yl-vK-SCP" id="U8H-Le-zN7"/>
+                        <outlet property="actionTypeLabel" destination="JzL-8t-rS6" id="vka-5c-jmD"/>
+                        <outlet property="amountTextField" destination="KVc-bc-oEf" id="cYt-EC-u17"/>
+                        <outlet property="boxView" destination="7Mr-sW-pg3" id="FzS-jg-R1Z"/>
+                        <outlet property="closeButton" destination="IUY-xr-VNK" id="rgp-82-Cqc"/>
+                        <outlet property="recipientTextField" destination="seU-7A-L7K" id="rx5-Ks-thv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fIN-cb-ux8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4905" y="2004.9295774647887"/>
+        </scene>
     </scenes>
     <designables>
         <designable name="2gT-XN-b5k">
@@ -1095,8 +1193,14 @@
         <designable name="D5G-uC-FGk">
             <size key="intrinsicContentSize" width="137.5" height="38.5"/>
         </designable>
+        <designable name="KVc-bc-oEf">
+            <size key="intrinsicContentSize" width="97" height="46.5"/>
+        </designable>
         <designable name="jYP-cS-Ihx">
             <size key="intrinsicContentSize" width="137.5" height="38.5"/>
+        </designable>
+        <designable name="seU-7A-L7K">
+            <size key="intrinsicContentSize" width="96" height="46.5"/>
         </designable>
         <designable name="tvk-ML-w8e">
             <size key="intrinsicContentSize" width="165" height="38.5"/>
@@ -1104,6 +1208,7 @@
     </designables>
     <resources>
         <image name="checkmark" catalog="system" width="128" height="114"/>
+        <image name="clear" catalog="system" width="128" height="114"/>
         <image name="dollarsign.circle" catalog="system" width="128" height="121"/>
         <image name="envelope" catalog="system" width="128" height="93"/>
         <image name="envelope.fill" catalog="system" width="128" height="93"/>
@@ -1121,6 +1226,9 @@
         </systemColor>
         <systemColor name="systemIndigoColor">
             <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="tertiaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tintColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

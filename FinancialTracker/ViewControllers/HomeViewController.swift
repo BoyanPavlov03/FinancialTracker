@@ -80,19 +80,20 @@ class HomeViewController: UIViewController {
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.week.rawValue:
             guard let premium = authManager?.currentUser?.premium, premium else {
-                updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+                if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
+                    updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+                } else {
+                    updateChart(transactionData: authManager?.currentUser?.incomes ?? [])
+                }
                 return
             }
-            guard let start = Date().startOfWeek else { return }
-            guard let end = Date().endOfWeek else { return }
+            guard let start = Date().startOfWeek, let end = Date().endOfWeek else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.month.rawValue:
-            guard let start = Date().startOfMonth else { return }
-            guard let end = Date().endOfMonth else { return }
+            guard let start = Date().startOfMonth, let end = Date().endOfMonth else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.year.rawValue:
-            guard let start = Date().startOfYear else { return }
-            guard let end = Date().endOfYear else { return }
+            guard let start = Date().startOfYear, let end = Date().endOfYear else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.all.rawValue:
             if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {

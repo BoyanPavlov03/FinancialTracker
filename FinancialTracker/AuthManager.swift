@@ -15,6 +15,7 @@ enum FirebaseError: Error {
     case signOut(Error?)
     case access(String?)
     case unknown
+    case nonExisting
 }
 
 enum DBCollectionKey: String {
@@ -104,7 +105,7 @@ class AuthManager {
                         completionHandler(FirebaseError.unknown, user)
                     case .access(let error):
                         completionHandler(FirebaseError.access(error), user)
-                    case .auth, .signOut:
+                    case .auth, .signOut, .nonExisting:
                         assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
                         // swiftlint:disable:next unneeded_break_in_switch
                         break
@@ -132,8 +133,9 @@ class AuthManager {
         }
     }
     
-    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addTransactionToCurrentUser(amount, category: category) { firebaseError, success in
+    func addTransactionToUserByID(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let uid = currentUser?.uid else { return }
+        databaseManager.addTransactionToUserByID(uid, amount: amount, category: category) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
@@ -153,6 +155,24 @@ class AuthManager {
     func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         databaseManager.buyPremium { firebaseError, success in
             completionHandler(firebaseError, success)
+        }
+    }
+    
+    func sendOrRequestMoney(email: String, amount: Double, reminderType: ReminderType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+        auth.fetchSignInMethods(forEmail: email) { methods, error in
+            if let error = error {
+                completionHandler(FirebaseError.auth(error), nil)
+                return
+            }
+            
+            guard methods != nil else {
+                completionHandler(FirebaseError.nonExisting, nil)
+                return
+            }
+            
+            self.databaseManager.sendOrRequestMoney(email: email, amount: amount, reminderType: reminderType) { firebaseError, user in
+                completionHandler(firebaseError, user)
+            }
         }
     }
     

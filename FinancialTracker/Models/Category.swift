@@ -14,6 +14,7 @@ protocol Category {
 enum ExpenseCategory: String, CaseIterable, Category, Codable {
     case transport = "Transport"
     case grocery = "Grocery"
+    case gift = "Gifts"
     
     case taxes = "Taxes"
     case utility = "Utility"
@@ -39,6 +40,8 @@ enum ExpenseCategory: String, CaseIterable, Category, Codable {
             return UIColor(red: CGFloat(5.0/255), green: CGFloat(160.0/255), blue: CGFloat(160.0/255), alpha: 1)
         case .travel:
             return UIColor(red: CGFloat(130.0/255), green: CGFloat(10.0/255), blue: CGFloat(170.0/255), alpha: 1)
+        case .gift:
+            return UIColor(red: CGFloat(185.0/255), green: CGFloat(215.0/255), blue: CGFloat(30.0/255), alpha: 1)
         }
     }
 }

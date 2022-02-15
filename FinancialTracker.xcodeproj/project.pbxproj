@@ -20,9 +20,12 @@
 		7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7068D90B278896B300DFA3B3 /* Utilities.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* TransactionViewController.swift */; };
+		707C813127BA799E00A6CF0B /* Request+SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707C813027BA799E00A6CF0B /* Request+SendViewController.swift */; };
 		707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F853C27AD55740053555B /* DelegatesCollection.swift */; };
 		707F854127AED1410053555B /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F854027AED1410053555B /* AuthManager.swift */; };
 		707F854327AED2010053555B /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F854227AED2010053555B /* DatabaseManager.swift */; };
+		7082B32D27B96D4E0083A169 /* FirebaseInstallations in Frameworks */ = {isa = PBXBuildFile; productRef = 7082B32C27B96D4E0083A169 /* FirebaseInstallations */; };
+		7082B32F27B97A9D0083A169 /* PushNotificationSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7082B32E27B97A9D0083A169 /* PushNotificationSender.swift */; };
 		70835DA0277E438A0087C3D9 /* ViewControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */; };
 		708905A52764A317000CEE4E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708905A42764A317000CEE4E /* LoginViewController.swift */; };
 		708FF39327A4456000151112 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 708FF39227A4456000151112 /* StoreKit.framework */; };
@@ -57,9 +60,11 @@
 		7068D90B278896B300DFA3B3 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
+		707C813027BA799E00A6CF0B /* Request+SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+SendViewController.swift"; sourceTree = "<group>"; };
 		707F853C27AD55740053555B /* DelegatesCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatesCollection.swift; sourceTree = "<group>"; };
 		707F854027AED1410053555B /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		707F854227AED2010053555B /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		7082B32E27B97A9D0083A169 /* PushNotificationSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSender.swift; sourceTree = "<group>"; };
 		70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerFactory.swift; sourceTree = "<group>"; };
 		708905A42764A317000CEE4E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		708FF39227A4456000151112 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -86,6 +91,7 @@
 				7036707527A72386005388A5 /* FirebaseMessaging in Frameworks */,
 				709638D827649777000C152D /* FirebaseDatabase in Frameworks */,
 				709638DA27649777000C152D /* FirebaseFirestore in Frameworks */,
+				7082B32D27B96D4E0083A169 /* FirebaseInstallations in Frameworks */,
 				703DF427277F8F2100827FE8 /* Charts in Frameworks */,
 				708FF39327A4456000151112 /* StoreKit.framework in Frameworks */,
 				709638DC27649777000C152D /* FirebaseFunctions in Frameworks */,
@@ -123,6 +129,7 @@
 				7095718527888D1A00EB6EB3 /* Extensions.swift */,
 				7068D90B278896B300DFA3B3 /* Utilities.swift */,
 				707F853C27AD55740053555B /* DelegatesCollection.swift */,
+				7082B32E27B97A9D0083A169 /* PushNotificationSender.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -148,6 +155,7 @@
 				70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */,
 				70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */,
 				70607F7427A2D576005ED7F7 /* TabBarController.swift */,
+				707C813027BA799E00A6CF0B /* Request+SendViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -215,6 +223,7 @@
 				709638DD27649777000C152D /* FirebaseStorage */,
 				703DF426277F8F2100827FE8 /* Charts */,
 				7036707427A72386005388A5 /* FirebaseMessaging */,
+				7082B32C27B96D4E0083A169 /* FirebaseInstallations */,
 			);
 			productName = FinancialTracker;
 			productReference = 70D37DEC27633FB40067FFE6 /* FinancialTracker.app */;
@@ -304,6 +313,7 @@
 				70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */,
 				7014A78627AC207100E6A2DB /* Transaction.swift in Sources */,
 				707F854327AED2010053555B /* DatabaseManager.swift in Sources */,
+				7082B32F27B97A9D0083A169 /* PushNotificationSender.swift in Sources */,
 				708905A52764A317000CEE4E /* LoginViewController.swift in Sources */,
 				707F854127AED1410053555B /* AuthManager.swift in Sources */,
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
@@ -311,6 +321,7 @@
 				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
 				707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
+				707C813127BA799E00A6CF0B /* Request+SendViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
 				70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */,
@@ -571,6 +582,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 703DF425277F8F2100827FE8 /* XCRemoteSwiftPackageReference "Charts" */;
 			productName = Charts;
+		};
+		7082B32C27B96D4E0083A169 /* FirebaseInstallations */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 709638D227649777000C152D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseInstallations;
 		};
 		709638D527649777000C152D /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;

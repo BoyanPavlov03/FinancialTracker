@@ -24,8 +24,8 @@ class TransactionViewController: UIViewController {
             categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
             return categories
         } else {
-            var categories: [IncomeCategory] = [.salary, .gift]
-            categories.append(contentsOf: premium ? [.items, .interest, .government, .other] : [.other])
+            var categories: [IncomeCategory] = [.salary, .items]
+            categories.append(contentsOf: premium ? [.interest, .government, .other] : [.other])
             return categories
         }
     }
@@ -34,12 +34,33 @@ class TransactionViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Add Transaction"
+        let requestSendButton = UIBarButtonItem(title: "Send", style: .plain, target: self, action: #selector(requestOrSend))
+        self.navigationItem.rightBarButtonItem = requestSendButton
         
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
     }
     
-    @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: Any) {
+    @objc func requestOrSend() {
+        guard let sendVC = ViewControllerFactory.shared.viewController(for: .requestOrSend) as? RequestOrSendViewController else {
+            assertionFailure("Couldn't cast to RequestOrSendViewController.")
+            return
+        }
+        sendVC.authManager = authManager
+        sendVC.type = ReminderType(rawValue: expenseOrIncomeSegmentedControl.selectedSegmentIndex)
+        navigationController?.push(viewController: sendVC)
+    }
+    
+    @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: UISegmentedControl) {
+        let reminder = ReminderType(rawValue: sender.selectedSegmentIndex)
+        switch reminder {
+        case .send:
+            self.navigationItem.rightBarButtonItem?.title = reminder?.description
+        case .request:
+            self.navigationItem.rightBarButtonItem?.title = reminder?.description
+        default:
+            break
+        }
         categoryPicker.reloadAllComponents()
     }
     
@@ -56,12 +77,12 @@ class TransactionViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToCurrentUser(amountNumber, category: selectedCategory) { firebaseError, _ in
+        authManager?.addTransactionToUserByID(amountNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-            case .auth, .database, .unknown, .signOut:
+            case .auth, .database, .unknown, .signOut, .nonExisting:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch

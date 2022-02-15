@@ -28,7 +28,13 @@ class DatabaseManager {
         let emailKey = User.CodingKeys.email.rawValue
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
-        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false] as [String: Any]
+        let fcmToken = User.CodingKeys.fcmToken.rawValue
+        guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
+            assertionFailure("UserDefaults fails")
+            return
+        }
+        // swiftlint:disable:next line_length
+        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token] as [String: Any]
         
         self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(data) { error in
             if error != nil {
@@ -68,8 +74,8 @@ class DatabaseManager {
         }
     }
     
-    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
+    func addTransactionToUserByID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard currentUser != nil else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
@@ -100,7 +106,7 @@ class DatabaseManager {
                 let newBalanceValue = (userBalance - amount).round(to: 2)
                 let expenseValue = FieldValue.arrayUnion([dictionary])
                 
-                firestore.collection(usersKey).document(currentUser.uid).setData([expenseKey: expenseValue, balanceKey: newBalanceValue], merge: true)
+                firestore.collection(usersKey).document(uid).setData([expenseKey: expenseValue, balanceKey: newBalanceValue], merge: true)
             } else if let category = category as? IncomeCategory {
                 let incomeKey = User.CodingKeys.incomes.rawValue
                 let income = Transaction(amount: amount, date: formatedDate, category: category)
@@ -121,7 +127,7 @@ class DatabaseManager {
                 let newBalanceValue = (userBalance + amount).round(to: 2)
                 let incomeValue = FieldValue.arrayUnion([dictionary])
                 
-                firestore.collection(usersKey).document(currentUser.uid).setData([incomeKey: incomeValue, balanceKey: newBalanceValue], merge: true)
+                firestore.collection(usersKey).document(uid).setData([incomeKey: incomeValue, balanceKey: newBalanceValue], merge: true)
             }
             
             completionHandler(nil, true)
@@ -215,6 +221,69 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
+    func saveFCMToken(_ token: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
+            return
+        }
+        
+        self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(["fcmToken": token], merge: true)
+        completionHandler(nil, true)
+    }
+    
+    func sendOrRequestMoney(email: String, amount: Double, reminderType: ReminderType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), nil)
+            return
+        }
+        
+        self.firestore.collection(DBCollectionKey.users.rawValue).whereField("email", isEqualTo: email).getDocuments { querySnapshot, error in
+            if let error = error {
+                completionHandler(FirebaseError.database(error), nil)
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                completionHandler(FirebaseError.unknown, nil)
+                return
+            }
+            
+            guard documents.count == 1 else {
+                completionHandler(FirebaseError.unknown, nil)
+                return
+            }
+            
+            do {
+                let data = try JSONSerialization.data(withJSONObject: documents[0].data(), options: .prettyPrinted)
+                let user = try JSONDecoder().decode(User.self, from: data)
+                guard user.balance != nil else {
+                    completionHandler(FirebaseError.nonExisting, nil)
+                    return
+                }
+                
+                if reminderType == .send {
+                    guard let senderRate = currentUser.currency?.rate, let receiverRate = user.currency?.rate else {
+                        completionHandler(FirebaseError.unknown, nil)
+                        return
+                    }
+                    
+                    let newAmount = (amount / senderRate) * receiverRate
+                    self.addTransactionToUserByID(user.uid, amount: newAmount, category: IncomeCategory.gift) { firebaseError, _ in
+                        completionHandler(firebaseError, nil)
+                    }
+                    
+                    self.addTransactionToUserByID(currentUser.uid, amount: amount, category: ExpenseCategory.gift) { firebaseError, _ in
+                        completionHandler(firebaseError, nil)
+                    }
+                }
+                
+                completionHandler(nil, user)
+            } catch {
+                completionHandler(FirebaseError.database(error), nil)
+            }
+        }
+    }
+    
     func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), nil)
@@ -264,6 +333,13 @@ class DatabaseManager {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.currentUser = user
+                
+                self.saveFCMToken(UserDefaults.standard.string(forKey: "fcmToken") ?? "") { error, _ in
+                    if let error = error {
+                        assertionFailure(error.localizedDescription)
+                        return
+                    }
+                }
                 
                 self.delegatesCollection.forEach { delegate in
                     delegate.databaseManagerDidUserChange(sender: self)
