@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         return
                     }
                     
-                    tabBarVC.setAuthManager(self.authManager)
+                    tabBarVC.setAuthManager(self.authManager, accountCreated: false)
                     window.rootViewController = tabBarVC
                 } else {
                     guard let balanceVC = ViewControllerFactory.shared.viewController(for: .balance) as? BalanceViewController else {
