@@ -18,6 +18,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
+    @IBOutlet var premiumButton: UIButton!
     
     var authManager: AuthManager?
     
@@ -31,6 +32,10 @@ class ProfileViewController: UIViewController {
         guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
+        }
+        
+        if user.premium {
+            premiumButton.isHidden = true
         }
         
         nameLabel.text = "\(user.firstName) \(user.lastName)"
@@ -70,6 +75,16 @@ class ProfileViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
         present(alertController, animated: true)
+    }
+    
+    @IBAction func upgradeButtonTapped(_ sender: Any) {
+        guard let premiumVC = ViewControllerFactory.shared.viewController(for: .premium) as? PremiumViewController else {
+            assertionFailure("Couldn't cast to PremiumViewController")
+            return
+        }
+        
+        premiumVC.authManager = authManager
+        navigationController?.pushViewController(premiumVC, animated: true)
     }
     
     private func setComposerMessage(action: UIAlertAction) {

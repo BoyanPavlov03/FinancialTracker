@@ -120,8 +120,10 @@ class AuthManager {
     func signOut(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         do {
             try auth.signOut()
-            self.databaseManager.setUserToNil()
-            completionHandler(nil, true)
+            self.databaseManager.removeFCMToken { firebaseError, success in
+                self.databaseManager.setUserToNil()
+                completionHandler(firebaseError, success)
+            }
         } catch let signOutError {
             completionHandler(FirebaseError.signOut(signOutError), false)
         }

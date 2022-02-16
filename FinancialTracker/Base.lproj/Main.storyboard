@@ -705,10 +705,22 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jsv-Qv-zyl">
+                                <rect key="frame" x="80" y="423" width="160" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Upgrade" cornerStyle="capsule">
+                                    <color key="baseBackgroundColor" systemColor="systemIndigoColor"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="upgradeButtonTapped:" destination="QXU-dR-eYZ" eventType="touchUpInside" id="5KJ-G2-A4x"/>
+                                    <action selector="upgradeButtonTapped:" destination="KWq-p7-YxS" eventType="touchUpInside" id="tIJ-xz-yFH"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Ghv-QR-cps"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Ghv-QR-cps" firstAttribute="trailing" secondItem="Jsv-Qv-zyl" secondAttribute="trailing" constant="80" id="3Nn-Lb-xgm"/>
                             <constraint firstItem="Ex0-1S-O7G" firstAttribute="top" secondItem="rER-1G-C1Y" secondAttribute="bottom" constant="10" id="3kq-HF-li9"/>
                             <constraint firstItem="Hzx-T6-Gna" firstAttribute="top" secondItem="Lem-xz-i2Y" secondAttribute="bottom" constant="20" id="9ZA-xU-jpc"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="trailing" secondItem="rER-1G-C1Y" secondAttribute="trailing" id="Bv2-J6-Gdn"/>
@@ -719,10 +731,12 @@
                             <constraint firstItem="Hzx-T6-Gna" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" constant="15" id="ScQ-6z-SQm"/>
                             <constraint firstItem="Xpu-EO-7LU" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="Wry-zR-MDo"/>
                             <constraint firstItem="tg1-SH-rKn" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="aAd-u5-dJ7"/>
+                            <constraint firstItem="Jsv-Qv-zyl" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" constant="80" id="bAX-cF-bef"/>
                             <constraint firstItem="tg1-SH-rKn" firstAttribute="top" secondItem="LB1-BA-2hy" secondAttribute="bottom" constant="40.5" id="cun-MG-rzL"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="leading" secondItem="rER-1G-C1Y" secondAttribute="leading" id="g5b-FW-qTE"/>
                             <constraint firstItem="LB1-BA-2hy" firstAttribute="top" secondItem="rER-1G-C1Y" secondAttribute="bottom" constant="100" id="i61-FN-8jC"/>
                             <constraint firstItem="Lem-xz-i2Y" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="jcz-A7-cHE"/>
+                            <constraint firstItem="Xpu-EO-7LU" firstAttribute="top" secondItem="Jsv-Qv-zyl" secondAttribute="bottom" constant="14" id="jpD-NY-rx9"/>
                             <constraint firstItem="Lem-xz-i2Y" firstAttribute="top" secondItem="Ghv-QR-cps" secondAttribute="top" constant="15" id="lEL-QE-v1f"/>
                             <constraint firstItem="Ghv-QR-cps" firstAttribute="trailing" secondItem="rER-1G-C1Y" secondAttribute="trailing" id="tgd-JS-jvY"/>
                             <constraint firstItem="rER-1G-C1Y" firstAttribute="top" secondItem="Hzx-T6-Gna" secondAttribute="bottom" constant="10" id="xPJ-Pp-kfE"/>
@@ -733,6 +747,7 @@
                         <outlet property="balanceLabel" destination="Ex0-1S-O7G" id="B3p-Py-GBA"/>
                         <outlet property="emailLabel" destination="De5-an-VcW" id="u2Q-RI-oth"/>
                         <outlet property="nameLabel" destination="Lem-xz-i2Y" id="JvJ-lx-r5v"/>
+                        <outlet property="premiumButton" destination="Jsv-Qv-zyl" id="Soz-5t-w0n"/>
                         <outlet property="userTypeLabel" destination="HOV-av-t1m" id="nH6-39-i6f"/>
                     </connections>
                 </viewController>
@@ -858,7 +873,7 @@
                         <segue destination="6bj-Kv-Qto" kind="relationship" relationship="viewControllers" id="EFS-zI-TUl"/>
                         <segue destination="5Rw-0X-Uru" kind="relationship" relationship="viewControllers" id="VxT-HH-TES"/>
                         <segue destination="ScW-xe-c5W" kind="relationship" relationship="viewControllers" id="4ZX-25-b3v"/>
-                        <segue destination="PgS-xw-C2c" kind="relationship" relationship="viewControllers" id="nWD-p9-s5i"/>
+                        <segue destination="8sx-P4-EO7" kind="relationship" relationship="viewControllers" id="0Ok-EK-WDb"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cw9-wp-gqv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -941,7 +956,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="4Vd-aP-ugL">
-                                <rect key="frame" x="72.5" y="64" width="175.5" height="36"/>
+                                <rect key="frame" x="72.5" y="20" width="175.5" height="36"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upgrade" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cdc-b2-9Kd">
                                         <rect key="frame" x="0.0" y="0.0" width="113" height="36"/>
@@ -957,7 +972,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="x9s-Uu-Ybh">
-                                <rect key="frame" x="25" y="130" width="243.5" height="92"/>
+                                <rect key="frame" x="25" y="86" width="243.5" height="92"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="uUb-Po-jli">
                                         <rect key="frame" x="0.0" y="0.0" width="243.5" height="20"/>
@@ -1016,7 +1031,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F2a-QY-ncn">
-                                <rect key="frame" x="74.5" y="262" width="171.5" height="31"/>
+                                <rect key="frame" x="74.5" y="218" width="171.5" height="31"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Unlock Premium $6.99" cornerStyle="capsule">
                                     <color key="baseBackgroundColor" systemColor="systemIndigoColor"/>
@@ -1041,7 +1056,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rM2-Py-zNR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7907" y="512"/>
+            <point key="canvasLocation" x="5813" y="1277"/>
         </scene>
         <!--Currency-->
         <scene sceneID="VW5-jt-PLe">
@@ -1062,29 +1077,39 @@
             </objects>
             <point key="canvasLocation" x="6960" y="-294"/>
         </scene>
-        <!--Premium-->
-        <scene sceneID="FYN-jf-lWE">
+        <!--Reminders Table View Controller-->
+        <scene sceneID="DD7-fs-AOe">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PgS-xw-C2c" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Premium" image="star" catalog="system" selectedImage="star" id="U33-yL-Kci"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="7kA-8q-SAh">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="KWq-p7-YxS" kind="relationship" relationship="rootViewController" id="cg5-q8-E9A"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OXf-Xm-AiG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tableViewController id="Ju8-wa-I0C" customClass="RemindersTableViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="xZH-EN-LsM">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Reminder" id="c1c-JV-h1F">
+                                <rect key="frame" x="0.0" y="44.5" width="320" height="43.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="c1c-JV-h1F" id="txX-MI-CaN">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Ju8-wa-I0C" id="APv-Ip-uMA"/>
+                            <outlet property="delegate" destination="Ju8-wa-I0C" id="2mg-eC-RDA"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="yDg-S7-2Ko"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1j5-Qx-BQF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7907" y="-295"/>
+            <point key="canvasLocation" x="7969" y="511"/>
         </scene>
         <!--Request Or Send View Controller-->
         <scene sceneID="MCu-Cd-QoS">
             <objects>
-                <viewController storyboardIdentifier="Request+SendVC" id="YzF-Ef-AuQ" customClass="RequestOrSendViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Request+SendVC" modalTransitionStyle="crossDissolve" modalPresentationStyle="overCurrentContext" id="YzF-Ef-AuQ" customClass="RequestOrSendViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QIL-Yr-3SS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1143,7 +1168,7 @@
                                         <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="small"/>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="tertiaryLabelColor"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="cFe-t9-1zO" secondAttribute="trailing" constant="40" id="7Zf-nR-9cx"/>
                                     <constraint firstAttribute="trailing" secondItem="IUY-xr-VNK" secondAttribute="trailing" constant="5" id="B7c-Um-Yii"/>
@@ -1158,7 +1183,7 @@
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="eDa-8A-wqh"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="1" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="7Mr-sW-pg3" firstAttribute="top" secondItem="eDa-8A-wqh" secondAttribute="top" constant="111" id="0P6-5z-xYC"/>
                             <constraint firstItem="eDa-8A-wqh" firstAttribute="bottom" secondItem="7Mr-sW-pg3" secondAttribute="bottom" constant="134" id="0jO-V5-twf"/>
@@ -1178,6 +1203,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fIN-cb-ux8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4905" y="2004.9295774647887"/>
+        </scene>
+        <!--Reminders-->
+        <scene sceneID="8zd-rZ-I9E">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8sx-P4-EO7" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Reminders" image="bell" catalog="system" selectedImage="bell" id="oIE-8d-W0G"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="KZj-u1-ZAQ">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Ju8-wa-I0C" kind="relationship" relationship="rootViewController" id="pSh-6A-ULl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9SZ-V0-ij5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7969" y="-294"/>
         </scene>
     </scenes>
     <designables>
@@ -1207,6 +1251,7 @@
         </designable>
     </designables>
     <resources>
+        <image name="bell" catalog="system" width="128" height="124"/>
         <image name="checkmark" catalog="system" width="128" height="114"/>
         <image name="clear" catalog="system" width="128" height="114"/>
         <image name="dollarsign.circle" catalog="system" width="128" height="121"/>
@@ -1226,9 +1271,6 @@
         </systemColor>
         <systemColor name="systemIndigoColor">
             <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="tertiaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="tintColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -110,23 +110,3 @@ extension Double {
         return (self * divisor).rounded() / divisor
     }
 }
-
-extension UINavigationController {
-    func push(viewController: UIViewController, transitionType type: CATransitionType = CATransitionType.fade, duration: CFTimeInterval = 0.3) {
-        self.addTransition(transitionType: type, duration: duration)
-        self.pushViewController(viewController, animated: false)
-    }
-    
-    func pop(transitionType type: CATransitionType = CATransitionType.fade, duration: CFTimeInterval = 0.3) {
-        self.addTransition(transitionType: type, duration: duration)
-        self.popViewController(animated: false)
-    }
-    
-    private func addTransition(transitionType type: CATransitionType = CATransitionType.fade, duration: CFTimeInterval = 0.3) {
-        let transition = CATransition()
-        transition.duration = duration
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = type
-        self.view.layer.add(transition, forKey: nil)
-    }
-}

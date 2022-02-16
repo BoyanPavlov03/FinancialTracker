@@ -29,12 +29,13 @@ class DatabaseManager {
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
         let fcmToken = User.CodingKeys.fcmToken.rawValue
+        let remindersKey = User.CodingKeys.reminders.rawValue
         guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
             assertionFailure("UserDefaults fails")
             return
         }
         // swiftlint:disable:next line_length
-        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token] as [String: Any]
+        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token, remindersKey: []] as [String: Any]
         
         self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(data) { error in
             if error != nil {
@@ -229,6 +230,48 @@ class DatabaseManager {
         
         self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(["fcmToken": token], merge: true)
         completionHandler(nil, true)
+    }
+    
+    func removeFCMToken(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
+            return
+        }
+        
+        let fcmTokenKey = User.CodingKeys.fcmToken.rawValue
+        
+        firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([fcmTokenKey: ""])
+        completionHandler(nil, true)
+
+    }
+    
+    private func setReminder(type: ReminderType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
+            return
+        }
+        
+        let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
+        
+        let reminder = Reminder(type: type, description: description, date: formatedDate)
+        
+        do {
+            let reminderData = try JSONEncoder().encode(reminder)
+            let json = try JSONSerialization.jsonObject(with: reminderData, options: [])
+            
+            guard let dictionary = json as? [String: Any] else {
+                assertionFailure("Couldn't cast json to dictionary.")
+                return
+            }
+            let remindersKey = User.CodingKeys.reminders.rawValue
+            let reminderValue = FieldValue.arrayUnion([dictionary])
+            
+            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData([remindersKey: reminderValue], merge: true)
+            
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), false)
+        }
     }
     
     func sendOrRequestMoney(email: String, amount: Double, reminderType: ReminderType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {

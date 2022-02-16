@@ -13,6 +13,8 @@
 		703DF427277F8F2100827FE8 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 703DF426277F8F2100827FE8 /* Charts */; };
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
 		705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705B3DB1279869D50059D832 /* ProfileViewController.swift */; };
+		705E7E5927BCFA8100FEA650 /* RemindersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E7E5827BCFA8100FEA650 /* RemindersTableViewController.swift */; };
+		705E7E5B27BCFC7000FEA650 /* Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E7E5A27BCFC7000FEA650 /* Reminder.swift */; };
 		705E8D3D27B3F013004F7395 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E8D3C27B3F013004F7395 /* Category.swift */; };
 		70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */; };
 		70607F7227A1EB80005ED7F7 /* PremiumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */; };
@@ -53,6 +55,8 @@
 		7036707627A7267E005388A5 /* FinancialTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FinancialTracker.entitlements; sourceTree = "<group>"; };
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		705B3DB1279869D50059D832 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		705E7E5827BCFA8100FEA650 /* RemindersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersTableViewController.swift; sourceTree = "<group>"; };
+		705E7E5A27BCFC7000FEA650 /* Reminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminder.swift; sourceTree = "<group>"; };
 		705E8D3C27B3F013004F7395 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTableViewController.swift; sourceTree = "<group>"; };
 		70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +114,7 @@
 				7014A77F27AC1F8A00E6A2DB /* User.swift */,
 				7014A78527AC207100E6A2DB /* Transaction.swift */,
 				705E8D3C27B3F013004F7395 /* Category.swift */,
+				705E7E5A27BCFC7000FEA650 /* Reminder.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -120,6 +125,15 @@
 				70580549276893E4009515BE /* DesignableUITextField.swift */,
 			);
 			path = "Cutsom UI";
+			sourceTree = "<group>";
+		};
+		705E7E5C27BD9A9B00FEA650 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				707F854027AED1410053555B /* AuthManager.swift */,
+				707F854227AED2010053555B /* DatabaseManager.swift */,
+			);
+			path = Firebase;
 			sourceTree = "<group>";
 		};
 		707C5DD5276D16B30097A522 /* Helpers */ = {
@@ -156,6 +170,7 @@
 				70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */,
 				70607F7427A2D576005ED7F7 /* TabBarController.swift */,
 				707C813027BA799E00A6CF0B /* Request+SendViewController.swift */,
+				705E7E5827BCFA8100FEA650 /* RemindersTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -184,8 +199,7 @@
 				70580548276892FD009515BE /* Cutsom UI */,
 				70D0D6CA2766227600ED0060 /* ViewControllers */,
 				7014A77E27AC1F6200E6A2DB /* Models */,
-				707F854027AED1410053555B /* AuthManager.swift */,
-				707F854227AED2010053555B /* DatabaseManager.swift */,
+				705E7E5C27BD9A9B00FEA650 /* Firebase */,
 				70D37DEF27633FB40067FFE6 /* AppDelegate.swift */,
 				70D37DF127633FB40067FFE6 /* SceneDelegate.swift */,
 				70D37DF527633FB40067FFE6 /* Main.storyboard */,
@@ -319,7 +333,9 @@
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
 				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
+				705E7E5927BCFA8100FEA650 /* RemindersTableViewController.swift in Sources */,
 				707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */,
+				705E7E5B27BCFC7000FEA650 /* Reminder.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				707C813127BA799E00A6CF0B /* Request+SendViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,

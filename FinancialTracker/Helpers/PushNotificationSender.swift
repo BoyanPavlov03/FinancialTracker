@@ -9,19 +9,24 @@ import Foundation
 import UserNotificationsUI
 
 class PushNotificatonSender {
-    static func sendPushNotification(to token: String, title: String, body: String) {
+    static func sendPushNotification(to token: String, title: String, body: String, type: ReminderType) {
         let urlString = "https://fcm.googleapis.com/fcm/send"
         guard let url = URL(string: urlString) else { return }
         let paramString: [String: Any] = [
-                            "to": token,
-                            "notification": [
-                                "title": title,
-                                "body": body
-                            ]
+            "content_available": true,
+            "notification": [
+                "title": title,
+                "body": body
+            ],
+            "data": [
+                "type": type.rawValue
+            ],
+            "to": token
         ]
         
         // Server key deleted for commit
-        let serverKey = ""
+        // swiftlint:disable:next line_length
+        let serverKey = "AAAAbFv41p0:APA91bHdeRgPGSZyDulG6uCFvRWhDdkfcecPoxK9r0j3e_d1ETFqdz2yyRjfTlpoTZwNlxvdTo8OhuVgSuccrBFWZ-J0AdjoQ3h0ra05u16J9ZlwDqWwY_P_D-pQOEjsOk9SSXQ_daY7"
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "POST"
         request.httpBody = try? JSONSerialization.data(withJSONObject: paramString, options: [.prettyPrinted])

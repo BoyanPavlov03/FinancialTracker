@@ -47,17 +47,22 @@ class TransactionViewController: UIViewController {
             return
         }
         sendVC.authManager = authManager
-        sendVC.type = ReminderType(rawValue: expenseOrIncomeSegmentedControl.selectedSegmentIndex)
-        navigationController?.push(viewController: sendVC)
+        sendVC.type = ReminderType(rawValue: self.navigationItem.rightBarButtonItem?.title ?? "Send")
+        if let items = self.tabBarController?.tabBar.items {
+            for item in items {
+                item.isEnabled = false
+            }
+        }
+        sendVC.delegate = self
+        present(sendVC, animated: true)
     }
     
     @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: UISegmentedControl) {
-        let reminder = ReminderType(rawValue: sender.selectedSegmentIndex)
-        switch reminder {
-        case .send:
-            self.navigationItem.rightBarButtonItem?.title = reminder?.description
-        case .request:
-            self.navigationItem.rightBarButtonItem?.title = reminder?.description
+        switch sender.selectedSegmentIndex {
+        case ReminderType.send.index:
+            self.navigationItem.rightBarButtonItem?.title = ReminderType.send.rawValue
+        case ReminderType.request.index:
+            self.navigationItem.rightBarButtonItem?.title = ReminderType.request.rawValue
         default:
             break
         }
@@ -112,5 +117,15 @@ extension TransactionViewController: UIPickerViewDelegate {
             return income[row].rawValue
         }
         return ""
+    }
+}
+
+extension TransactionViewController: RequestOrSendViewControllerDelegate {
+    func showTabBar(sender: RequestOrSendViewController) {
+        if let items = self.tabBarController?.tabBar.items {
+            for item in items {
+                item.isEnabled = true
+            }
+        }
     }
 }

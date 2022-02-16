@@ -20,8 +20,6 @@ class PremiumViewController: UIViewController {
         super.viewDidLoad()
 
         self.title = "Premium"
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        self.tabBarItem.image = UIImage(systemName: "star")
         
         SKPaymentQueue.default().add(self)
     }
@@ -49,8 +47,7 @@ extension PremiumViewController: SKPaymentTransactionObserver {
                     }
                 }
                 
-                // Remove the premium tab as the user now owns it
-                self.tabBarController?.viewControllers?.remove(at: 3)
+                self.navigationController?.popViewController(animated: true)
             case .failed:
                 SKPaymentQueue.default().finishTransaction(transaction)
             default:

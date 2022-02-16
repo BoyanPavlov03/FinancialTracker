@@ -40,16 +40,6 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         
         setupChildViewControllers()
-        
-        guard let currentUser = authManager?.currentUser else {
-            assertionFailure("User data is nil")
-            return
-        }
-        
-        if currentUser.premium {
-            // Remove the premium tab as the user owns it
-            self.viewControllers?.remove(at: 3)
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -114,9 +104,9 @@ class TabBarController: UITabBarController {
                 case let currencyVC as CurrencyTableViewController:
                     currencyVC.authManager = authManager
                     currencyVC.navigationItem.rightBarButtonItem = signOutButton
-                case let premiumVC as PremiumViewController:
-                    premiumVC.authManager = authManager
-                    premiumVC.navigationItem.rightBarButtonItem = signOutButton
+                case let remindersVC as RemindersTableViewController:
+                    remindersVC.authManager = authManager
+                    remindersVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
                     break
                 }

@@ -7,18 +7,8 @@
 
 import UIKit
 
-enum ReminderType: Int {
-    case send
-    case request
-    
-    var description: String {
-        switch self {
-        case .send:
-            return "Send"
-        case .request:
-            return "Request"
-        }
-    }
+protocol RequestOrSendViewControllerDelegate: AnyObject {
+    func showTabBar(sender: RequestOrSendViewController)
 }
 
 class RequestOrSendViewController: UIViewController {
@@ -31,6 +21,7 @@ class RequestOrSendViewController: UIViewController {
     
     var type: ReminderType?
     var authManager: AuthManager?
+    weak var delegate: RequestOrSendViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +29,8 @@ class RequestOrSendViewController: UIViewController {
         self.navigationItem.setHidesBackButton(true, animated: true)
         
         boxView.layer.cornerRadius = 10
-        actionTypeLabel.text = type?.description
-        actionTypeButton.setTitle(type?.description, for: .normal)
+        actionTypeLabel.text = type?.rawValue
+        actionTypeButton.setTitle(type?.rawValue, for: .normal)
         amountTextField.placeholder = "Amount"
         recipientTextField.placeholder = "To Who (email)"
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeWindow))
@@ -48,7 +39,8 @@ class RequestOrSendViewController: UIViewController {
     }
     
     @objc func closeWindow() {
-        self.navigationController?.pop()
+        self.delegate?.showTabBar(sender: self)
+        self.dismiss(animated: true)
     }
     
     @IBAction func requestOrSendButtonTapped(_ sender: Any) {
@@ -111,7 +103,7 @@ class RequestOrSendViewController: UIViewController {
                         body = "\(user.firstName) \(user.lastName) wants \(newAmount)\(symbol) from you"
                     }
                     
-                    PushNotificatonSender.sendPushNotification(to: user.fcmToken, title: title, body: body)
+                    PushNotificatonSender.sendPushNotification(to: user.fcmToken, title: title, body: body, type: type)
                     self.actionTypeButton.isEnabled = true
                     self.closeWindow()
                 }
