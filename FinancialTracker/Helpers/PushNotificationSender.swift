@@ -25,9 +25,10 @@ class PushNotificatonSender {
             "to": token
         ]
         
-        // Server key deleted for commit
+        // Commit by accident but changed
+        #warning("DONT COMMIT KEY")
         // swiftlint:disable:next line_length
-        let serverKey = "AAAAbFv41p0:APA91bHcPJiu9pF_4Xu5AeN0m1Pj_fsYLj6nLfFyn3vGJOiwnq-15xhtGo5OndlwlhmuY0jb6vJ8888IqnFJ7TwdbNh1A7KFRTC7Cye0TnFoSG1cYxJFGPc-5Cond5ea6pCYNbcTDzcT"
+        let serverKey = ""
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "POST"
         request.httpBody = try? JSONSerialization.data(withJSONObject: paramString, options: [.prettyPrinted])
