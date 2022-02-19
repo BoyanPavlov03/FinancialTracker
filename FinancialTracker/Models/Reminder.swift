@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ReminderType: String, Codable {
+enum TransferType: String, Codable {
     case send = "Send"
     case request = "Request"
     
@@ -21,8 +21,8 @@ enum ReminderType: String, Codable {
     }
 }
 
-struct Reminder: Codable {
-    var type: ReminderType
+struct Reminder: Codable, Equatable {
+    var type: TransferType
     var description: String
     var date: String
     
@@ -30,7 +30,7 @@ struct Reminder: Codable {
         case type, description, date
     }
     
-    init(type: ReminderType, description: String, date: String) {
+    init(type: TransferType, description: String, date: String) {
         self.type = type
         self.description = description
         self.date = date
@@ -38,7 +38,7 @@ struct Reminder: Codable {
     
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        type = try values.decode(ReminderType.self, forKey: .type)
+        type = try values.decode(TransferType.self, forKey: .type)
         description = try values.decode(String.self, forKey: .description)
         date = try values.decode(String.self, forKey: .date)
     }

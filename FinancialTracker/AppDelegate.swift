@@ -37,8 +37,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("User info: \(userInfo)")
-        completionHandler(.newData)
+        guard let stringType = userInfo["type"] as? String, let description = userInfo["description"] as? String else {
+            completionHandler(.noData)
+            return
+        }
+        guard let type = TransferType(rawValue: stringType) else {
+            completionHandler(.failed)
+            return
+        }
+        
+        authMananger?.setReminder(type: type, description: description, completionHandler: { firebaseError, _ in
+            if let firebaseError = firebaseError {
+                assertionFailure(firebaseError.localizedDescription)
+                completionHandler(.failed)
+                return
+            }
+            completionHandler(.newData)
+        })
     }
 }
 

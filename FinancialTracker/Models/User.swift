@@ -17,7 +17,7 @@ struct User {
     var expenses: [Transaction] = []
     var incomes: [Transaction] = []
     var reminders: [Reminder] = []
-    var fcmToken: String = ""
+    var fcmToken: String?
     var score: Double
     var premium: Bool
     
@@ -44,7 +44,7 @@ extension User: Codable {
         incomes = try values.decodeIfPresent([Transaction].self, forKey: .incomes) ?? []
         score = try values.decode(Double.self, forKey: .score)
         premium = try values.decode(Bool.self, forKey: .premium)
-        fcmToken = try values.decode(String.self, forKey: .fcmToken)
+        fcmToken = try values.decodeIfPresent(String.self, forKey: .fcmToken) ?? ""
         reminders = try values.decode([Reminder].self, forKey: .reminders)
     }
     

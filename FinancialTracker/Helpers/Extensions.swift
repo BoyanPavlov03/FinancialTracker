@@ -110,3 +110,12 @@ extension Double {
         return (self * divisor).rounded() / divisor
     }
 }
+
+extension Dictionary {
+    subscript(offset: Int) -> (key: Key, value: Value) {
+        // swiftlint:disable:next implicit_getter
+        get {
+            return self[index(startIndex, offsetBy: offset)]
+        }
+    }
+}

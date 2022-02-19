@@ -10,7 +10,7 @@ import MessageUI
 
 struct Constants {
     static let shareText = "Wanna keep track of your finance life. Click the link to install this new amazing app on the App Store:"
-    static let shareLink = "www.google.com"
+    static let shareLink = "https://app.bitrise.io/artifact/113971239/p/a364f20e4db777fa7e692386989d3053"
 }
 
 class ProfileViewController: UIViewController {

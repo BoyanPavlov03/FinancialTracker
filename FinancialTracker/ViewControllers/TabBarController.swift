@@ -123,7 +123,7 @@ class TabBarController: UITabBarController {
                     case .signOut(let error):
                         guard let error = error else { return }
                         self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                    case .database, .unknown, .access, .auth, .nonExisting:
+                    case .database, .unknown, .access, .auth, .nonExistingUser:
                         assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
                         // swiftlint:disable:next unneeded_break_in_switch
                         break

@@ -8,7 +8,7 @@
 import UIKit
 
 protocol RequestOrSendViewControllerDelegate: AnyObject {
-    func showTabBar(sender: RequestOrSendViewController)
+    func requestOrSendVIewControllerShowTabBar(sender: RequestOrSendViewController)
 }
 
 class RequestOrSendViewController: UIViewController {
@@ -16,10 +16,10 @@ class RequestOrSendViewController: UIViewController {
     @IBOutlet var recipientTextField: UITextField!
     @IBOutlet var amountTextField: UITextField!
     @IBOutlet var actionTypeButton: UIButton!
-    @IBOutlet var closeButton: UIImageView!
-    @IBOutlet var boxView: UIView!
+    @IBOutlet var closeWindowButton: UIImageView!
+    @IBOutlet var popUpView: UIView!
     
-    var type: ReminderType?
+    var type: TransferType?
     var authManager: AuthManager?
     weak var delegate: RequestOrSendViewControllerDelegate?
     
@@ -28,18 +28,18 @@ class RequestOrSendViewController: UIViewController {
 
         self.navigationItem.setHidesBackButton(true, animated: true)
         
-        boxView.layer.cornerRadius = 10
+        popUpView.layer.cornerRadius = 10
         actionTypeLabel.text = type?.rawValue
         actionTypeButton.setTitle(type?.rawValue, for: .normal)
         amountTextField.placeholder = "Amount"
         recipientTextField.placeholder = "To Who (email)"
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(closeWindow))
-        closeButton.addGestureRecognizer(tapGestureRecognizer)
-        closeButton.isUserInteractionEnabled = true
+        let close = UITapGestureRecognizer(target: self, action: #selector(closeWindowButtonTapped))
+        closeWindowButton.addGestureRecognizer(close)
+        closeWindowButton.isUserInteractionEnabled = true
     }
     
-    @objc func closeWindow() {
-        self.delegate?.showTabBar(sender: self)
+    @objc func closeWindowButtonTapped() {
+        self.delegate?.requestOrSendVIewControllerShowTabBar(sender: self)
         self.dismiss(animated: true)
     }
     
@@ -68,10 +68,10 @@ class RequestOrSendViewController: UIViewController {
             return
         }
         
-        authManager?.sendOrRequestMoney(email: email, amount: amountNumber, reminderType: type, completionHandler: { firebaseError, user in
+        authManager?.transferMoney(email: email, amount: amountNumber, transferType: type, completionHandler: { firebaseError, user in
             if let firebaseError = firebaseError {
                 switch firebaseError {
-                case .nonExisting:
+                case .nonExistingUser:
                     let alert = UIAlertController.create(title: "Invalid", message: "The user doesn't exist.")
                     self.present(alert, animated: true)
                     self.actionTypeButton.isEnabled = true
@@ -85,27 +85,39 @@ class RequestOrSendViewController: UIViewController {
                     return
                 }
                 
-                guard let receiverRate = user?.currency?.rate, let symbol = user?.currency?.symbolNative else {
+                guard let firstName = self.authManager?.currentUser?.firstName, let lastName = self.authManager?.currentUser?.lastName else {
+                    return
+                }
+                
+                guard let receiverRate = user?.currency?.rate, let symbol = user?.currency?.symbolNative, let fcmToken = user?.fcmToken else {
                     return
                 }
                 let newAmount = ((amountNumber / senderRate) * receiverRate).round(to: 2)
                 
-                if let user = user {
-                    var title = ""
-                    var body = ""
+                if user != nil {
+                    var title: String
+                    var body: String
                     
                     switch type {
                     case .send:
                         title = "You have got money"
-                        body = "\(user.firstName) \(user.lastName) send you \(newAmount)\(symbol)"
+                        body = "\(firstName) \(lastName) send you \(newAmount)\(symbol)"
                     case .request:
                         title = "Money requested"
-                        body = "\(user.firstName) \(user.lastName) wants \(newAmount)\(symbol) from you"
+                        body = "\(firstName) \(lastName) wants \(newAmount)\(symbol) from you"
                     }
                     
-                    PushNotificatonSender.sendPushNotification(to: user.fcmToken, title: title, body: body, type: type)
-                    self.actionTypeButton.isEnabled = true
-                    self.closeWindow()
+                    PushNotificatonSender.sendPushNotification(to: fcmToken, title: title, body: body, type: type) { error in
+                        if let error = error {
+                            let alert = UIAlertController.create(title: "Error", message: error.localizedDescription)
+                            self.present(alert, animated: true)
+                        } else {
+                            DispatchQueue.main.async {
+                                self.actionTypeButton.isEnabled = true
+                                self.closeWindowButtonTapped()
+                            }
+                        }
+                    }
                 }
             }
         })

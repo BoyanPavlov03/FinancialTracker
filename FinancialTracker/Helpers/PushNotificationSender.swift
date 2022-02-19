@@ -9,7 +9,7 @@ import Foundation
 import UserNotificationsUI
 
 class PushNotificatonSender {
-    static func sendPushNotification(to token: String, title: String, body: String, type: ReminderType) {
+    static func sendPushNotification(to token: String, title: String, body: String, type: TransferType, completionHandler: @escaping (Error?) -> Void) {
         let urlString = "https://fcm.googleapis.com/fcm/send"
         guard let url = URL(string: urlString) else { return }
         let paramString: [String: Any] = [
@@ -19,14 +19,15 @@ class PushNotificatonSender {
                 "body": body
             ],
             "data": [
-                "type": type.rawValue
+                "type": type.rawValue,
+                "description": body
             ],
             "to": token
         ]
         
         // Server key deleted for commit
         // swiftlint:disable:next line_length
-        let serverKey = "AAAAbFv41p0:APA91bHdeRgPGSZyDulG6uCFvRWhDdkfcecPoxK9r0j3e_d1ETFqdz2yyRjfTlpoTZwNlxvdTo8OhuVgSuccrBFWZ-J0AdjoQ3h0ra05u16J9ZlwDqWwY_P_D-pQOEjsOk9SSXQ_daY7"
+        let serverKey = "AAAAbFv41p0:APA91bHcPJiu9pF_4Xu5AeN0m1Pj_fsYLj6nLfFyn3vGJOiwnq-15xhtGo5OndlwlhmuY0jb6vJ8888IqnFJ7TwdbNh1A7KFRTC7Cye0TnFoSG1cYxJFGPc-5Cond5ea6pCYNbcTDzcT"
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "POST"
         request.httpBody = try? JSONSerialization.data(withJSONObject: paramString, options: [.prettyPrinted])
@@ -35,9 +36,10 @@ class PushNotificatonSender {
         
         URLSession.shared.dataTask(with: request as URLRequest) { _, _, error in
             if let error = error {
-                assertionFailure(error.localizedDescription)
+                completionHandler(error)
                 return
             }
+            completionHandler(nil)
         }.resume()
     }
 }
