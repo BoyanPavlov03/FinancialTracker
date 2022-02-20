@@ -8,7 +8,7 @@
 import UIKit
 import MessageUI
 
-struct Constants {
+struct ShareConstants {
     static let shareText = "Wanna keep track of your finance life. Click the link to install this new amazing app on the App Store:"
     static let shareLink = "https://app.bitrise.io/artifact/113971239/p/a364f20e4db777fa7e692386989d3053"
 }
@@ -62,7 +62,7 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [Constants.shareText, Constants.shareLink], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [ShareConstants.shareText, ShareConstants.shareLink], applicationActivities: nil)
         
         activityVC.popoverPresentationController?.sourceView = self.view
         present(activityVC, animated: true)

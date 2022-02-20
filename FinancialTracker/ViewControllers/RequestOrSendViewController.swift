@@ -89,7 +89,7 @@ class RequestOrSendViewController: UIViewController {
                     return
                 }
                 
-                guard let receiverRate = user?.currency?.rate, let symbol = user?.currency?.symbolNative, let fcmToken = user?.fcmToken else {
+                guard let receiverRate = user?.currency?.rate, let symbol = user?.currency?.symbolNative, let fcmToken = user?.FCMToken else {
                     return
                 }
                 let newAmount = ((amountNumber / senderRate) * receiverRate).round(to: 2)
@@ -107,7 +107,7 @@ class RequestOrSendViewController: UIViewController {
                         body = "\(firstName) \(lastName) wants \(newAmount)\(symbol) from you"
                     }
                     
-                    PushNotificatonSender.sendPushNotification(to: fcmToken, title: title, body: body, type: type) { error in
+                    PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, type: type) { error in
                         if let error = error {
                             let alert = UIAlertController.create(title: "Error", message: error.localizedDescription)
                             self.present(alert, animated: true)

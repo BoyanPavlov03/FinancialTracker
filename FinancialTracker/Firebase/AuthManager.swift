@@ -135,21 +135,20 @@ class AuthManager {
         }
     }
     
-    func addTransactionToUserByUID(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        guard let uid = currentUser?.uid else { return }
-        databaseManager.addTransactionToUserByUID(uid, amount: amount, category: category) { firebaseError, success in
+    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addTransactionToCurrentUser(amount, category: category) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addScoreToUserBasedOnTime(time) { firebaseError, success in
+    func addScoreToCurrentUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addScoreToCurrentUserBasedOnTime(time) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.changeCurrency(currency) { firebaseError, success in
+    func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.changeCurrentUserCurrency(currency) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
@@ -160,14 +159,14 @@ class AuthManager {
         }
     }
     
-    func setReminder(type: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.setReminder(type: type, description: description) { firebaseError, success in
+    func setReminderToCurrentUser(type: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.setReminderToCurrentUser(type: type, description: description) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func deleteReminder(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.deleteReminder(reminder) { firebaseError, success in
+    func deleteReminderFromCurrentUser(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.deleteReminderFromCurrentUser(reminder) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }

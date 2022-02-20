@@ -29,7 +29,7 @@ class DatabaseManager {
         let emailKey = User.CodingKeys.email.rawValue
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
-        let fcmToken = User.CodingKeys.fcmToken.rawValue
+        let fcmToken = User.CodingKeys.FCMToken.rawValue
         let remindersKey = User.CodingKeys.reminders.rawValue
         guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
             assertionFailure("fcmToken key doesn't exist.")
@@ -78,7 +78,12 @@ class DatabaseManager {
     }
     
     /// Adding transaction - income or expense to user based on his uid
-    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
+            return
+        }
+        
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         
@@ -105,7 +110,7 @@ class DatabaseManager {
                 let newBalanceValue = (userBalance - amount).round(to: 2)
                 let expenseValue = FieldValue.arrayUnion([dictionary])
                 
-                firestore.collection(usersKey).document(uid).setData([expenseKey: expenseValue, balanceKey: newBalanceValue], merge: true)
+                firestore.collection(usersKey).document(currentUser.uid).setData([expenseKey: expenseValue, balanceKey: newBalanceValue], merge: true)
             } else if let category = category as? IncomeCategory {
                 let incomeKey = User.CodingKeys.incomes.rawValue
                 let income = Transaction(amount: amount, date: formatedDate, category: category)
@@ -126,7 +131,7 @@ class DatabaseManager {
                 let newBalanceValue = (userBalance + amount).round(to: 2)
                 let incomeValue = FieldValue.arrayUnion([dictionary])
                 
-                firestore.collection(usersKey).document(uid).setData([incomeKey: incomeValue, balanceKey: newBalanceValue], merge: true)
+                firestore.collection(usersKey).document(currentUser.uid).setData([incomeKey: incomeValue, balanceKey: newBalanceValue], merge: true)
             }
             
             completionHandler(nil, true)
@@ -136,7 +141,7 @@ class DatabaseManager {
     }
     
     /// Adding score to the current based on time spent in the app
-    func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addScoreToCurrentUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -151,7 +156,7 @@ class DatabaseManager {
     }
     
     /// Change user's currency
-    func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -229,8 +234,9 @@ class DatabaseManager {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
             return
         }
+        let FCMTokenKey = User.CodingKeys.FCMToken.rawValue
         
-        self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(["fcmToken": token], merge: true)
+        self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData([FCMTokenKey: token], merge: true)
         completionHandler(nil, true)
     }
     
@@ -241,7 +247,7 @@ class DatabaseManager {
             return
         }
         
-        let fcmTokenKey = User.CodingKeys.fcmToken.rawValue
+        let fcmTokenKey = User.CodingKeys.FCMToken.rawValue
         
         firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([fcmTokenKey: ""])
         completionHandler(nil, true)
@@ -249,7 +255,7 @@ class DatabaseManager {
     }
     
     /// Setting reminder for user
-    func setReminder(type: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func setReminderToCurrentUser(type: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -278,7 +284,7 @@ class DatabaseManager {
         }
     }
     
-    private func sendMoney(to user: User, amount: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    private func sendMoneyFromCurrentUserToAnotherUser(_ user: User, amount: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -290,18 +296,12 @@ class DatabaseManager {
         }
         
         let newAmount = (amount / senderRate) * receiverRate
-        self.addTransactionToUserByUID(user.uid, amount: newAmount, category: IncomeCategory.transfer) { firebaseError, success in
-            if success {
-                self.addTransactionToUserByUID(currentUser.uid, amount: amount, category: ExpenseCategory.transfer) { firebaseError, success in
-                    completionHandler(firebaseError, success)
-                }
-            } else {
-                completionHandler(firebaseError, success)
-            }
+        self.addTransactionToCurrentUser(newAmount, category: ExpenseCategory.transfer) { firebaseError, success in
+            completionHandler(firebaseError, success)
         }
     }
     
-    func deleteReminder(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func deleteReminderFromCurrentUser(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -359,7 +359,7 @@ class DatabaseManager {
                 }
                 
                 if transferType == .send {
-                    self.sendMoney(to: user, amount: amount) { firebaseError, _ in
+                    self.sendMoneyFromCurrentUserToAnotherUser(user, amount: amount) { firebaseError, _ in
                         completionHandler(firebaseError, user)
                     }
                 } else if transferType == .request {
@@ -422,8 +422,9 @@ class DatabaseManager {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.currentUser = user
+                let FCMTokenKey = User.CodingKeys.FCMToken.rawValue
                 
-                self.saveFCMTokenToCurrentUser(UserDefaults.standard.string(forKey: "fcmToken") ?? "") { error, _ in
+                self.saveFCMTokenToCurrentUser(UserDefaults.standard.string(forKey: FCMTokenKey) ?? "") { error, _ in
                     if let error = error {
                         assertionFailure(error.localizedDescription)
                         return

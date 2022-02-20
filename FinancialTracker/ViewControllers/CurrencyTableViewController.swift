@@ -72,7 +72,7 @@ class CurrencyTableViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Confirm", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
-            self.authManager?.changeCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
+            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
                 if let firebaseError = firebaseError {
                     assertionFailure(firebaseError.localizedDescription)
                 }

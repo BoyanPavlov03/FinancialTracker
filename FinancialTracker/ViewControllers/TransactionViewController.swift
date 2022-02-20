@@ -82,7 +82,7 @@ class TransactionViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToUserByUID(amountNumber, category: selectedCategory) { firebaseError, _ in
+        authManager?.addTransactionToCurrentUser(amountNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }

@@ -34,10 +34,11 @@ class RemindersTableViewController: UITableViewController {
         }
         
         for reminder in reminders {
-            if transfers[reminder.type.rawValue] == nil {
-                transfers[reminder.type.rawValue] = []
+            let transferType = reminder.type.rawValue
+            if transfers[transferType] == nil {
+                transfers[transferType] = []
             }
-            transfers[reminder.type.rawValue]?.append(reminder)
+            transfers[transferType]?.append(reminder)
         }
         
         self.transfers = transfers
@@ -104,7 +105,7 @@ class RemindersTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteReminder(reminder, completionHandler: { firebaseError, _ in
+            authManager?.deleteReminderFromCurrentUser(reminder, completionHandler: { firebaseError, _ in
                 if let firebaseError = firebaseError {
                     let alert = UIAlertController.create(title: "Fail", message: "Couldn't delete reminder.\(firebaseError.localizedDescription)")
                     self.present(alert, animated: true)
@@ -116,8 +117,8 @@ class RemindersTableViewController: UITableViewController {
                     }
                     tableView.beginUpdates()
                     tableView.deleteRows(at: [indexPath], with: .fade)
-                    tableView.reloadData()
                     tableView.endUpdates()
+                    tableView.reloadData()
                 }
             })
         }

@@ -9,7 +9,7 @@ import Foundation
 import UserNotificationsUI
 
 class PushNotificatonSender {
-    static func sendPushNotification(to token: String, title: String, body: String, type: TransferType, completionHandler: @escaping (Error?) -> Void) {
+    static func sendPushNotificationForMoneyTransfer(to token: String, title: String, body: String, amount: Double, type: TransferType, completionHandler: @escaping (Error?) -> Void) {
         let urlString = "https://fcm.googleapis.com/fcm/send"
         guard let url = URL(string: urlString) else { return }
         let paramString: [String: Any] = [
@@ -20,14 +20,13 @@ class PushNotificatonSender {
             ],
             "data": [
                 "type": type.rawValue,
-                "description": body
+                "description": body,
+                "amount": amount
             ],
             "to": token
         ]
         
-        // Commit by accident but changed
         #warning("DONT COMMIT KEY")
-        // swiftlint:disable:next line_length
         let serverKey = ""
         let request = NSMutableURLRequest(url: url as URL)
         request.httpMethod = "POST"
