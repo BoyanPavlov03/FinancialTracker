@@ -284,23 +284,6 @@ class DatabaseManager {
         }
     }
     
-    private func sendMoneyFromCurrentUserToAnotherUser(_ user: User, amount: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
-            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
-            return
-        }
-        
-        guard let senderRate = currentUser.currency?.rate, let receiverRate = user.currency?.rate else {
-            completionHandler(FirebaseError.unknown, false)
-            return
-        }
-        
-        let newAmount = (amount / senderRate) * receiverRate
-        self.addTransactionToCurrentUser(newAmount, category: ExpenseCategory.transfer) { firebaseError, success in
-            completionHandler(firebaseError, success)
-        }
-    }
-    
     func deleteReminderFromCurrentUser(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -359,8 +342,12 @@ class DatabaseManager {
                 }
                 
                 if transferType == .send {
-                    self.sendMoneyFromCurrentUserToAnotherUser(user, amount: amount) { firebaseError, _ in
-                        completionHandler(firebaseError, user)
+                    self.addTransactionToCurrentUser(amount, category: ExpenseCategory.transfer) { firebaseError, _ in
+                        if let firebaseError = firebaseError {
+                            completionHandler(firebaseError, nil)
+                            return
+                        }
+                        completionHandler(nil, user)
                     }
                 } else if transferType == .request {
                     completionHandler(nil, user)

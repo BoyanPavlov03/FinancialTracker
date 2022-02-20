@@ -107,6 +107,7 @@ class RequestOrSendViewController: UIViewController {
                         body = "\(firstName) \(lastName) wants \(newAmount)\(symbol) from you"
                     }
                     
+                    // swiftlint:disable:next line_length
                     PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, type: type) { error in
                         if let error = error {
                             let alert = UIAlertController.create(title: "Error", message: error.localizedDescription)

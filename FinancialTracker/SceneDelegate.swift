@@ -85,7 +85,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
-        authManager.addScoreToUserBasedOnTime(timeActive) { firebaseError, _ in
+        authManager.addScoreToCurrentUserBasedOnTime(timeActive) { firebaseError, _ in
             if let firebaseError = firebaseError {
                 assertionFailure(firebaseError.localizedDescription)
             }
