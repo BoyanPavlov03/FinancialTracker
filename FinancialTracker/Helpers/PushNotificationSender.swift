@@ -9,7 +9,7 @@ import Foundation
 import UserNotificationsUI
 
 class PushNotificatonSender {
-    static func sendPushNotificationForMoneyTransfer(to token: String, title: String, body: String, amount: Double, type: TransferType, completionHandler: @escaping (Error?) -> Void) {
+    static func sendPushNotificationForMoneyTransfer(to token: String, title: String, body: String, amount: Double, transferType: TransferType, completionHandler: @escaping (Error?) -> Void) {
         let urlString = "https://fcm.googleapis.com/fcm/send"
         guard let url = URL(string: urlString) else { return }
         let paramString: [String: Any] = [
@@ -19,9 +19,9 @@ class PushNotificatonSender {
                 "body": body
             ],
             "data": [
-                "type": type.rawValue,
-                "description": body,
-                "amount": amount
+                Constants.UserInfo.transferType: transferType.rawValue,
+                Constants.UserInfo.description: body,
+                Constants.UserInfo.amount: amount
             ],
             "to": token
         ]

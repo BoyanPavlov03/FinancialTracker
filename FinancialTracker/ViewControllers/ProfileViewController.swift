@@ -8,11 +8,6 @@
 import UIKit
 import MessageUI
 
-struct ShareConstants {
-    static let shareText = "Wanna keep track of your finance life. Click the link to install this new amazing app on the App Store:"
-    static let shareLink = "https://app.bitrise.io/artifact/113971239/p/a364f20e4db777fa7e692386989d3053"
-}
-
 class ProfileViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
@@ -62,7 +57,7 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [ShareConstants.shareText, ShareConstants.shareLink], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
         
         activityVC.popoverPresentationController?.sourceView = self.view
         present(activityVC, animated: true)
@@ -70,8 +65,8 @@ class ProfileViewController: UIViewController {
     
     @IBAction func helpButtonTapped(_ sender: Any) {
         let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: Support.addExpense.rawValue, style: .default, handler: setComposerMessage))
-        alertController.addAction(UIAlertAction(title: Support.refundMoney.rawValue, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.addExpense, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.refundMoney, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
         present(alertController, animated: true)
@@ -95,9 +90,8 @@ class ProfileViewController: UIViewController {
         
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = self
-        composer.setToRecipients([Support.Constants.email])
-        
-        composer.setSubject(action.title ?? Support.other.rawValue)
+        composer.setToRecipients([Constants.Support.email])
+        composer.setSubject(action.title ?? Constants.Support.other)
         present(composer, animated: true)
     }
 }

@@ -21,7 +21,6 @@ class DatabaseManager {
     
     init() {}
     
-    /// Creating and saving user to database
     func createUser(firstName: String, lastName: String, email: String, uid: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         let firstNameKey = User.CodingKeys.firstName.rawValue
         let lastNameKey = User.CodingKeys.lastName.rawValue
@@ -49,7 +48,6 @@ class DatabaseManager {
         }
     }
     
-    /// Adding starting balance to user
     func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -77,8 +75,7 @@ class DatabaseManager {
         }
     }
     
-    /// Adding transaction - income or expense to user based on his uid
-    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -140,8 +137,7 @@ class DatabaseManager {
         }
     }
     
-    /// Adding score to the current based on time spent in the app
-    func addScoreToCurrentUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -155,7 +151,6 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
-    /// Change user's currency
     func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -216,7 +211,6 @@ class DatabaseManager {
         }
     }
     
-    /// User buys premium
     func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -240,7 +234,7 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
-    /// Removing FCM token from user when he is signs out
+    /// Removing FCM token from user when he signs out
     func removeFCMTokenFromCurrentUser(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
@@ -254,8 +248,7 @@ class DatabaseManager {
 
     }
     
-    /// Setting reminder for user
-    func setReminderToCurrentUser(type: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -263,7 +256,7 @@ class DatabaseManager {
         
         let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
         
-        let reminder = Reminder(type: type, description: description, date: formatedDate)
+        let reminder = Reminder(transferType: transferType, description: description, date: formatedDate)
         
         do {
             let reminderData = try JSONEncoder().encode(reminder)
@@ -284,7 +277,8 @@ class DatabaseManager {
         }
     }
     
-    func deleteReminderFromCurrentUser(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    // Person has read his reminder so he removes it from his list
+    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -342,7 +336,7 @@ class DatabaseManager {
                 }
                 
                 if transferType == .send {
-                    self.addTransactionToCurrentUser(amount, category: ExpenseCategory.transfer) { firebaseError, _ in
+                    self.addTransactionToCurrentUser(amount: amount, category: ExpenseCategory.transfer) { firebaseError, _ in
                         if let firebaseError = firebaseError {
                             completionHandler(firebaseError, nil)
                             return

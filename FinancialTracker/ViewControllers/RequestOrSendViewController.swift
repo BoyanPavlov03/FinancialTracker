@@ -19,7 +19,7 @@ class RequestOrSendViewController: UIViewController {
     @IBOutlet var closeWindowButton: UIImageView!
     @IBOutlet var popUpView: UIView!
     
-    var type: TransferType?
+    var transferType: TransferType?
     var authManager: AuthManager?
     weak var delegate: RequestOrSendViewControllerDelegate?
     
@@ -29,8 +29,8 @@ class RequestOrSendViewController: UIViewController {
         self.navigationItem.setHidesBackButton(true, animated: true)
         
         popUpView.layer.cornerRadius = 10
-        actionTypeLabel.text = type?.rawValue
-        actionTypeButton.setTitle(type?.rawValue, for: .normal)
+        actionTypeLabel.text = transferType?.rawValue
+        actionTypeButton.setTitle(transferType?.rawValue, for: .normal)
         amountTextField.placeholder = "Amount"
         recipientTextField.placeholder = "To Who (email)"
         let close = UITapGestureRecognizer(target: self, action: #selector(closeWindowButtonTapped))
@@ -64,11 +64,11 @@ class RequestOrSendViewController: UIViewController {
             return
         }
         
-        guard let type = type else {
+        guard let transferType = transferType else {
             return
         }
         
-        authManager?.transferMoney(email: email, amount: amountNumber, transferType: type, completionHandler: { firebaseError, user in
+        authManager?.transferMoney(email: email, amount: amountNumber, transferType: transferType, completionHandler: { firebaseError, user in
             if let firebaseError = firebaseError {
                 switch firebaseError {
                 case .nonExistingUser:
@@ -98,7 +98,7 @@ class RequestOrSendViewController: UIViewController {
                     var title: String
                     var body: String
                     
-                    switch type {
+                    switch transferType {
                     case .send:
                         title = "You have got money"
                         body = "\(firstName) \(lastName) send you \(newAmount)\(symbol)"
@@ -108,7 +108,7 @@ class RequestOrSendViewController: UIViewController {
                     }
                     
                     // swiftlint:disable:next line_length
-                    PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, type: type) { error in
+                    PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, transferType: transferType) { error in
                         if let error = error {
                             let alert = UIAlertController.create(title: "Error", message: error.localizedDescription)
                             self.present(alert, animated: true)

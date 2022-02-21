@@ -47,6 +47,7 @@
 		70D37DF727633FB40067FFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF527633FB40067FFE6 /* Main.storyboard */; };
 		70D37DF927633FB50067FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF827633FB50067FFE6 /* Assets.xcassets */; };
 		70D37DFC27633FB50067FFE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DFA27633FB50067FFE6 /* LaunchScreen.storyboard */; };
+		70D6636627C3A75B00072131 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D6636527C3A75B00072131 /* Constants.swift */; };
 		70DA8522279C21FC002A7335 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70DA8521279C21FC002A7335 /* Currency.swift */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,7 @@
 		70D37DF827633FB50067FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		70D37DFB27633FB50067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		70D37DFD27633FB50067FFE6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		70D6636527C3A75B00072131 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		70DA8521279C21FC002A7335 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,6 +119,7 @@
 				7014A78527AC207100E6A2DB /* Transaction.swift */,
 				705E8D3C27B3F013004F7395 /* Category.swift */,
 				705E7E5A27BCFC7000FEA650 /* Reminder.swift */,
+				70D6636527C3A75B00072131 /* Constants.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 				70B3335F2763DDC7002FAEB5 /* RegisterViewController.swift in Sources */,
 				70607F7227A1EB80005ED7F7 /* PremiumViewController.swift in Sources */,
 				70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */,
+				70D6636627C3A75B00072131 /* Constants.swift in Sources */,
 				7014A78627AC207100E6A2DB /* Transaction.swift in Sources */,
 				707F854327AED2010053555B /* DatabaseManager.swift in Sources */,
 				7082B32F27B97A9D0083A169 /* PushNotificationSender.swift in Sources */,

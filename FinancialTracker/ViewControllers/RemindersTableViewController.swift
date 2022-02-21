@@ -10,7 +10,15 @@ import UIKit
 class RemindersTableViewController: UITableViewController {
 
     var authManager: AuthManager?
-    var transfers: [String: [Reminder]] = [:]
+    private var transfers: [String: [Reminder]] = [:]
+    private var noTransfers: Bool {
+        for (_, value) in transfers {
+            guard value.isEmpty else {
+                return false
+            }
+        }
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +42,7 @@ class RemindersTableViewController: UITableViewController {
         }
         
         for reminder in reminders {
-            let transferType = reminder.type.rawValue
+            let transferType = reminder.transferType.rawValue
             if transfers[transferType] == nil {
                 transfers[transferType] = []
             }
@@ -44,19 +52,10 @@ class RemindersTableViewController: UITableViewController {
         self.transfers = transfers
     }
     
-    private func isEmpty() -> Bool {
-        for (_, value) in transfers {
-            guard value.isEmpty else {
-                return false
-            }
-        }
-        return true
-    }
-    
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        if isEmpty() {
+        if noTransfers {
             let noDataLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.tableView.bounds.size.width, height: self.tableView.bounds.size.height))
             noDataLabel.text = "No Transfers Available"
             noDataLabel.textColor = UIColor(red: 22.0/255.0, green: 106.0/255.0, blue: 176.0/255.0, alpha: 1.0)
@@ -105,7 +104,7 @@ class RemindersTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteReminderFromCurrentUser(reminder, completionHandler: { firebaseError, _ in
+            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { firebaseError, _ in
                 if let firebaseError = firebaseError {
                     let alert = UIAlertController.create(title: "Fail", message: "Couldn't delete reminder.\(firebaseError.localizedDescription)")
                     self.present(alert, animated: true)

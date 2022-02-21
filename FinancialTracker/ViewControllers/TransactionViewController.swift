@@ -47,7 +47,7 @@ class TransactionViewController: UIViewController {
             return
         }
         sendVC.authManager = authManager
-        sendVC.type = TransferType(rawValue: self.navigationItem.rightBarButtonItem?.title ?? "Send")
+        sendVC.transferType = TransferType(rawValue: self.navigationItem.rightBarButtonItem?.title ?? "Send")
         if let items = self.tabBarController?.tabBar.items {
             for item in items {
                 item.isEnabled = false
@@ -82,7 +82,7 @@ class TransactionViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToCurrentUser(amountNumber, category: selectedCategory) { firebaseError, _ in
+        authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { firebaseError, _ in
             switch firebaseError {
             case .access(let error):
                 guard let error = error else { return }

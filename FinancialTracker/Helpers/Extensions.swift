@@ -119,3 +119,7 @@ extension Dictionary {
         }
     }
 }
+
+extension Notification.Name {
+    public static let FCMToken = Notification.Name(User.CodingKeys.FCMToken.rawValue)
+}

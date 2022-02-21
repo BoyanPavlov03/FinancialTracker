@@ -10,17 +10,10 @@ import Firebase
 import FirebaseMessaging
 import UserNotificationsUI
 
-struct Constants {
-    static let token = "token"
-    static let amount = "amount"
-    static let description = "description"
-    static let type = "type"
-}
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
-    var authMananger: AuthManager?
+    var authMananger: AuthManager!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
@@ -38,28 +31,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Messaging.messaging().delegate = self
         
         authMananger = AuthManager()
-        authMananger?.checkAuthorisedState { _ in return }
+        authMananger.checkAuthorisedState { _, _ in return }
         
         return true
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let type = userInfo[Constants.type] as? String, let description = userInfo[Constants.description] as? String else {
+        guard let transferTypeRawValue = userInfo[Constants.UserInfo.transferType] as? String else {
+            completionHandler(.noData)
+            return
+        }
+        
+        guard let description = userInfo[Constants.UserInfo.description] as? String else {
             completionHandler(.noData)
             return
         }
     
-        guard let amount = userInfo[Constants.amount] as? Substring, let amountValue = Double(amount) else {
+        guard let amount = userInfo[Constants.UserInfo.amount] as? String else {
             completionHandler(.noData)
             return
         }
-        
-        guard let transferType = TransferType(rawValue: type) else {
+
+        guard let transferType = TransferType(rawValue: transferTypeRawValue), let amountValue = Double(amount) else {
             completionHandler(.failed)
             return
         }
         
-        authMananger?.setReminderToCurrentUser(type: transferType, description: description, completionHandler: { firebaseError, _ in
+        authMananger.setReminderToCurrentUser(transferType: transferType, description: description, completionHandler: { firebaseError, _ in
             if let firebaseError = firebaseError {
                 assertionFailure(firebaseError.localizedDescription)
                 completionHandler(.failed)
@@ -67,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
             if transferType == .send {
                 let category = IncomeCategory.transfer
-                self.authMananger?.addTransactionToCurrentUser(amountValue, category: category, completionHandler: { firebaseError, _ in
+                self.authMananger.addTransactionToCurrentUser(amount: amountValue, category: category, completionHandler: { firebaseError, _ in
                     if let firebaseError = firebaseError {
                         assertionFailure(firebaseError.localizedDescription)
                         completionHandler(.failed)
@@ -88,9 +86,11 @@ extension AppDelegate: MessagingDelegate {
         if let fcmToken = fcmToken {
             print("Firebase registration token: \(String(describing: fcmToken))")
             let FCMTokenKey = User.CodingKeys.FCMToken.rawValue
-            let dataDict: [String: String] = [Constants.token: fcmToken]
+            let dataDict: [String: String] = [Constants.UserInfo.token: fcmToken]
+            
+            // Posting token to firebase server
             NotificationCenter.default.post(
-                name: Notification.Name(FCMTokenKey),
+                name: Notification.Name.FCMToken,
                 object: nil,
                 userInfo: dataDict
             )

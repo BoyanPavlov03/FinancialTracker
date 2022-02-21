@@ -108,6 +108,8 @@ class TabBarController: UITabBarController {
                     remindersVC.authManager = authManager
                     remindersVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
+                    assertionFailure("This should not be here: \(String(describing: navigationController.topViewController)).")
+                    // swiftlint:disable:next unneeded_break_in_switch
                     break
                 }
             }

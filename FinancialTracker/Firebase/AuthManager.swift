@@ -39,19 +39,15 @@ class AuthManager {
         self.databaseManager = DatabaseManager()
     }
     
-    func checkAuthorisedState(completionHandler: @escaping (User?) -> Void) {
+    func checkAuthorisedState(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if let user = user {
                 self.databaseManager.getCurrentUserData(uid: user.uid) { firebaseError, user in
-                    if let firebaseError = firebaseError {
-                        assertionFailure("Can't access user data: \(firebaseError.localizedDescription)")
-                        return
-                    }
-                    
-                    completionHandler(user)
+                    completionHandler(firebaseError, user)
                 }
             } else {
-                completionHandler(nil)
+                // There can be no user but that doesn't mean there is an error
+                completionHandler(nil, nil)
             }
         }
     }
@@ -135,14 +131,14 @@ class AuthManager {
         }
     }
     
-    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addTransactionToCurrentUser(amount, category: category) { firebaseError, success in
+    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addTransactionToCurrentUser(amount: amount, category: category) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func addScoreToCurrentUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addScoreToCurrentUserBasedOnTime(time) { firebaseError, success in
+    func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addScoreToCurrentUser(basedOn: time) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
@@ -159,14 +155,14 @@ class AuthManager {
         }
     }
     
-    func setReminderToCurrentUser(type: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.setReminderToCurrentUser(type: type, description: description) { firebaseError, success in
+    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func deleteReminderFromCurrentUser(_ reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.deleteReminderFromCurrentUser(reminder) { firebaseError, success in
+    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }

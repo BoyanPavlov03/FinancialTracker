@@ -8,16 +8,6 @@
 import UIKit
 import Charts
 
-enum Support: String {
-    case addExpense = "Problem adding an expense"
-    case refundMoney = "Want a refund"
-    case other = "Other"
-    
-    struct Constants {
-        static let email = "support_financialTracker@gmail.com"
-    }
-}
-
 enum TimePeriodDivider: Int {
     case today
     case week
