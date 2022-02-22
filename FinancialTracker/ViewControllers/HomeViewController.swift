@@ -28,7 +28,10 @@ class HomeViewController: UIViewController {
 
         self.title = "Home"
         self.tabBarItem.image = UIImage(systemName: "house")
-    
+        let plusImage = UIImage(systemName: "plus")
+        let addTransactionButton = UIBarButtonItem(image: plusImage, style: .plain, target: self, action: #selector(addButtonTapped))
+        self.navigationItem.rightBarButtonItem = addTransactionButton
+        
         checkIfPremium()
         
         transactionChart.highlightPerTapEnabled = false
@@ -147,7 +150,7 @@ class HomeViewController: UIViewController {
         transactionChart.centerAttributedText = totalSumString
     }
     
-    @IBAction func addButtonTapped(_ sender: Any) {
+    @objc func addButtonTapped() {
         guard let transactionVC = ViewControllerFactory.shared.viewController(for: .transaction) as? TransactionViewController else {
             assertionFailure("Couldn't cast to TransactionViewController")
             return

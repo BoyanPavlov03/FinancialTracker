@@ -39,6 +39,7 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.selectedIndex = 1
         setupChildViewControllers()
     }
     
@@ -93,20 +94,17 @@ class TabBarController: UITabBarController {
 
         for viewController in viewControllers {
             if let navigationController = viewController as? UINavigationController {
-                let signOutButton = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
                 switch navigationController.topViewController {
                 case let homeVC as HomeViewController:
                     homeVC.authManager = authManager
-                    homeVC.navigationItem.rightBarButtonItem = signOutButton
                 case let profileVC as ProfileViewController:
                     profileVC.authManager = authManager
+                    let signOutButton = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
                     profileVC.navigationItem.rightBarButtonItem = signOutButton
                 case let currencyVC as CurrencyTableViewController:
                     currencyVC.authManager = authManager
-                    currencyVC.navigationItem.rightBarButtonItem = signOutButton
                 case let remindersVC as RemindersTableViewController:
                     remindersVC.authManager = authManager
-                    remindersVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
                     assertionFailure("This should not be here: \(String(describing: navigationController.topViewController)).")
                     // swiftlint:disable:next unneeded_break_in_switch

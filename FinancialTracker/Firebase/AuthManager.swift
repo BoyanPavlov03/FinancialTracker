@@ -96,7 +96,6 @@ class AuthManager {
         }
     }
 
-    
     /// Logging an user via password
     /// - Parameters:
     ///   - email: A `String` containing the user's email.
@@ -216,6 +215,12 @@ class AuthManager {
     func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         databaseManager.firestoreDidChangeData { firebaseError, user in
             completionHandler(firebaseError, user)
+        }
+    }
+    
+    func getAllUsers(completionHandler: @escaping (FirebaseError?, [String]?) -> Void) {
+        databaseManager.getAllUsers { firebaseError, emails in
+            completionHandler(firebaseError, emails)
         }
     }
     

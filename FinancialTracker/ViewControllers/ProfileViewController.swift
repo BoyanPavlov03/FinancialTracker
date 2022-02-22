@@ -8,12 +8,18 @@
 import UIKit
 import MessageUI
 
+enum ProfileViewControllerSettings: String, CaseIterable {
+    case changeCurrency = "Change Currency"
+    case support = "Support"
+    case premium = "Upgrade to Premium"
+}
+
 class ProfileViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
-    @IBOutlet var premiumButton: UIButton!
+    @IBOutlet var settingsTableView: UITableView!
     
     var authManager: AuthManager?
     
@@ -23,19 +29,17 @@ class ProfileViewController: UIViewController {
         self.title = "Profile"
         self.navigationItem.setHidesBackButton(true, animated: true)
         self.tabBarItem.image = UIImage(systemName: "person")
+        self.settingsTableView.delegate = self
+        self.settingsTableView.dataSource = self
         
         guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
         }
         
-        if user.premium {
-            premiumButton.isHidden = true
-        }
-        
         nameLabel.text = "\(user.firstName) \(user.lastName)"
         emailLabel.text = user.email
-        balanceLabel.text = "Balance\n \(balance)\(currency.symbolNative)"
+        balanceLabel.text = "Balance: \(balance)\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
         
         authManager?.addDelegate(self)
@@ -63,31 +67,31 @@ class ProfileViewController: UIViewController {
         present(activityVC, animated: true)
     }
     
-    @IBAction func helpButtonTapped(_ sender: Any) {
+    func helpCellTapped() {
         let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: Constants.Support.addExpense, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: Constants.Support.refundMoney, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
+
         present(alertController, animated: true)
     }
-    
-    @IBAction func upgradeButtonTapped(_ sender: Any) {
+
+    func upgradeCellTapped() {
         guard let premiumVC = ViewControllerFactory.shared.viewController(for: .premium) as? PremiumViewController else {
             assertionFailure("Couldn't cast to PremiumViewController")
             return
         }
-        
+
         premiumVC.authManager = authManager
         navigationController?.pushViewController(premiumVC, animated: true)
     }
-    
+
     private func setComposerMessage(action: UIAlertAction) {
         guard MFMailComposeViewController.canSendMail() else {
             assertionFailure("Mail services are not available")
             return
         }
-        
+
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = self
         composer.setToRecipients([Constants.Support.email])
@@ -102,7 +106,7 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
             controller.dismiss(animated: true)
             return
         }
-        
+
         controller.dismiss(animated: true)
     }
 }
@@ -110,5 +114,50 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
 extension ProfileViewController: DatabaseManagerDelegate {
     func databaseManagerDidUserChange(sender: DatabaseManager) {
         updateBalanceAndExpenses()
+    }
+}
+
+extension ProfileViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
+                assertionFailure("Couldn't cast to CurrencyTableViewController")
+                return
+            }
+            currencyVC.authManager = authManager
+            
+            self.navigationController?.pushViewController(currencyVC, animated: true)
+        case 1:
+            self.helpCellTapped()
+        case 2:
+            self.upgradeCellTapped()
+        default:
+            assertionFailure("This should not happen.")
+            return
+        }
+    }
+}
+
+extension ProfileViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Settings"
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let premium = authManager?.currentUser?.premium, premium {
+            return ProfileViewControllerSettings.allCases.count - 1
+        }
+        return ProfileViewControllerSettings.allCases.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingTableViewCell", for: indexPath)
+        
+        cell.textLabel?.text = ProfileViewControllerSettings.allCases[indexPath.row].rawValue
+        if ProfileViewControllerSettings.allCases[indexPath.row] == .changeCurrency {
+            cell.accessoryType = .disclosureIndicator
+        }
+        return cell
     }
 }

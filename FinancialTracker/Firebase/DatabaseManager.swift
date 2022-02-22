@@ -503,6 +503,40 @@ class DatabaseManager {
         }
     }
     
+    func getAllUsers(completionHandler: @escaping (FirebaseError?, [String]?) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), nil)
+            return
+        }
+        
+        firestore.collection(DBCollectionKey.users.rawValue).getDocuments { querySnapshot, error in
+            if let error = error {
+                completionHandler(FirebaseError.database(error), nil)
+                return
+            }
+            
+            guard let documents = querySnapshot?.documents else {
+                completionHandler(FirebaseError.unknown, nil)
+                return
+            }
+            
+            var emails: [String] = []
+            for document in documents {
+                guard let email = document.data()["email"] as? String else {
+                    continue
+                }
+                
+                guard email != currentUser.email else {
+                    continue
+                }
+                
+                emails.append(email)
+            }
+            
+            completionHandler(nil, emails)
+        }
+    }
+    
     func setUserToNil() {
         self.currentUser = nil
     }

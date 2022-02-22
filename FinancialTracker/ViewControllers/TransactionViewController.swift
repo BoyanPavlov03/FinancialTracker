@@ -34,38 +34,12 @@ class TransactionViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Add Transaction"
-        let requestOrSendButton = UIBarButtonItem(title: "Send", style: .plain, target: self, action: #selector(requestOrSend))
-        self.navigationItem.rightBarButtonItem = requestOrSendButton
         
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
     }
     
-    @objc func requestOrSend() {
-        guard let sendVC = ViewControllerFactory.shared.viewController(for: .requestOrSend) as? RequestOrSendViewController else {
-            assertionFailure("Couldn't cast to RequestOrSendViewController.")
-            return
-        }
-        sendVC.authManager = authManager
-        sendVC.transferType = TransferType(rawValue: self.navigationItem.rightBarButtonItem?.title ?? "Send")
-        if let items = self.tabBarController?.tabBar.items {
-            for item in items {
-                item.isEnabled = false
-            }
-        }
-        sendVC.delegate = self
-        present(sendVC, animated: true)
-    }
-    
     @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: UISegmentedControl) {
-        switch sender.selectedSegmentIndex {
-        case TransferType.send.index:
-            self.navigationItem.rightBarButtonItem?.title = TransferType.send.rawValue
-        case TransferType.request.index:
-            self.navigationItem.rightBarButtonItem?.title = TransferType.request.rawValue
-        default:
-            break
-        }
         categoryPicker.reloadAllComponents()
     }
     
@@ -117,17 +91,5 @@ extension TransactionViewController: UIPickerViewDelegate {
             return income[row].rawValue
         }
         return ""
-    }
-}
-
-extension TransactionViewController: RequestOrSendViewControllerDelegate {
-    func requestOrSendVIewControllerShowTabBar(sender: RequestOrSendViewController) {
-        DispatchQueue.main.async {
-            if let items = self.tabBarController?.tabBar.items {
-                for item in items {
-                    item.isEnabled = true
-                }
-            }
-        }
     }
 }

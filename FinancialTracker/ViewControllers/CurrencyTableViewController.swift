@@ -16,7 +16,6 @@ class CurrencyTableViewController: UITableViewController {
         super.viewDidLoad()
 
         self.title = "Currency"
-        self.navigationItem.setHidesBackButton(true, animated: true)
         self.tabBarItem.image = UIImage(systemName: "dollarsign.circle")
         
         Currency.getCurrencies { error, currencies in
@@ -75,7 +74,10 @@ class CurrencyTableViewController: UITableViewController {
             self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
                 if let firebaseError = firebaseError {
                     assertionFailure(firebaseError.localizedDescription)
+                    return
                 }
+                
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         
