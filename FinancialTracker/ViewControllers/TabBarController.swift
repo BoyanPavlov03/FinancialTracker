@@ -40,16 +40,6 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         
         setupChildViewControllers()
-        
-        guard let currentUser = authManager?.currentUser else {
-            assertionFailure("User data is nil")
-            return
-        }
-        
-        if currentUser.premium {
-            // Remove the premium tab as the user owns it
-            self.viewControllers?.remove(at: 3)
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -114,10 +104,12 @@ class TabBarController: UITabBarController {
                 case let currencyVC as CurrencyTableViewController:
                     currencyVC.authManager = authManager
                     currencyVC.navigationItem.rightBarButtonItem = signOutButton
-                case let premiumVC as PremiumViewController:
-                    premiumVC.authManager = authManager
-                    premiumVC.navigationItem.rightBarButtonItem = signOutButton
+                case let remindersVC as RemindersTableViewController:
+                    remindersVC.authManager = authManager
+                    remindersVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
+                    assertionFailure("This should not be here: \(String(describing: navigationController.topViewController)).")
+                    // swiftlint:disable:next unneeded_break_in_switch
                     break
                 }
             }
@@ -133,7 +125,7 @@ class TabBarController: UITabBarController {
                     case .signOut(let error):
                         guard let error = error else { return }
                         self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                    case .database, .unknown, .access, .auth:
+                    case .database, .unknown, .access, .auth, .nonExistingUser:
                         assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
                         // swiftlint:disable:next unneeded_break_in_switch
                         break

@@ -15,6 +15,7 @@ enum FirebaseError: Error {
     case signOut(Error?)
     case access(String?)
     case unknown
+    case nonExistingUser
 }
 
 enum DBCollectionKey: String {
@@ -38,19 +39,15 @@ class AuthManager {
         self.databaseManager = DatabaseManager()
     }
     
-    func checkAuthorisedState(completionHandler: @escaping (User?) -> Void) {
+    func checkAuthorisedState(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if let user = user {
                 self.databaseManager.getCurrentUserData(uid: user.uid) { firebaseError, user in
-                    if let firebaseError = firebaseError {
-                        assertionFailure("Can't access user data: \(firebaseError.localizedDescription)")
-                        return
-                    }
-                    
-                    completionHandler(user)
+                    completionHandler(firebaseError, user)
                 }
             } else {
-                completionHandler(nil)
+                // There can be no user but that doesn't mean there is an error
+                completionHandler(nil, nil)
             }
         }
     }
@@ -104,7 +101,7 @@ class AuthManager {
                         completionHandler(FirebaseError.unknown, user)
                     case .access(let error):
                         completionHandler(FirebaseError.access(error), user)
-                    case .auth, .signOut:
+                    case .auth, .signOut, .nonExistingUser:
                         assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
                         // swiftlint:disable:next unneeded_break_in_switch
                         break
@@ -119,8 +116,10 @@ class AuthManager {
     func signOut(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         do {
             try auth.signOut()
-            self.databaseManager.setUserToNil()
-            completionHandler(nil, true)
+            self.databaseManager.removeFCMTokenFromCurrentUser { firebaseError, success in
+                self.databaseManager.setUserToNil()
+                completionHandler(firebaseError, success)
+            }
         } catch let signOutError {
             completionHandler(FirebaseError.signOut(signOutError), false)
         }
@@ -132,20 +131,20 @@ class AuthManager {
         }
     }
     
-    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addTransactionToCurrentUser(amount, category: category) { firebaseError, success in
+    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addTransactionToCurrentUser(amount: amount, category: category) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addScoreToUserBasedOnTime(time) { firebaseError, success in
+    func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.addScoreToCurrentUser(basedOn: time) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
     
-    func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.changeCurrency(currency) { firebaseError, success in
+    func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.changeCurrentUserCurrency(currency) { firebaseError, success in
             completionHandler(firebaseError, success)
         }
     }
@@ -153,6 +152,36 @@ class AuthManager {
     func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         databaseManager.buyPremium { firebaseError, success in
             completionHandler(firebaseError, success)
+        }
+    }
+    
+    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { firebaseError, success in
+            completionHandler(firebaseError, success)
+        }
+    }
+    
+    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { firebaseError, success in
+            completionHandler(firebaseError, success)
+        }
+    }
+    
+    func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+        auth.fetchSignInMethods(forEmail: email) { methods, error in
+            if error != nil {
+                completionHandler(FirebaseError.nonExistingUser, nil)
+                return
+            }
+            
+            guard methods != nil else {
+                completionHandler(FirebaseError.nonExistingUser, nil)
+                return
+            }
+            
+            self.databaseManager.transferMoney(email: email, amount: amount, transferType: transferType) { firebaseError, user in
+                completionHandler(firebaseError, user)
+            }
         }
     }
     

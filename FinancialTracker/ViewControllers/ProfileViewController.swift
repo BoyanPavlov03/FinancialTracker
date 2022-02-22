@@ -8,16 +8,12 @@
 import UIKit
 import MessageUI
 
-struct Constants {
-    static let shareText = "Wanna keep track of your finance life. Click the link to install this new amazing app on the App Store:"
-    static let shareLink = "www.google.com"
-}
-
 class ProfileViewController: UIViewController {
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
+    @IBOutlet var premiumButton: UIButton!
     
     var authManager: AuthManager?
     
@@ -31,6 +27,10 @@ class ProfileViewController: UIViewController {
         guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
             return
+        }
+        
+        if user.premium {
+            premiumButton.isHidden = true
         }
         
         nameLabel.text = "\(user.firstName) \(user.lastName)"
@@ -57,7 +57,7 @@ class ProfileViewController: UIViewController {
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [Constants.shareText, Constants.shareLink], applicationActivities: nil)
+        let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
         
         activityVC.popoverPresentationController?.sourceView = self.view
         present(activityVC, animated: true)
@@ -65,11 +65,21 @@ class ProfileViewController: UIViewController {
     
     @IBAction func helpButtonTapped(_ sender: Any) {
         let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: Support.addExpense.rawValue, style: .default, handler: setComposerMessage))
-        alertController.addAction(UIAlertAction(title: Support.refundMoney.rawValue, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.addExpense, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.refundMoney, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
         present(alertController, animated: true)
+    }
+    
+    @IBAction func upgradeButtonTapped(_ sender: Any) {
+        guard let premiumVC = ViewControllerFactory.shared.viewController(for: .premium) as? PremiumViewController else {
+            assertionFailure("Couldn't cast to PremiumViewController")
+            return
+        }
+        
+        premiumVC.authManager = authManager
+        navigationController?.pushViewController(premiumVC, animated: true)
     }
     
     private func setComposerMessage(action: UIAlertAction) {
@@ -80,9 +90,8 @@ class ProfileViewController: UIViewController {
         
         let composer = MFMailComposeViewController()
         composer.mailComposeDelegate = self
-        composer.setToRecipients([Support.Constants.email])
-        
-        composer.setSubject(action.title ?? Support.other.rawValue)
+        composer.setToRecipients([Constants.Support.email])
+        composer.setSubject(action.title ?? Constants.Support.other)
         present(composer, animated: true)
     }
 }

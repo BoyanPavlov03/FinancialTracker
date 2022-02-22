@@ -72,7 +72,7 @@ class BalanceViewController: UIViewController {
             case .access(let error):
                 guard let error = error else { return }
                 self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-            case .auth, .database, .unknown, .signOut:
+            case .auth, .database, .unknown, .signOut, .nonExistingUser:
                 // swiftlint:disable:next force_unwrapping
                 assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
                 // swiftlint:disable:next unneeded_break_in_switch
@@ -99,7 +99,7 @@ class BalanceViewController: UIViewController {
                 case .signOut(let error):
                     guard let error = error else { return }
                     self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                case .database, .unknown, .access, .auth:
+                case .database, .unknown, .access, .auth, .nonExistingUser:
                     assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
                     // swiftlint:disable:next unneeded_break_in_switch
                     break

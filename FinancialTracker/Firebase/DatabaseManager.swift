@@ -28,7 +28,14 @@ class DatabaseManager {
         let emailKey = User.CodingKeys.email.rawValue
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
-        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false] as [String: Any]
+        let fcmToken = User.CodingKeys.FCMToken.rawValue
+        let remindersKey = User.CodingKeys.reminders.rawValue
+        guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
+            assertionFailure("fcmToken key doesn't exist.")
+            return
+        }
+        // swiftlint:disable:next line_length
+        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token, remindersKey: []] as [String: Any]
         
         self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(data) { error in
             if error != nil {
@@ -68,12 +75,12 @@ class DatabaseManager {
         }
     }
     
-    func addTransactionToCurrentUser(_ amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
         }
-                
+        
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
         
@@ -130,7 +137,7 @@ class DatabaseManager {
         }
     }
     
-    func addScoreToUserBasedOnTime(_ time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -144,7 +151,7 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
-    func changeCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -215,6 +222,137 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
+    /// FCM device token is saved when user turns on app
+    func saveFCMTokenToCurrentUser(_ token: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
+            return
+        }
+        let FCMTokenKey = User.CodingKeys.FCMToken.rawValue
+        
+        self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData([FCMTokenKey: token], merge: true)
+        completionHandler(nil, true)
+    }
+    
+    /// Removing FCM token from user when he signs out
+    func removeFCMTokenFromCurrentUser(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
+            return
+        }
+        
+        let fcmTokenKey = User.CodingKeys.FCMToken.rawValue
+        
+        firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([fcmTokenKey: ""])
+        completionHandler(nil, true)
+
+    }
+    
+    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
+            return
+        }
+        
+        let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
+        
+        let reminder = Reminder(transferType: transferType, description: description, date: formatedDate)
+        
+        do {
+            let reminderData = try JSONEncoder().encode(reminder)
+            let json = try JSONSerialization.jsonObject(with: reminderData, options: [])
+            
+            guard let dictionary = json as? [String: Any] else {
+                assertionFailure("Couldn't cast json to dictionary.")
+                return
+            }
+            let remindersKey = User.CodingKeys.reminders.rawValue
+            let reminderValue = FieldValue.arrayUnion([dictionary])
+            
+            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData([remindersKey: reminderValue], merge: true)
+            
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), false)
+        }
+    }
+    
+    // Person has read his reminder so he removes it from his list
+    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
+            return
+        }
+        
+        var reminders = currentUser.reminders
+        if let index = reminders.firstIndex(of: reminder) {
+            reminders.remove(at: index)
+        }
+        
+        let remindersKey = User.CodingKeys.reminders.rawValue
+        
+        do {
+            let remindersData = try JSONEncoder().encode(reminders)
+            let remindersJson = try JSONSerialization.jsonObject(with: remindersData, options: [])
+                          
+            guard let remindersValue = remindersJson as? [Any] else {
+                assertionFailure("Couldn't cast json to array.")
+                return
+            }
+            
+            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([remindersKey: remindersValue])
+            completionHandler(nil, true)
+        } catch {
+            completionHandler(FirebaseError.database(error), false)
+        }
+    }
+    
+    /// Transfering money from one user to another
+    func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+        self.firestore.collection(DBCollectionKey.users.rawValue).whereField("email", isEqualTo: email).getDocuments { querySnapshot, error in
+            if let error = error {
+                completionHandler(FirebaseError.database(error), nil)
+                return
+            }
+            
+            // Get all documents that match this email(should return 1)
+            guard let documents = querySnapshot?.documents else {
+                completionHandler(FirebaseError.unknown, nil)
+                return
+            }
+            
+            // Checking if it is only one
+            guard documents.count == 1 else {
+                completionHandler(FirebaseError.unknown, nil)
+                return
+            }
+            
+            do {
+                let data = try JSONSerialization.data(withJSONObject: documents[0].data(), options: .prettyPrinted)
+                let user = try JSONDecoder().decode(User.self, from: data)
+                guard user.balance != nil else {
+                    completionHandler(FirebaseError.nonExistingUser, nil)
+                    return
+                }
+                
+                if transferType == .send {
+                    self.addTransactionToCurrentUser(amount: amount, category: ExpenseCategory.transfer) { firebaseError, _ in
+                        if let firebaseError = firebaseError {
+                            completionHandler(firebaseError, nil)
+                            return
+                        }
+                        completionHandler(nil, user)
+                    }
+                } else if transferType == .request {
+                    completionHandler(nil, user)
+                }
+            } catch {
+                completionHandler(FirebaseError.database(error), nil)
+            }
+        }
+    }
+    
+    /// Listener for firestore changes
     func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), nil)
@@ -248,6 +386,7 @@ class DatabaseManager {
         }
     }
     
+    /// Fetching data at the beginning of startup
     func getCurrentUserData(uid: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).getDocument { document, error in
             guard error == nil else {
@@ -264,6 +403,14 @@ class DatabaseManager {
                 let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
                 let user = try JSONDecoder().decode(User.self, from: data)
                 self.currentUser = user
+                let FCMTokenKey = User.CodingKeys.FCMToken.rawValue
+                
+                self.saveFCMTokenToCurrentUser(UserDefaults.standard.string(forKey: FCMTokenKey) ?? "") { error, _ in
+                    if let error = error {
+                        assertionFailure(error.localizedDescription)
+                        return
+                    }
+                }
                 
                 self.delegatesCollection.forEach { delegate in
                     delegate.databaseManagerDidUserChange(sender: self)
