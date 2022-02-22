@@ -22,6 +22,7 @@ enum DBCollectionKey: String {
     case users
 }
 
+/// Class for managing all authentication related actions.
 class AuthManager {
     private let auth: Auth
     private let databaseManager: DatabaseManager
@@ -39,6 +40,11 @@ class AuthManager {
         self.databaseManager = DatabaseManager()
     }
     
+    /// Listener for auth changes.
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was returned by firestore.
     func checkAuthorisedState(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if let user = user {
@@ -52,6 +58,15 @@ class AuthManager {
         }
     }
     
+    /// Registering an user and saving data to firestore.
+    /// - Parameters:
+    ///   - firstName: A `String` containing the user's first name.
+    ///   - lastName: A `String` containing the user's last name.
+    ///   - email: A `String` containing the user's email.
+    ///   - password: A `String` containing the user's password.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was returned by firestore.
     func registerUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.createUser(withEmail: email, password: password) { [weak self] (result, error) in
 
@@ -81,6 +96,14 @@ class AuthManager {
         }
     }
 
+    
+    /// Logging an user via password
+    /// - Parameters:
+    ///   - email: A `String` containing the user's email.
+    ///   - password: A `String` containing the user's password.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was returned by firestore.
     func logInUser(email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         auth.signIn(withEmail: email, password: password) { result, error in
             guard error == nil else {
@@ -113,6 +136,11 @@ class AuthManager {
         }
     }
     
+    /// Signing out the current user
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was returned by firestore.
     func signOut(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         do {
             try auth.signOut()

@@ -13,6 +13,7 @@ protocol DatabaseManagerDelegate: AnyObject {
     func databaseManagerDidUserChange(sender: DatabaseManager)
 }
 
+/// Class for managing all firestore related actions.
 class DatabaseManager {
     private let firestore = Firestore.firestore()
     private let delegatesCollection = DelegatesCollection<DatabaseManagerDelegate>()
@@ -21,6 +22,15 @@ class DatabaseManager {
     
     init() {}
     
+    /// Creating and saving user to firestore database.
+    /// - Parameters:
+    ///   - firstName: A `String` containing the user's first name.
+    ///   - lastName: A `String` containing the user's last name.
+    ///   - email: A `String` containing the user's email.
+    ///   - uid: A `String` containing the user's UID.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed. 
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was just created.
     func createUser(firstName: String, lastName: String, email: String, uid: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         let firstNameKey = User.CodingKeys.firstName.rawValue
         let lastNameKey = User.CodingKeys.lastName.rawValue
@@ -48,6 +58,13 @@ class DatabaseManager {
         }
     }
     
+    /// Saving user's starting balance to firestore.
+    /// - Parameters:
+    ///   - balance: A `Double` containing the balance the user entered.
+    ///   - currency: A `Currency` type containing the currency's symbol, rate, code and name.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -75,6 +92,13 @@ class DatabaseManager {
         }
     }
     
+    /// Creating and saving a new transaction to the current user.
+    /// - Parameters:
+    ///   - amount: A `Double` containing the user's transaction amount.
+    ///   - category: A `Category` containing the specified `ExpenseCategory` or `IncomeCategory`.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -137,6 +161,12 @@ class DatabaseManager {
         }
     }
     
+    /// Adding score to the current user based on the amount of time spent in app.
+    /// - Parameters:
+    ///   - time: A `Double` containing the amount of time the user has spend in foreground. It is measured in seconds.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -151,6 +181,13 @@ class DatabaseManager {
         completionHandler(nil, true)
     }
     
+    /// Changing current user's currency to a new one of his choice.
+    /// - Parameters:
+    ///   - amount: A `Double` containing the user's transaction amount.
+    ///   - currency: A `Currency` type containing the currency's symbol, rate, code and name.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser, let balance = currentUser.balance, let currentCurrency = currentUser.currency else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -211,6 +248,11 @@ class DatabaseManager {
         }
     }
     
+    /// Upgrading user's rank so that he can access premium features.
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -223,6 +265,11 @@ class DatabaseManager {
     }
     
     /// FCM device token is saved when user turns on app
+    /// - Parameters:
+    ///   - token: A `String` containing the user's device token.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func saveFCMTokenToCurrentUser(_ token: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
@@ -235,6 +282,10 @@ class DatabaseManager {
     }
     
     /// Removing FCM token from user when he signs out
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func removeFCMTokenFromCurrentUser(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), false)
@@ -248,6 +299,13 @@ class DatabaseManager {
 
     }
     
+    /// Adding new reminder to the database of the current user.
+    /// - Parameters:
+    ///   - transferType: A `TransferType` whether the user wanted money or send to someone else.
+    ///   - description: A `String` containing the reminder's description.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -277,7 +335,12 @@ class DatabaseManager {
         }
     }
     
-    // Person has read his reminder so he removes it from his list
+    // Person has read his reminder so he removes it from his list.
+    /// - Parameters:
+    ///   - reminder: A `Reminder` which should be deleted.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - success: Boolean that indicates whether the function was successful.
     func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("Current user is nil in \(#function)."), false)
@@ -307,7 +370,14 @@ class DatabaseManager {
         }
     }
     
-    /// Transfering money from one user to another
+    /// Transfering money from one user to another.
+    /// - Parameters:
+    ///   - email: A `String` containing the user's email.
+    ///   - amount: A `Double` containing the amount to be send or requested.
+    ///   - transferType: A `TransferType` whether the user wanted money or send to someone else.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that were sent money to.
     func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         self.firestore.collection(DBCollectionKey.users.rawValue).whereField("email", isEqualTo: email).getDocuments { querySnapshot, error in
             if let error = error {
@@ -353,6 +423,10 @@ class DatabaseManager {
     }
     
     /// Listener for firestore changes
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was returned by firestore.
     func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(FirebaseError.access("User data is nil \(#function)."), nil)
@@ -387,6 +461,12 @@ class DatabaseManager {
     }
     
     /// Fetching data at the beginning of startup
+    /// Listener for firestore changes
+    /// - Parameters:
+    ///   - uid: A `String` containing the user's UID.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///   - firebaseError: An error object that indicates why the function failed, or nil if the was successful.
+    ///   - user: The user that was returned by firestore.
     func getCurrentUserData(uid: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
         self.firestore.collection(DBCollectionKey.users.rawValue).document(uid).getDocument { document, error in
             guard error == nil else {
