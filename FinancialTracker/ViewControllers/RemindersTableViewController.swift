@@ -10,9 +10,14 @@ import UIKit
 class RemindersTableViewController: UITableViewController {
 
     var authManager: AuthManager?
-    private var transfers: [String: [Reminder]] = [:]
+    private var transfers: [TransferType: [Reminder]] = [:] {
+        didSet {
+            self.tableView.reloadData()
+            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
     private var noTransfers: Bool {
-        for (_, value) in transfers {
+        for value in transfers.values {
             guard value.isEmpty else {
                 return false
             }
@@ -26,23 +31,17 @@ class RemindersTableViewController: UITableViewController {
         setTransfersData()
         self.title = "Transfers"
         
-        self.tableView.refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        self.tableView.refreshControl?.addTarget(self, action: #selector(setTransfersData), for: .valueChanged)
     }
     
-    @objc func refresh() {
-        setTransfersData()
-        self.tableView.reloadData()
-        self.tableView.refreshControl?.endRefreshing()
-    }
-    
-    private func setTransfersData() {
-        var transfers: [String: [Reminder]] = [:]
+    @objc private func setTransfersData() {
+        var transfers: [TransferType: [Reminder]] = [:]
         guard let reminders = authManager?.currentUser?.reminders else {
             return
         }
         
         for reminder in reminders {
-            let transferType = reminder.transferType.rawValue
+            let transferType = reminder.transferType
             if transfers[transferType] == nil {
                 transfers[transferType] = []
             }
@@ -72,7 +71,7 @@ class RemindersTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return transfers[section].key
+        return transfers[section].key.rawValue
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -85,7 +84,7 @@ class RemindersTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // swiftlint:disable:next force_cast
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Reminder", for: indexPath) as! TransferTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TransferTableViewCell", for: indexPath) as! TransferTableViewCell
         
         cell.transferTitleLabel.text = transfers[indexPath.section].value[indexPath.row].description
         cell.transferDate.text = transfers[indexPath.section].value[indexPath.row].date
@@ -101,6 +100,7 @@ class RemindersTableViewController: UITableViewController {
         return .delete
     }
     
+    // May change in the future
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
@@ -114,10 +114,6 @@ class RemindersTableViewController: UITableViewController {
                     if let index = transfers.firstIndex(of: reminder) {
                         self.transfers[key]?.remove(at: index)
                     }
-                    tableView.beginUpdates()
-                    tableView.deleteRows(at: [indexPath], with: .fade)
-                    tableView.endUpdates()
-                    tableView.reloadData()
                 }
             })
         }

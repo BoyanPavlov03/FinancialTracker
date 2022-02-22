@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Messaging.messaging().delegate = self
         
         authMananger = AuthManager()
+        // Calling this function to check if there is an user currently logged in and get his data
         authMananger.checkAuthorisedState { _, _ in return }
         
         return true
