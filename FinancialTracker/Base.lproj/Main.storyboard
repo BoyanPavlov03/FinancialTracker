@@ -1044,23 +1044,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3yh-Pl-r1n">
-                                <rect key="frame" x="0.0" y="123" width="320" height="1"/>
-                                <color key="backgroundColor" systemColor="systemGray2Color"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="e7o-QI-yFB"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b9A-A9-K2Q">
-                                <rect key="frame" x="95" y="69" width="131" height="31"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Send or Request"/>
-                                <connections>
-                                    <action selector="sendOrRequestButtonTapped:" destination="bSc-xg-mq8" eventType="touchUpInside" id="ohK-TD-dAm"/>
-                                </connections>
-                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="mKo-lK-htq">
-                                <rect key="frame" x="0.0" y="129" width="320" height="390"/>
+                                <rect key="frame" x="0.0" y="44" width="320" height="378"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TransferTableViewCell" rowHeight="68" id="c1c-JV-h1F" customClass="TransferTableViewCell" customModule="FinancialTracker" customModuleProvider="target">
@@ -1085,9 +1070,11 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="NLb-98-J52" firstAttribute="top" secondItem="txX-MI-CaN" secondAttribute="top" constant="10" id="2YF-r3-8Fl"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="TMg-im-9Bx" secondAttribute="trailing" constant="20" symbolic="YES" id="A2n-Bj-Z5s"/>
                                                 <constraint firstItem="TMg-im-9Bx" firstAttribute="top" secondItem="NLb-98-J52" secondAttribute="bottom" constant="5" id="egi-El-qw9"/>
                                                 <constraint firstItem="NLb-98-J52" firstAttribute="leading" secondItem="txX-MI-CaN" secondAttribute="leading" constant="30" id="fHj-2Q-V89"/>
                                                 <constraint firstItem="TMg-im-9Bx" firstAttribute="leading" secondItem="txX-MI-CaN" secondAttribute="leading" constant="30" id="wCQ-gJ-fOr"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="NLb-98-J52" secondAttribute="trailing" constant="20" symbolic="YES" id="wDQ-d8-xf8"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -1097,20 +1084,35 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJc-9w-MuP">
+                                <rect key="frame" x="0.0" y="437" width="320" height="1"/>
+                                <color key="backgroundColor" systemColor="systemGray2Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="F7x-IO-tPi"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b9A-A9-K2Q">
+                                <rect key="frame" x="40" y="463" width="240" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Send or Request" cornerStyle="capsule"/>
+                                <connections>
+                                    <action selector="sendOrRequestButtonTapped:" destination="bSc-xg-mq8" eventType="touchUpInside" id="ohK-TD-dAm"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="GuB-aK-05l"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="mKo-lK-htq" firstAttribute="leading" secondItem="GuB-aK-05l" secondAttribute="leading" id="3U8-W5-iWM"/>
-                            <constraint firstItem="b9A-A9-K2Q" firstAttribute="leading" secondItem="GuB-aK-05l" secondAttribute="leading" constant="95" id="9bV-cQ-uLI"/>
-                            <constraint firstItem="GuB-aK-05l" firstAttribute="trailing" secondItem="b9A-A9-K2Q" secondAttribute="trailing" constant="94" id="BRG-cl-Nav"/>
-                            <constraint firstItem="GuB-aK-05l" firstAttribute="trailing" secondItem="3yh-Pl-r1n" secondAttribute="trailing" id="CL9-tn-sIn"/>
-                            <constraint firstItem="b9A-A9-K2Q" firstAttribute="top" secondItem="GuB-aK-05l" secondAttribute="top" constant="25" id="GHw-rB-z94"/>
-                            <constraint firstItem="GuB-aK-05l" firstAttribute="bottom" secondItem="mKo-lK-htq" secondAttribute="bottom" id="H36-Gl-o0M"/>
-                            <constraint firstItem="3yh-Pl-r1n" firstAttribute="leading" secondItem="GuB-aK-05l" secondAttribute="leading" id="HpB-eC-hjy"/>
-                            <constraint firstItem="GuB-aK-05l" firstAttribute="trailing" secondItem="mKo-lK-htq" secondAttribute="trailing" id="SK1-Wq-k2L"/>
-                            <constraint firstItem="mKo-lK-htq" firstAttribute="top" secondItem="3yh-Pl-r1n" secondAttribute="bottom" constant="5" id="pon-aQ-zOT"/>
-                            <constraint firstItem="3yh-Pl-r1n" firstAttribute="top" secondItem="b9A-A9-K2Q" secondAttribute="bottom" constant="23" id="uhb-bt-ple"/>
+                            <constraint firstItem="fJc-9w-MuP" firstAttribute="leading" secondItem="GuB-aK-05l" secondAttribute="leading" id="2II-4s-QOg"/>
+                            <constraint firstItem="GuB-aK-05l" firstAttribute="trailing" secondItem="mKo-lK-htq" secondAttribute="trailing" id="3Zq-zU-ECd"/>
+                            <constraint firstItem="b9A-A9-K2Q" firstAttribute="top" secondItem="fJc-9w-MuP" secondAttribute="bottom" constant="25" id="5H6-DF-cUG"/>
+                            <constraint firstItem="mKo-lK-htq" firstAttribute="leading" secondItem="GuB-aK-05l" secondAttribute="leading" id="Pdf-Lr-fRs"/>
+                            <constraint firstItem="mKo-lK-htq" firstAttribute="top" secondItem="GuB-aK-05l" secondAttribute="top" id="T3U-Ec-LkK"/>
+                            <constraint firstItem="fJc-9w-MuP" firstAttribute="top" secondItem="mKo-lK-htq" secondAttribute="bottom" constant="15" id="V9Q-Vn-YUP"/>
+                            <constraint firstItem="GuB-aK-05l" firstAttribute="bottom" secondItem="b9A-A9-K2Q" secondAttribute="bottom" constant="25" id="fdm-Rz-Kgn"/>
+                            <constraint firstItem="b9A-A9-K2Q" firstAttribute="leading" secondItem="GuB-aK-05l" secondAttribute="leading" constant="40" id="gNW-fR-TWW"/>
+                            <constraint firstItem="GuB-aK-05l" firstAttribute="trailing" secondItem="b9A-A9-K2Q" secondAttribute="trailing" constant="40" id="gj0-1e-7ZF"/>
+                            <constraint firstItem="GuB-aK-05l" firstAttribute="trailing" secondItem="fJc-9w-MuP" secondAttribute="trailing" id="vpk-T0-CEG"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="I4F-9C-X3i"/>

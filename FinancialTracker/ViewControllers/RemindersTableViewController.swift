@@ -15,8 +15,8 @@ class RemindersTableViewController: UIViewController {
     var authManager: AuthManager?
     private var transfers: [TransferType: [Reminder]] = [:] {
         didSet {
-            self.transfersHistoryTableView.reloadData()
-            self.refreshControl.endRefreshing()
+            transfersHistoryTableView.reloadData()
+            refreshControl.endRefreshing()
         }
     }
     private var noTransfers: Bool {
@@ -32,8 +32,9 @@ class RemindersTableViewController: UIViewController {
         super.viewDidLoad()
         
         setTransfersData()
-        self.title = "Transfers"
-        self.transfersHistoryTableView.dataSource = self
+        title = "Transfers"
+        transfersHistoryTableView.dataSource = self
+        transfersHistoryTableView.delegate = self
         
         refreshControl.addTarget(self, action: #selector(setTransfersData), for: .valueChanged)
         transfersHistoryTableView.addSubview(refreshControl)
@@ -69,14 +70,14 @@ class RemindersTableViewController: UIViewController {
 extension RemindersTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if noTransfers {
-            // swiftlint:disable:next line_length
-            let noDataLabel = UILabel(frame: CGRect(x: 0, y: 0, width: self.transfersHistoryTableView.bounds.size.width, height: self.transfersHistoryTableView.bounds.size.height))
+            let size = transfersHistoryTableView.bounds.size
+            let noDataLabel = UILabel(frame: CGRect(x: 0, y: 0, width: size.width, height: size.height))
             noDataLabel.text = "No Transfers Available"
             noDataLabel.textColor = UIColor(red: 22.0/255.0, green: 106.0/255.0, blue: 176.0/255.0, alpha: 1.0)
             noDataLabel.textAlignment = NSTextAlignment.center
-            self.transfersHistoryTableView.backgroundView = noDataLabel
+            transfersHistoryTableView.backgroundView = noDataLabel
         } else {
-            self.transfersHistoryTableView.backgroundView = nil
+            transfersHistoryTableView.backgroundView = nil
         }
         return transfers.count
     }
@@ -107,10 +108,6 @@ extension RemindersTableViewController: UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60.0
-    }
-    
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
@@ -119,10 +116,27 @@ extension RemindersTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { firebaseError, _ in
-                if let firebaseError = firebaseError {
-                    let alert = UIAlertController.create(title: "Fail", message: "Couldn't delete reminder.\(firebaseError.localizedDescription)")
-                    self.present(alert, animated: true)
+            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, _ in
+                if let authError = authError {
+                    switch authError {
+                    case .database(let error):
+                        if let databaseError = error {
+                            switch databaseError {
+                            case .database(let error):
+                                guard let error = error else { return }
+                                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                            case .access(let error):
+                                guard let error = error else { return }
+                                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
+                            default:
+                                assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
+                                return
+                            }
+                        }
+                    default:
+                        assertionFailure("This authError should not appear: \(authError.localizedDescription)")
+                        return
+                    }
                 } else {
                     let transfers = self.transfers[indexPath.section].value
                     let key = self.transfers[indexPath.section].key
@@ -132,5 +146,11 @@ extension RemindersTableViewController: UITableViewDataSource {
                 }
             })
         }
+    }
+}
+
+extension RemindersTableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60.0
     }
 }

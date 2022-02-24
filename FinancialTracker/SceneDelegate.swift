@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let navVC = ViewControllerFactory.shared.navController
                 
-        authManager.checkAuthorisedState { firebaseError, user in
+        authManager.checkAuthorisedState { authError, user in
             if let user = user {
                 if user.balance != nil {
                     guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
@@ -46,8 +46,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     window.rootViewController = navVC
                 }
             } else {
-                if let firebaseError = firebaseError {
-                    assertionFailure("Can't access user data \(firebaseError.localizedDescription)")
+                if let authError = authError {
+                    assertionFailure("Can't access user data \(authError.localizedDescription)")
                     return
                 }
                 
@@ -90,9 +90,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
-        authManager.addScoreToCurrentUser(basedOn: timeActive) { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                assertionFailure(firebaseError.localizedDescription)
+        authManager.addScoreToCurrentUser(basedOn: timeActive) { authError, _ in
+            if let authError = authError {
+                assertionFailure(authError.localizedDescription)
             }
         }
     }

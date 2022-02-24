@@ -8,15 +8,21 @@
 import UIKit
 
 class CurrencyTableViewController: UITableViewController {
-    private var currencies: [Currency] = []
+    private var currencies: [Currency] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
     
     var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Currency"
-        self.tabBarItem.image = UIImage(systemName: "dollarsign.circle")
+        title = "Currency"
+        tabBarItem.image = UIImage(systemName: "dollarsign.circle")
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
@@ -29,9 +35,6 @@ class CurrencyTableViewController: UITableViewController {
             }
 
             self.currencies = currencies
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
         }
     }
 
@@ -71,13 +74,30 @@ class CurrencyTableViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Confirm", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
-            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
-                if let firebaseError = firebaseError {
-                    assertionFailure(firebaseError.localizedDescription)
-                    return
+            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { authError, _ in
+                if let authError = authError {
+                    switch authError {
+                    case .database(let error):
+                        if let databaseError = error {
+                            switch databaseError {
+                            case .database(let error):
+                                guard let error = error else { return }
+                                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                            case .access(let error):
+                                guard let error = error else { return }
+                                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
+                            default:
+                                assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
+                                return
+                            }
+                        }
+                    default:
+                        assertionFailure("This authError should not appear: \(authError.localizedDescription)")
+                        return
+                    }
+                } else {
+                    self.navigationController?.popViewController(animated: true)
                 }
-                
-                self.navigationController?.popViewController(animated: true)
             }
         }))
         

@@ -26,11 +26,12 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Profile"
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        self.tabBarItem.image = UIImage(systemName: "person")
-        self.settingsTableView.delegate = self
-        self.settingsTableView.dataSource = self
+        title = "Profile"
+        navigationItem.setHidesBackButton(true, animated: true)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        tabBarItem.image = UIImage(systemName: "person")
+        settingsTableView.delegate = self
+        settingsTableView.dataSource = self
         
         guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
             assertionFailure("User data is nil")
@@ -50,6 +51,7 @@ class ProfileViewController: UIViewController {
             assertionFailure("User data is nil")
             return
         }
+        
         if balance < 0 {
             balanceLabel.textColor = .red
         } else if balance > 3000 {
@@ -67,7 +69,7 @@ class ProfileViewController: UIViewController {
         present(activityVC, animated: true)
     }
     
-    func helpCellTapped() {
+    private func helpCellTapped() {
         let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
         alertController.addAction(UIAlertAction(title: Constants.Support.addExpense, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: Constants.Support.refundMoney, style: .default, handler: setComposerMessage))
@@ -76,7 +78,7 @@ class ProfileViewController: UIViewController {
         present(alertController, animated: true)
     }
 
-    func upgradeCellTapped() {
+    private func upgradeCellTapped() {
         guard let premiumVC = ViewControllerFactory.shared.viewController(for: .premium) as? PremiumViewController else {
             assertionFailure("Couldn't cast to PremiumViewController")
             return
@@ -97,6 +99,51 @@ class ProfileViewController: UIViewController {
         composer.setToRecipients([Constants.Support.email])
         composer.setSubject(action.title ?? Constants.Support.other)
         present(composer, animated: true)
+    }
+    
+    private func changeCurrencyCellTapped() {
+        guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
+            assertionFailure("Couldn't cast to CurrencyTableViewController")
+            return
+        }
+        currencyVC.authManager = authManager
+        
+        navigationController?.pushViewController(currencyVC, animated: true)
+    }
+    
+    @objc private func signOut() {
+        let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
+            self.authManager?.signOut { authError, _ in
+                if let authError = authError {
+                    switch authError {
+                    case .signOut(let error):
+                        guard let error = error else { return }
+                        self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
+                    case .database(let error):
+                        if let databaseError = error {
+                            switch databaseError {
+                            case .database(let error):
+                                guard let error = error else { return }
+                                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                            case .access(let error):
+                                guard let error = error else { return }
+                                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
+                            default:
+                                assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
+                                return
+                            }
+                        }
+                    default:
+                        assertionFailure("This authError should not appear: \(authError.localizedDescription)")
+                        return
+                    }
+                }
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(alertController, animated: true)
     }
 }
 
@@ -121,17 +168,11 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
-            guard let currencyVC = ViewControllerFactory.shared.viewController(for: .currency) as? CurrencyTableViewController else {
-                assertionFailure("Couldn't cast to CurrencyTableViewController")
-                return
-            }
-            currencyVC.authManager = authManager
-            
-            self.navigationController?.pushViewController(currencyVC, animated: true)
+            changeCurrencyCellTapped()
         case 1:
-            self.helpCellTapped()
+            helpCellTapped()
         case 2:
-            self.upgradeCellTapped()
+            upgradeCellTapped()
         default:
             assertionFailure("This should not happen.")
             return
@@ -145,10 +186,13 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let premium = authManager?.currentUser?.premium, premium {
-            return ProfileViewControllerSettings.allCases.count - 1
+        guard let premium = authManager?.currentUser?.premium else {
+            assertionFailure("User data is nil")
+            return 0
         }
-        return ProfileViewControllerSettings.allCases.count
+        
+        let count = ProfileViewControllerSettings.allCases.count
+        return premium ? count - 1 : count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -158,6 +202,7 @@ extension ProfileViewController: UITableViewDataSource {
         if ProfileViewControllerSettings.allCases[indexPath.row] == .changeCurrency {
             cell.accessoryType = .disclosureIndicator
         }
+        
         return cell
     }
 }

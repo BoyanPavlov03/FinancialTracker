@@ -45,28 +45,39 @@ class TransactionViewController: UIViewController {
     
     @IBAction func addTransactionButtonTapped(_ sender: Any) {
         guard let amount = amountTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !amount.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing Amount", message: "Please fill in the amount."), animated: true)
+            present(UIAlertController.create(title: "Missing Amount", message: "Please fill in the amount."), animated: true)
             return
         }
         
         guard let amountNumber = Double(amount) else {
-            self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
+            present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { firebaseError, _ in
-            switch firebaseError {
-            case .access(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-            case .auth, .database, .unknown, .signOut, .nonExistingUser:
-                // swiftlint:disable:next force_unwrapping
-                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
-            case .none:
+        authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { authError, _ in
+            if let authError = authError {
+                switch authError {
+                case .database(let error):
+                    if let databaseError = error {
+                        switch databaseError {
+                        case .database(let error):
+                            guard let error = error else { return }
+                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                        case .access(let error):
+                            guard let error = error else { return }
+                            self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
+                        default:
+                            assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
+                            return
+                        }
+                    }
+                default:
+                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
+                    return
+                }
+            } else {
                 self.navigationController?.popViewController(animated: true)
             }
         }

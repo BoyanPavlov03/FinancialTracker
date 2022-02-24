@@ -45,46 +45,53 @@ class RegisterViewController: UIViewController {
     
     @IBAction func registerButtonTapped(_: Any) {
         guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !firstName.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing First Name", message: "Please fill in your first name"), animated: true)
+            present(UIAlertController.create(title: "Missing First Name", message: "Please fill in your first name"), animated: true)
             return
         }
         
         guard let lastName = lastNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !lastName.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing Password", message: "Please fill in your last name"), animated: true)
+            present(UIAlertController.create(title: "Missing Password", message: "Please fill in your last name"), animated: true)
             return
         }
         
         guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !email.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing Email", message: "Please fill in your email"), animated: true)
+            present(UIAlertController.create(title: "Missing Email", message: "Please fill in your email"), animated: true)
             return
         }
         
         guard let password = passwordField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !password.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing Password", message: "Please fill in your password"), animated: true)
+            present(UIAlertController.create(title: "Missing Password", message: "Please fill in your password"), animated: true)
             return
         }
         
         if isValidEmail(email) == false {
-            self.present(UIAlertController.create(title: "Email Format", message: "Invalid email format"), animated: true)
+            present(UIAlertController.create(title: "Email Format", message: "Invalid email format"), animated: true)
             return
         }
         
-        authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { firebaseError, _ in
+        authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { authError, _ in
             
-            if let firebaseError = firebaseError {
-                switch firebaseError {
+            if let authError = authError {
+                switch authError {
                 case .unknown:
                     self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
                 case .auth(let error):
                     guard let error = error else { return }
                     self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
                 case .database(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                case .access, .signOut, .nonExistingUser:
-                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
+                    if let databaseError = error {
+                        switch databaseError {
+                        case .database(let error):
+                            guard let error = error else { return }
+                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
+                        default:
+                            assertionFailure("This error should not appear: \(authError.localizedDescription)")
+                            return
+                        }
+                    }
+                default:
+                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
+                    return
                 }
             }
         }

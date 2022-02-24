@@ -19,7 +19,7 @@ class PremiumViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Premium"
+        title = "Premium"
         
         SKPaymentQueue.default().add(self)
     }
@@ -40,14 +40,33 @@ extension PremiumViewController: SKPaymentTransactionObserver {
             switch transaction.transactionState {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
-                authManager?.buyPremium { firebaseError, _ in
-                    if let firebaseError = firebaseError {
-                        assertionFailure(firebaseError.localizedDescription)
-                        return
+                authManager?.buyPremium { authError, _ in
+                    if let authError = authError {
+                        switch authError {
+                        case .database(let error):
+                            if let databaseError = error {
+                                switch databaseError {
+                                case .database(let error):
+                                    guard let error = error else { return }
+                                    let alert = UIAlertController.create(title: "Database Error", message: error.localizedDescription)
+                                    self.present(alert, animated: true)
+                                case .access(let error):
+                                    guard let error = error else { return }
+                                    let alert = UIAlertController.create(title: "Access Error", message: error)
+                                    self.present(alert, animated: true)
+                                default:
+                                    assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
+                                    return
+                                }
+                            }
+                        default:
+                            assertionFailure("This authError should not appear: \(authError.localizedDescription)")
+                            return
+                        }
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
                     }
                 }
-                
-                self.navigationController?.popViewController(animated: true)
             case .failed:
                 SKPaymentQueue.default().finishTransaction(transaction)
             default:

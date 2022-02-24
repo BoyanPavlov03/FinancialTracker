@@ -58,17 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             return
         }
         
-        authMananger.setReminderToCurrentUser(transferType: transferType, description: description, completionHandler: { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                assertionFailure(firebaseError.localizedDescription)
+        authMananger.setReminderToCurrentUser(transferType: transferType, description: description, completionHandler: { authError, _ in
+            if let authError = authError {
+                assertionFailure(authError.localizedDescription)
                 completionHandler(.failed)
                 return
             }
             if transferType == .send {
                 let category = IncomeCategory.transfer
-                self.authMananger.addTransactionToCurrentUser(amount: amountValue, category: category, completionHandler: { firebaseError, _ in
-                    if let firebaseError = firebaseError {
-                        assertionFailure(firebaseError.localizedDescription)
+                self.authMananger.addTransactionToCurrentUser(amount: amountValue, category: category, completionHandler: { authError, _ in
+                    if let authError = authError {
+                        assertionFailure(authError.localizedDescription)
                         completionHandler(.failed)
                         return
                     }
