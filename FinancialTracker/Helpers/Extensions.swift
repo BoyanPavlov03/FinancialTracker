@@ -102,6 +102,63 @@ extension UIAlertController {
         alertController.addAction(UIAlertAction(title: "Continue", style: .default, handler: nil))
         return alertController
     }
+    
+    private static func create(basedOnDatabaseError error: DatabaseError?) -> UIAlertController? {
+        if let databaseError = error {
+            let continueAction = UIAlertAction(title: "Continue", style: .default, handler: nil)
+            switch databaseError {
+            case .database(let error):
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Database Error", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            case .nonExistingUser:
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Not Existing User", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            case .access(let error):
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Access Error", message: error, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            case .unknown:
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Unknown Error", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            }
+        }
+        return nil
+    }
+    
+    static func create(basedOnAuthError error: AuthError?) -> UIAlertController? {
+        if let authError = error {
+            let continueAction = UIAlertAction(title: "Continue", style: .default, handler: nil)
+            switch authError {
+            case .auth(let error):
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Auth Error", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            case .signOut(let error):
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Sign Out Error", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            case .database(let error):
+                if let alert = self.create(basedOnDatabaseError: error) {
+                    return alert
+                }
+            case .unknown:
+                guard let error = error else { return nil }
+                let alert = UIAlertController(title: "Unknown Error", message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(continueAction)
+                return alert
+            }
+        }
+        return nil
+    }
 }
 
 extension Double {

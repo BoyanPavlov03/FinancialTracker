@@ -53,29 +53,9 @@ class TabBarController: UITabBarController {
         }
         
         authManager?.firestoreDidChangeData { authError, user in
-            if let authError = authError {
-                switch authError {
-                case .database(let error):
-                    if let databaseError = error {
-                        switch databaseError {
-                        case .database(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                        case .access(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                        case .unknown:
-                            let alert = UIAlertController.create(title: "Unknown Error", message: databaseError.localizedDescription)
-                            self.present(alert, animated: true)
-                        default:
-                            assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                            return
-                        }
-                    }
-                default:
-                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                    return
-                }
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.present(alert, animated: true)
+                return
             } else {
                 guard let user = user, let balance = user.balance else {
                     return

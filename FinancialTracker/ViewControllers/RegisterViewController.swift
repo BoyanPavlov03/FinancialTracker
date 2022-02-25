@@ -70,29 +70,9 @@ class RegisterViewController: UIViewController {
         }
         
         authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { authError, _ in
-            
-            if let authError = authError {
-                switch authError {
-                case .unknown:
-                    self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-                case .auth(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
-                case .database(let error):
-                    if let databaseError = error {
-                        switch databaseError {
-                        case .database(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                        default:
-                            assertionFailure("This error should not appear: \(authError.localizedDescription)")
-                            return
-                        }
-                    }
-                default:
-                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                    return
-                }
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.present(alert, animated: true)
+                return
             }
         }
     }

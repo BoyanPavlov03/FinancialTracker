@@ -115,29 +115,9 @@ class ProfileViewController: UIViewController {
         let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
             self.authManager?.signOut { authError, _ in
-                if let authError = authError {
-                    switch authError {
-                    case .signOut(let error):
-                        guard let error = error else { return }
-                        self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                    case .database(let error):
-                        if let databaseError = error {
-                            switch databaseError {
-                            case .database(let error):
-                                guard let error = error else { return }
-                                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                            case .access(let error):
-                                guard let error = error else { return }
-                                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                            default:
-                                assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                                return
-                            }
-                        }
-                    default:
-                        assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                        return
-                    }
+                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                    self.present(alert, animated: true)
+                    return
                 }
             }
         }))

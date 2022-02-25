@@ -662,14 +662,14 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="uxE-AM-Drz">
-                                <rect key="frame" x="0.0" y="230.5" width="310" height="288.5"/>
+                                <rect key="frame" x="0.0" y="230.5" width="320" height="288.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingTableViewCell" id="ubK-AD-AzM">
-                                        <rect key="frame" x="0.0" y="44.5" width="310" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="320" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ubK-AD-AzM" id="nHz-mU-0VG">
-                                            <rect key="frame" x="0.0" y="0.0" width="310" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -684,7 +684,7 @@
                             <constraint firstItem="rER-1G-C1Y" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" id="K6p-SS-xmC"/>
                             <constraint firstItem="Hzx-T6-Gna" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" constant="15" id="ScQ-6z-SQm"/>
                             <constraint firstItem="rER-1G-C1Y" firstAttribute="top" secondItem="Hzx-T6-Gna" secondAttribute="bottom" constant="25" id="TL2-8g-AJj"/>
-                            <constraint firstItem="Ghv-QR-cps" firstAttribute="trailing" secondItem="uxE-AM-Drz" secondAttribute="trailing" constant="10" id="V63-JV-695"/>
+                            <constraint firstItem="Ghv-QR-cps" firstAttribute="trailing" secondItem="uxE-AM-Drz" secondAttribute="trailing" id="V63-JV-695"/>
                             <constraint firstItem="uxE-AM-Drz" firstAttribute="leading" secondItem="Ghv-QR-cps" secondAttribute="leading" id="YR8-fu-FpV"/>
                             <constraint firstItem="Lem-xz-i2Y" firstAttribute="centerX" secondItem="Ghv-QR-cps" secondAttribute="centerX" id="jcz-A7-cHE"/>
                             <constraint firstItem="Lem-xz-i2Y" firstAttribute="top" secondItem="Ghv-QR-cps" secondAttribute="top" constant="15" id="lEL-QE-v1f"/>
@@ -1150,10 +1150,10 @@
                                         </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="cFe-t9-1zO">
-                                        <rect key="frame" x="40" y="102.5" width="160" height="108"/>
+                                        <rect key="frame" x="40" y="102.5" width="160" height="83"/>
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="seU-7A-L7K" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="160" height="46.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="160" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                                 <userDefinedRuntimeAttributes>
@@ -1164,7 +1164,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </textField>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KVc-bc-oEf" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="61.5" width="160" height="46.5"/>
+                                                <rect key="frame" x="0.0" y="49" width="160" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits"/>
                                                 <userDefinedRuntimeAttributes>

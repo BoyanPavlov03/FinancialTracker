@@ -43,33 +43,9 @@ class LoginViewController: UIViewController {
             return
         }
         authManager?.logInUser(email: email, password: password) { authError, _ in
-            if let authError = authError {
-                switch authError {
-                case .auth(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Auth Error", message: error.localizedDescription), animated: true)
-                case .unknown:
-                    self.present(UIAlertController.create(title: "Unknown Error", message: authError.localizedDescription), animated: true)
-                case .database(let error):
-                    if let databaseError = error {
-                        switch databaseError {
-                        case .database(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                        case .access(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                        case .unknown:
-                            self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-                        default:
-                            assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                            return
-                        }
-                    }
-                default:
-                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                    return
-                }
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.present(alert, animated: true)
+                return
             }
         }
     }

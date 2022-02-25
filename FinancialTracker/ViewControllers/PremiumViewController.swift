@@ -41,28 +41,9 @@ extension PremiumViewController: SKPaymentTransactionObserver {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
                 authManager?.buyPremium { authError, _ in
-                    if let authError = authError {
-                        switch authError {
-                        case .database(let error):
-                            if let databaseError = error {
-                                switch databaseError {
-                                case .database(let error):
-                                    guard let error = error else { return }
-                                    let alert = UIAlertController.create(title: "Database Error", message: error.localizedDescription)
-                                    self.present(alert, animated: true)
-                                case .access(let error):
-                                    guard let error = error else { return }
-                                    let alert = UIAlertController.create(title: "Access Error", message: error)
-                                    self.present(alert, animated: true)
-                                default:
-                                    assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                                    return
-                                }
-                            }
-                        default:
-                            assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                            return
-                        }
+                    if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                        self.present(alert, animated: true)
+                        return
                     } else {
                         self.navigationController?.popViewController(animated: true)
                     }

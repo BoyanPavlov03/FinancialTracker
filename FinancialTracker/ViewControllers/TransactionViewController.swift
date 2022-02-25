@@ -57,26 +57,9 @@ class TransactionViewController: UIViewController {
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
         authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { authError, _ in
-            if let authError = authError {
-                switch authError {
-                case .database(let error):
-                    if let databaseError = error {
-                        switch databaseError {
-                        case .database(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                        case .access(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                        default:
-                            assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                            return
-                        }
-                    }
-                default:
-                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                    return
-                }
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.present(alert, animated: true)
+                return
             } else {
                 self.navigationController?.popViewController(animated: true)
             }

@@ -117,26 +117,9 @@ extension RemindersTableViewController: UITableViewDataSource {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
             authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, _ in
-                if let authError = authError {
-                    switch authError {
-                    case .database(let error):
-                        if let databaseError = error {
-                            switch databaseError {
-                            case .database(let error):
-                                guard let error = error else { return }
-                                self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                            case .access(let error):
-                                guard let error = error else { return }
-                                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                            default:
-                                assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                                return
-                            }
-                        }
-                    default:
-                        assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                        return
-                    }
+                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                    self.present(alert, animated: true)
+                    return
                 } else {
                     let transfers = self.transfers[indexPath.section].value
                     let key = self.transfers[indexPath.section].key

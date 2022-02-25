@@ -46,8 +46,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     window.rootViewController = navVC
                 }
             } else {
-                if let authError = authError {
-                    assertionFailure("Can't access user data \(authError.localizedDescription)")
+                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                    self.window?.rootViewController?.present(alert, animated: true)
                     return
                 }
                 
@@ -91,8 +91,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
         authManager.addScoreToCurrentUser(basedOn: timeActive) { authError, _ in
-            if let authError = authError {
-                assertionFailure(authError.localizedDescription)
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.window?.rootViewController?.present(alert, animated: true)
+                return
             }
         }
     }

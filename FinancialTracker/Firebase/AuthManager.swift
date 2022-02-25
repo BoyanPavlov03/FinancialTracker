@@ -114,11 +114,7 @@ class AuthManager {
             }
             
             self.databaseManager.getCurrentUserData(uid: result.user.uid) { databaseError, user in
-                if let databaseError = databaseError {
-                    completionHandler(AuthError.database(databaseError), nil)
-                    return
-                }
-                completionHandler(nil, user)
+                completionHandler(AuthError.database(databaseError), user)
             }
         }
     }
@@ -146,101 +142,61 @@ class AuthManager {
     
     func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.addBalanceToCurrentUser(balance, currency: currency) { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.addTransactionToCurrentUser(amount: amount, category: category) { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.addScoreToCurrentUser(basedOn: time) { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.changeCurrentUserCurrency(currency) { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func buyPremium(completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.buyPremium { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (AuthError?, Bool) -> Void) {
         databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { databaseError, success in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), false)
-                return
-            }
-            completionHandler(nil, success)
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
     func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (AuthError?, User?) -> Void) {
         databaseManager.transferMoney(email: email, amount: amount, transferType: transferType) { databaseError, user in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), nil)
-                return
-            }
-            completionHandler(nil, user)
+            completionHandler(AuthError.database(databaseError), user)
         }
     }
     
     func firestoreDidChangeData(completionHandler: @escaping (AuthError?, User?) -> Void) {
         databaseManager.firestoreDidChangeData { databaseError, user in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), nil)
-                return
-            }
-            completionHandler(nil, user)
+            completionHandler(AuthError.database(databaseError), user)
         }
     }
     
     func getAllUsers(completionHandler: @escaping (AuthError?, [String]?) -> Void) {
         databaseManager.getAllUsers { databaseError, emails in
-            if let databaseError = databaseError {
-                completionHandler(AuthError.database(databaseError), nil)
-                return
-            }
-            completionHandler(nil, emails)
+            completionHandler(AuthError.database(databaseError), emails)
         }
     }
     

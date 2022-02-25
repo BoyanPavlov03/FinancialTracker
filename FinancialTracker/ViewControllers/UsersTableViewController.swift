@@ -22,31 +22,9 @@ class UsersTableViewController: UITableViewController {
         
         title = "Users"
         authManager?.getAllUsers(completionHandler: { authError, usersEmails in
-            if let authError = authError {
-                switch authError {
-                case .database(let error):
-                    if let databaseError = error {
-                        switch databaseError {
-                        case .database(let error):
-                            guard let error = error else { return }
-                            let alert = UIAlertController.create(title: "Database Error", message: error.localizedDescription)
-                            self.present(alert, animated: true)
-                        case .access(let error):
-                            guard let error = error else { return }
-                            let alert = UIAlertController.create(title: "Access Error", message: error)
-                            self.present(alert, animated: true)
-                        case .unknown:
-                            let alert = UIAlertController.create(title: "Unknown Error", message: databaseError.localizedDescription)
-                            self.present(alert, animated: true)
-                        default:
-                            assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                            return
-                        }
-                    }
-                default:
-                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                    return
-                }
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.present(alert, animated: true)
+                return
             } else {
                 guard let usersEmails = usersEmails else {
                     assertionFailure("Emails are nil.")
@@ -120,32 +98,9 @@ class UsersTableViewController: UITableViewController {
     
     private func requestOrSend(email: String, amount: Double, transferType: TransferType) {
         authManager?.transferMoney(email: email, amount: amount, transferType: transferType, completionHandler: { authError, user in
-            if let authError = authError {
-                switch authError {
-                case .database(let error):
-                    if let databaseError = error {
-                        switch databaseError {
-                        case .nonExistingUser:
-                            let alert = UIAlertController.create(title: "Invalid", message: "The user doesn't exist.")
-                            self.present(alert, animated: true)
-                            return
-                        case .database(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                            return
-                        case .access(let error):
-                            guard let error = error else { return }
-                            self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                            return
-                        default:
-                            assertionFailure("This databaseError should not appear: \(databaseError.localizedDescription)")
-                            return
-                        }
-                    }
-                default:
-                    assertionFailure("This authError should not appear: \(authError.localizedDescription)")
-                    return
-                }
+            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                self.present(alert, animated: true)
+                return
             } else {
                 guard let currentUser = self.authManager?.currentUser, let senderRate = currentUser.currency?.rate else {
                     return
