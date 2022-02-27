@@ -27,4 +27,6 @@ struct Constants {
             
         static let email = "support_financialTracker@gmail.com"
     }
+    
+    static let errorIsNil = "Error description is nil"
 }

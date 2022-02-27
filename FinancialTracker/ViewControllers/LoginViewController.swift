@@ -43,7 +43,7 @@ class LoginViewController: UIViewController {
             return
         }
         authManager?.logInUser(email: email, password: password) { authError, _ in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.present(alert, animated: true)
                 return
             }

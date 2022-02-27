@@ -75,7 +75,7 @@ class CurrencyTableViewController: UITableViewController {
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
             self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { authError, _ in
-                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                if let alert = UIAlertController.create(basedOn: authError) {
                     self.present(alert, animated: true)
                     return
                 } else {

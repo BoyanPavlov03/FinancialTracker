@@ -14,6 +14,19 @@ enum AuthError: Error {
     case signOut(Error?)
     case database(DatabaseError?)
     case unknown
+    
+    var description: String {
+        switch self {
+        case .auth:
+            return "Auth Error"
+        case .signOut:
+            return "Sign Out Error"
+        case .database:
+            return "Database Error"
+        case .unknown:
+            return "Unknown Error"
+        }
+    }
 }
 
 enum DBCollectionKey: String {

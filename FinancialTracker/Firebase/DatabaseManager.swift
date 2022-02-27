@@ -14,6 +14,19 @@ enum DatabaseError: Error {
     case nonExistingUser
     case access(String?)
     case unknown
+    
+    var description: String {
+        switch self {
+        case .nonExistingUser:
+            return "Not Existing User"
+        case .access:
+            return "Access Error"
+        case .database:
+            return "Database Error"
+        case .unknown:
+            return "Unknown Error"
+        }
+    }
 }
 
 protocol DatabaseManagerDelegate: AnyObject {

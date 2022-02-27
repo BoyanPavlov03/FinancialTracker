@@ -103,61 +103,38 @@ extension UIAlertController {
         return alertController
     }
     
-    private static func create(basedOnDatabaseError error: DatabaseError?) -> UIAlertController? {
-        if let databaseError = error {
-            let continueAction = UIAlertAction(title: "Continue", style: .default, handler: nil)
+    private static func create(basedOn databaseError: DatabaseError?) -> UIAlertController? {
+        var alert: UIAlertController!
+        if let databaseError = databaseError {
+            alert = create(title: databaseError.description, message: "")
             switch databaseError {
             case .database(let error):
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Database Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
+                alert.message = error?.localizedDescription ?? Constants.errorIsNil
             case .nonExistingUser:
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Not Existing User", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
+                alert.message = "This user doesn't exists or hasn't finished his account creation."
             case .access(let error):
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Access Error", message: error, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
+                alert.message = error ?? Constants.errorIsNil
             case .unknown:
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Unknown Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
+                alert.message = databaseError.localizedDescription
             }
         }
-        return nil
+        return alert
     }
     
-    static func create(basedOnAuthError error: AuthError?) -> UIAlertController? {
-        if let authError = error {
-            let continueAction = UIAlertAction(title: "Continue", style: .default, handler: nil)
+    static func create(basedOn authError: AuthError?) -> UIAlertController? {
+        var alert: UIAlertController!
+        if let authError = authError {
+            alert = create(title: authError.description, message: "")
             switch authError {
-            case .auth(let error):
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Auth Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
-            case .signOut(let error):
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Sign Out Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
-            case .database(let error):
-                if let alert = self.create(basedOnDatabaseError: error) {
-                    return alert
-                }
+            case .auth(let error), .signOut(let error):
+                alert.message = error?.localizedDescription ?? Constants.errorIsNil
             case .unknown:
-                guard let error = error else { return nil }
-                let alert = UIAlertController(title: "Unknown Error", message: error.localizedDescription, preferredStyle: .alert)
-                alert.addAction(continueAction)
-                return alert
+                alert.message = authError.localizedDescription
+            case .database(let error):
+                alert = create(basedOn: error)
             }
         }
-        return nil
+        return alert
     }
 }
 

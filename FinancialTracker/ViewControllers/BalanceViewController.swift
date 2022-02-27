@@ -71,7 +71,7 @@ class BalanceViewController: UIViewController {
         let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         
         authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { authError, _ in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.present(alert, animated: true)
                 return
             } else {
@@ -93,7 +93,7 @@ class BalanceViewController: UIViewController {
         let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
             self.authManager?.signOut { authError, _ in
-                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                if let alert = UIAlertController.create(basedOn: authError) {
                     self.present(alert, animated: true)
                     return
                 }

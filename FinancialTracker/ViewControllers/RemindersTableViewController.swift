@@ -117,7 +117,7 @@ extension RemindersTableViewController: UITableViewDataSource {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
             authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, _ in
-                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                if let alert = UIAlertController.create(basedOn: authError) {
                     self.present(alert, animated: true)
                     return
                 } else {

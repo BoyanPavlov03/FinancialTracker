@@ -46,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     window.rootViewController = navVC
                 }
             } else {
-                if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                if let alert = UIAlertController.create(basedOn: authError) {
                     self.window?.rootViewController?.present(alert, animated: true)
                     return
                 }
@@ -91,7 +91,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
         authManager.addScoreToCurrentUser(basedOn: timeActive) { authError, _ in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.window?.rootViewController?.present(alert, animated: true)
                 return
             }

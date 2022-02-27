@@ -22,7 +22,7 @@ class UsersTableViewController: UITableViewController {
         
         title = "Users"
         authManager?.getAllUsers(completionHandler: { authError, usersEmails in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.present(alert, animated: true)
                 return
             } else {
@@ -98,7 +98,7 @@ class UsersTableViewController: UITableViewController {
     
     private func requestOrSend(email: String, amount: Double, transferType: TransferType) {
         authManager?.transferMoney(email: email, amount: amount, transferType: transferType, completionHandler: { authError, user in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.present(alert, animated: true)
                 return
             } else {

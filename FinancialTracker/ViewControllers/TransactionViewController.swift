@@ -57,7 +57,7 @@ class TransactionViewController: UIViewController {
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
         authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { authError, _ in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.present(alert, animated: true)
                 return
             } else {

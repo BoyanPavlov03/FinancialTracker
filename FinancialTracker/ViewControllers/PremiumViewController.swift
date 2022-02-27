@@ -41,7 +41,7 @@ extension PremiumViewController: SKPaymentTransactionObserver {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
                 authManager?.buyPremium { authError, _ in
-                    if let alert = UIAlertController.create(basedOnAuthError: authError) {
+                    if let alert = UIAlertController.create(basedOn: authError) {
                         self.present(alert, animated: true)
                         return
                     } else {

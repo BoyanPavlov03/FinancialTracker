@@ -70,7 +70,7 @@ class RegisterViewController: UIViewController {
         }
         
         authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { authError, _ in
-            if let alert = UIAlertController.create(basedOnAuthError: authError) {
+            if let alert = UIAlertController.create(basedOn: authError) {
                 self.present(alert, animated: true)
                 return
             }
