@@ -103,36 +103,13 @@ extension UIAlertController {
         return alertController
     }
     
-    private static func create(basedOn databaseError: DatabaseError?) -> UIAlertController? {
-        var alert: UIAlertController!
-        if let databaseError = databaseError {
-            alert = create(title: databaseError.description, message: "")
-            switch databaseError {
-            case .database(let error):
-                alert.message = error?.localizedDescription ?? Constants.errorIsNil
-            case .nonExistingUser:
-                alert.message = "This user doesn't exists or hasn't finished his account creation."
-            case .access(let error):
-                alert.message = error ?? Constants.errorIsNil
-            case .unknown:
-                alert.message = databaseError.localizedDescription
-            }
-        }
-        return alert
-    }
-    
     static func create(basedOn authError: AuthError?) -> UIAlertController? {
         var alert: UIAlertController!
         if let authError = authError {
-            alert = create(title: authError.description, message: "")
-            switch authError {
-            case .auth(let error), .signOut(let error):
-                alert.message = error?.localizedDescription ?? Constants.errorIsNil
-            case .unknown:
-                alert.message = authError.localizedDescription
-            case .database(let error):
-                alert = create(basedOn: error)
+            if case .database(let error) = authError, error == nil {
+                return alert
             }
+            alert = create(title: authError.title, message: authError.message)
         }
         return alert
     }

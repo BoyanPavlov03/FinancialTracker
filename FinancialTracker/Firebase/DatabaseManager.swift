@@ -15,7 +15,7 @@ enum DatabaseError: Error {
     case access(String?)
     case unknown
     
-    var description: String {
+    var title: String {
         switch self {
         case .nonExistingUser:
             return "Not Existing User"
@@ -25,6 +25,19 @@ enum DatabaseError: Error {
             return "Database Error"
         case .unknown:
             return "Unknown Error"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .nonExistingUser:
+            return "This user doesn't exists or hasn't finished his account creation."
+        case .access(let error):
+            return error ?? ""
+        case .database(let error):
+            return error?.localizedDescription ?? ""
+        case .unknown:
+            return "This error should not appear."
         }
     }
 }

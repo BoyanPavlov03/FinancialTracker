@@ -15,7 +15,7 @@ enum AuthError: Error {
     case database(DatabaseError?)
     case unknown
     
-    var description: String {
+    var title: String {
         switch self {
         case .auth:
             return "Auth Error"
@@ -25,6 +25,19 @@ enum AuthError: Error {
             return "Database Error"
         case .unknown:
             return "Unknown Error"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .auth(let error):
+            return error?.localizedDescription ?? ""
+        case .signOut(let error):
+            return error?.localizedDescription ?? ""
+        case .database(let error):
+            return error?.message ?? ""
+        case .unknown:
+            return "This error should not appear."
         }
     }
 }
