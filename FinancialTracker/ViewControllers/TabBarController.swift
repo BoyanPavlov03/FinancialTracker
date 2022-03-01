@@ -53,24 +53,27 @@ class TabBarController: UITabBarController {
         }
         
         authManager?.firestoreDidChangeData { authError, user in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.present(alert, animated: true)
-                return
-            } else {
-                guard let user = user, let balance = user.balance else {
-                    return
-                }
-
-                guard user.premium else {
-                    return
-                }
+            guard let user = user else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
                 
-                if user.expenses.isEmpty, user.incomes.isEmpty {
-                    return
-                }
-                    
-                self.balanceTips(balance: balance)
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
             }
+            
+            guard let balance = user.balance else {
+                return
+            }
+            
+            guard user.premium else {
+                return
+            }
+            
+            if user.expenses.isEmpty, user.incomes.isEmpty {
+                return
+            }
+            
+            self.balanceTips(balance: balance)
         }
     }
     
@@ -88,7 +91,7 @@ class TabBarController: UITabBarController {
         guard let viewControllers = viewControllers else {
             return
         }
-
+        
         for viewController in viewControllers {
             if let navigationController = viewController as? UINavigationController {
                 switch navigationController.topViewController {

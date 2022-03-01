@@ -22,17 +22,15 @@ class UsersTableViewController: UITableViewController {
         
         title = "Users"
         authManager?.getAllUsers(completionHandler: { authError, usersEmails in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.present(alert, animated: true)
-                return
-            } else {
-                guard let usersEmails = usersEmails else {
-                    assertionFailure("Emails are nil.")
-                    return
-                }
+            guard let usersEmails = usersEmails else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
                 
-                self.usersEmails = usersEmails
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
             }
+            
+            self.usersEmails = usersEmails
         })
     }
     
@@ -98,37 +96,40 @@ class UsersTableViewController: UITableViewController {
     
     private func requestOrSend(email: String, amount: Double, transferType: TransferType) {
         authManager?.transferMoney(email: email, amount: amount, transferType: transferType, completionHandler: { authError, user in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.present(alert, animated: true)
+            guard let user = user else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                 return
-            } else {
-                guard let currentUser = self.authManager?.currentUser, let senderRate = currentUser.currency?.rate else {
+            }
+            
+            guard let currentUser = self.authManager?.currentUser, let senderRate = currentUser.currency?.rate else {
+                return
+            }
+            
+            guard let receiverCurrency = user.currency, let fcmToken = user.FCMToken else {
+                return
+            }
+            let newAmount = ((amount / senderRate) * receiverCurrency.rate).round(to: 2)
+            
+            var title: String
+            var body: String
+            
+            switch transferType {
+            case .send:
+                title = "You have got money"
+                body = "\(currentUser.firstName) \(currentUser.lastName) send you \(newAmount)\(receiverCurrency.symbolNative)"
+            case .request:
+                title = "Money requested"
+                body = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you"
+            }
+            
+            // swiftlint:disable:next line_length
+            PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, transferType: transferType) { error in
+                if let error = error {
+                    assertionFailure(error.localizedDescription)
                     return
-                }
-                
-                guard let user = user, let receiverCurrency = user.currency, let fcmToken = user.FCMToken else {
-                    return
-                }
-                let newAmount = ((amount / senderRate) * receiverCurrency.rate).round(to: 2)
-                
-                var title: String
-                var body: String
-                
-                switch transferType {
-                case .send:
-                    title = "You have got money"
-                    body = "\(currentUser.firstName) \(currentUser.lastName) send you \(newAmount)\(receiverCurrency.symbolNative)"
-                case .request:
-                    title = "Money requested"
-                    body = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you"
-                }
-                
-                // swiftlint:disable:next line_length
-                PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, transferType: transferType) { error in
-                    if let error = error {
-                        assertionFailure(error.localizedDescription)
-                        return
-                    }
                 }
             }
         })

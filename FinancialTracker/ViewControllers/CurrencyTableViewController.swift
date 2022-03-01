@@ -74,13 +74,15 @@ class CurrencyTableViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Confirm", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
-            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { authError, _ in
-                if let alert = UIAlertController.create(basedOn: authError) {
-                    self.present(alert, animated: true)
+            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { authError, success in
+                guard success else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
+                    
+                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                     return
-                } else {
-                    self.navigationController?.popViewController(animated: true)
                 }
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         

@@ -102,17 +102,6 @@ extension UIAlertController {
         alertController.addAction(UIAlertAction(title: "Continue", style: .default, handler: nil))
         return alertController
     }
-    
-    static func create(basedOn authError: AuthError?) -> UIAlertController? {
-        var alert: UIAlertController!
-        if let authError = authError {
-            if case .database(let error) = authError, error == nil {
-                return alert
-            }
-            alert = create(title: authError.title, message: authError.message)
-        }
-        return alert
-    }
 }
 
 extension Double {

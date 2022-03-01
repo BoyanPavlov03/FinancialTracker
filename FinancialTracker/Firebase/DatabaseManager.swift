@@ -19,10 +19,16 @@ enum DatabaseError: Error {
         switch self {
         case .nonExistingUser:
             return "Not Existing User"
-        case .access:
-            return "Access Error"
-        case .database:
-            return "Database Error"
+        case .access(let error):
+            if error != nil {
+                return "Access Error"
+            }
+            return "Unknown Access Error"
+        case .database(let error):
+            if error != nil {
+                return "Database Error"
+            }
+            return "Unknown Database Error"
         case .unknown:
             return "Unknown Error"
         }

@@ -69,9 +69,12 @@ class RegisterViewController: UIViewController {
             return
         }
         
-        authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { authError, _ in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.present(alert, animated: true)
+        authManager?.registerUser(firstName: firstName, lastName: lastName, email: email, password: password) { authError, user in
+            guard user != nil else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                 return
             }
         }

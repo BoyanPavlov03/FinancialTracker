@@ -56,13 +56,15 @@ class TransactionViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { authError, _ in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.present(alert, animated: true)
+        authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { authError, success in
+            guard success else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                 return
-            } else {
-                self.navigationController?.popViewController(animated: true)
             }
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }

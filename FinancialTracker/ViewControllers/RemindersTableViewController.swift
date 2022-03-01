@@ -116,16 +116,19 @@ extension RemindersTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let reminder = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, _ in
-                if let alert = UIAlertController.create(basedOn: authError) {
-                    self.present(alert, animated: true)
+            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, success in
+                guard success else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
+                    
+                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                     return
-                } else {
-                    let transfers = self.transfers[indexPath.section].value
-                    let key = self.transfers[indexPath.section].key
-                    if let index = transfers.firstIndex(of: reminder) {
-                        self.transfers[key]?.remove(at: index)
-                    }
+                }
+                
+                let transfers = self.transfers[indexPath.section].value
+                let key = self.transfers[indexPath.section].key
+                if let index = transfers.firstIndex(of: reminder) {
+                    self.transfers[key]?.remove(at: index)
                 }
             })
         }

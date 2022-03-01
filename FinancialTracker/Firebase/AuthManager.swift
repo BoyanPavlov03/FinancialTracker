@@ -17,12 +17,18 @@ enum AuthError: Error {
     
     var title: String {
         switch self {
-        case .auth:
-            return "Auth Error"
-        case .signOut:
-            return "Sign Out Error"
-        case .database:
-            return "Database Error"
+        case .auth(let error):
+            if error != nil {
+                return "Auth Error"
+            }
+            return "Unknown Auth Error"
+        case .signOut(let error):
+            if error != nil {
+                return "Sign Out Error"
+            }
+            return "Unknown Sign Out Error"
+        case .database(let databaseError):
+            return databaseError?.title ?? "Unknown Database Error"
         case .unknown:
             return "Unknown Error"
         }

@@ -46,8 +46,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     window.rootViewController = navVC
                 }
             } else {
-                if let alert = UIAlertController.create(basedOn: authError) {
-                    self.window?.rootViewController?.present(alert, animated: true)
+                if let authError = authError {
+                    let alertTitle = authError.title
+                    let alertMessage = authError.message
+                    
+                    self.window?.rootViewController?.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                     return
                 }
                 
@@ -90,9 +93,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         // timeIntervalSinceNow is greater than timeActive, so i multiply by -1
         let timeActive = startDate.timeIntervalSinceNow * -1
-        authManager.addScoreToCurrentUser(basedOn: timeActive) { authError, _ in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.window?.rootViewController?.present(alert, animated: true)
+        authManager.addScoreToCurrentUser(basedOn: timeActive) { authError, success in
+            guard success else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.window?.rootViewController?.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                 return
             }
         }

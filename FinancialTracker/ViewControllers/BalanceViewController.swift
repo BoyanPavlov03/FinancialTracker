@@ -70,31 +70,37 @@ class BalanceViewController: UIViewController {
         
         let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { authError, _ in
-            if let alert = UIAlertController.create(basedOn: authError) {
-                self.present(alert, animated: true)
+        authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { authError, success in
+            guard success else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                 return
-            } else {
-                guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
-                    assertionFailure("Couldn't parse to TabBarController.")
-                    return
-                }
-                
-                guard let authManager = self.authManager else { return }
-                
-                tabBarVC.setAuthManager(authManager, accountCreated: true)
-                self.view.window?.rootViewController = tabBarVC
-                self.view.window?.makeKeyAndVisible()
             }
+            
+            guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
+                assertionFailure("Couldn't parse to TabBarController.")
+                return
+            }
+            
+            guard let authManager = self.authManager else { return }
+            
+            tabBarVC.setAuthManager(authManager, accountCreated: true)
+            self.view.window?.rootViewController = tabBarVC
+            self.view.window?.makeKeyAndVisible()
         }
     }
     
     @objc private func signOut() {
         let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
-            self.authManager?.signOut { authError, _ in
-                if let alert = UIAlertController.create(basedOn: authError) {
-                    self.present(alert, animated: true)
+            self.authManager?.signOut { authError, success in
+                guard success else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
+                    
+                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                     return
                 }
             }
