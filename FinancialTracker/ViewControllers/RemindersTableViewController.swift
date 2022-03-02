@@ -129,6 +129,8 @@ extension RemindersTableViewController: UITableViewDataSource {
                 let key = self.transfers[indexPath.section].key
                 if let index = transfers.firstIndex(of: reminder) {
                     self.transfers[key]?.remove(at: index)
+                } else {
+                    assertionFailure("This tableViewCell doesn't exist.")
                 }
             })
         }

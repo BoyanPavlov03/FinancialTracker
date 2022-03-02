@@ -46,9 +46,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     window.rootViewController = navVC
                 }
             } else {
-                if let authError = authError {
-                    let alertTitle = authError.title
-                    let alertMessage = authError.message
+                guard authError == nil else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
                     
                     self.window?.rootViewController?.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                     return
