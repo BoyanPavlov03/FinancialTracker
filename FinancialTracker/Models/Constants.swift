@@ -26,5 +26,5 @@ struct Constants {
         static let other = "Other"
             
         static let email = "support_financialTracker@gmail.com"
-    }
+    }    
 }

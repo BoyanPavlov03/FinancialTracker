@@ -19,7 +19,7 @@ class PremiumViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Premium"
+        title = "Premium"
         
         SKPaymentQueue.default().add(self)
     }
@@ -40,14 +40,16 @@ extension PremiumViewController: SKPaymentTransactionObserver {
             switch transaction.transactionState {
             case .purchased:
                 SKPaymentQueue.default().finishTransaction(transaction)
-                authManager?.buyPremium { firebaseError, _ in
-                    if let firebaseError = firebaseError {
-                        assertionFailure(firebaseError.localizedDescription)
+                authManager?.buyPremium { authError, success in
+                    guard success else {
+                        let alertTitle = authError?.title ?? "Unknown Error"
+                        let alertMessage = authError?.message ?? "This error should not appear."
+                        
+                        self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                         return
                     }
+                    self.navigationController?.popViewController(animated: true)
                 }
-                
-                self.navigationController?.popViewController(animated: true)
             case .failed:
                 SKPaymentQueue.default().finishTransaction(transaction)
             default:

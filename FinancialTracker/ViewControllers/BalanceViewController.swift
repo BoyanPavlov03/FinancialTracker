@@ -15,7 +15,13 @@ class BalanceViewController: UIViewController {
     @IBOutlet var currencyPicker: UIPickerView!
     
     // MARK: - Properties
-    private var currencies: [Currency] = []
+    private var currencies: [Currency] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                self.currencyPicker.reloadAllComponents()
+            }
+        }
+    }
     var authManager: AuthManager?
     
     // MARK: - Methods
@@ -24,15 +30,15 @@ class BalanceViewController: UIViewController {
         balanceTextField.keyboardType = .numberPad
         
         title = "Balance"
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        navigationItem.setHidesBackButton(true, animated: true)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         
         guard let firstName = authManager?.currentUser?.firstName else {
             assertionFailure("User data is nil")
             return
         }
         
-        self.welcomeLabel.text = "Welcome " + firstName
+        welcomeLabel.text = "Welcome " + firstName
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
@@ -45,9 +51,6 @@ class BalanceViewController: UIViewController {
             }
 
             self.currencies = currencies
-            DispatchQueue.main.async {
-                self.currencyPicker.reloadAllComponents()
-            }
         }
         
         currencyPicker.delegate = self
@@ -56,56 +59,55 @@ class BalanceViewController: UIViewController {
     
     @IBAction func nextButtonTapped(_ sender: Any) {
         guard let balance = balanceTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !balance.isEmpty else {
-            self.present(UIAlertController.create(title: "Missing Balance", message: "Please fill in your starting balance"), animated: true)
+            present(UIAlertController.create(title: "Missing Balance", message: "Please fill in your starting balance"), animated: true)
             return
         }
         
         guard let balanceNumber = Double(balance) else {
-            self.present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
+            present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
             return
         }
         
         let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { firebaseError, _ in
-            switch firebaseError {
-            case .access(let error):
-                guard let error = error else { return }
-                self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-            case .auth, .database, .unknown, .signOut, .nonExistingUser:
-                // swiftlint:disable:next force_unwrapping
-                assertionFailure("This error should not appear: \(firebaseError!.localizedDescription)")
-                // swiftlint:disable:next unneeded_break_in_switch
-                break
-            case .none:
-                guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
-                    assertionFailure("Couldn't parse to TabBarController.")
-                    return
-                }
+        authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { authError, success in
+            guard success else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
                 
-                guard let authManager = self.authManager else { return }
-                
-                tabBarVC.setAuthManager(authManager, accountCreated: true)
-                self.view.window?.rootViewController = tabBarVC
-                self.view.window?.makeKeyAndVisible()
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
             }
+            
+            guard let tabBarVC = ViewControllerFactory.shared.viewController(for: .tabBar) as? TabBarController else {
+                assertionFailure("Couldn't parse to TabBarController.")
+                return
+            }
+            
+            guard let authManager = self.authManager else { return }
+            
+            tabBarVC.setAuthManager(authManager, accountCreated: true)
+            self.view.window?.rootViewController = tabBarVC
+            self.view.window?.makeKeyAndVisible()
         }
     }
     
-    @objc func signOut() {
-        authManager?.signOut { firebaseError, _ in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .signOut(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                case .database, .unknown, .access, .auth, .nonExistingUser:
-                    assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
+    @objc private func signOut() {
+        let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
+            self.authManager?.signOut { authError, success in
+                guard success else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
+                    
+                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                    return
                 }
             }
-        }
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(alertController, animated: true)
     }
 }
 

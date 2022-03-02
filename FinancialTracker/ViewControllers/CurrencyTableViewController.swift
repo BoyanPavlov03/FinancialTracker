@@ -8,16 +8,21 @@
 import UIKit
 
 class CurrencyTableViewController: UITableViewController {
-    private var currencies: [Currency] = []
+    private var currencies: [Currency] = [] {
+        didSet {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
     
     var authManager: AuthManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "Currency"
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        self.tabBarItem.image = UIImage(systemName: "dollarsign.circle")
+        title = "Currency"
+        tabBarItem.image = UIImage(systemName: "dollarsign.circle")
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
@@ -30,9 +35,6 @@ class CurrencyTableViewController: UITableViewController {
             }
 
             self.currencies = currencies
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
         }
     }
 
@@ -72,10 +74,15 @@ class CurrencyTableViewController: UITableViewController {
         let alertVC = UIAlertController(title: "Confirm", message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alertVC.addAction(UIAlertAction(title: "Change", style: .default, handler: { _ in
-            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { firebaseError, _ in
-                if let firebaseError = firebaseError {
-                    assertionFailure(firebaseError.localizedDescription)
+            self.authManager?.changeCurrentUserCurrency(self.currencies[indexPath.row]) { authError, success in
+                guard success else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
+                    
+                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                    return
                 }
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         

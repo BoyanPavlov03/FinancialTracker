@@ -18,7 +18,7 @@ class EntryViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Entry"
-        self.navigationItem.setHidesBackButton(true, animated: true)
+        navigationItem.setHidesBackButton(true, animated: true)
     }
     
     @IBAction func logInButtonTapped(_ sender: Any) {

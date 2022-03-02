@@ -9,19 +9,50 @@ import Foundation
 import Firebase
 import FirebaseAuth
 
-enum FirebaseError: Error {
+enum AuthError: Error {
     case auth(Error?)
-    case database(Error?)
     case signOut(Error?)
-    case access(String?)
+    case database(DatabaseError?)
     case unknown
-    case nonExistingUser
+    
+    var title: String {
+        switch self {
+        case .auth(let error):
+            if error != nil {
+                return "Auth Error"
+            }
+            return "Unknown Auth Error"
+        case .signOut(let error):
+            if error != nil {
+                return "Sign Out Error"
+            }
+            return "Unknown Sign Out Error"
+        case .database(let databaseError):
+            return databaseError?.title ?? "Unknown Database Error"
+        case .unknown:
+            return "Unknown Error"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .auth(let error):
+            return error?.localizedDescription ?? ""
+        case .signOut(let error):
+            return error?.localizedDescription ?? ""
+        case .database(let error):
+            return error?.message ?? ""
+        case .unknown:
+            return "This error should not appear."
+        }
+    }
 }
 
 enum DBCollectionKey: String {
     case users
 }
 
+/// Class for managing all authentication related actions.
 class AuthManager {
     private let auth: Auth
     private let databaseManager: DatabaseManager
@@ -39,11 +70,16 @@ class AuthManager {
         self.databaseManager = DatabaseManager()
     }
     
-    func checkAuthorisedState(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    /// Listener for auth changes.
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `authError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `user` - The user that was returned by firestore.
+    func checkAuthorisedState(completionHandler: @escaping (AuthError?, User?) -> Void) {
         auth.addStateDidChangeListener { _, user in
             if let user = user {
-                self.databaseManager.getCurrentUserData(uid: user.uid) { firebaseError, user in
-                    completionHandler(firebaseError, user)
+                self.databaseManager.getCurrentUserData(uid: user.uid) { databaseError, user in
+                    completionHandler(AuthError.database(databaseError), user)
                 }
             } else {
                 // There can be no user but that doesn't mean there is an error
@@ -52,7 +88,16 @@ class AuthManager {
         }
     }
     
-    func registerUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    /// Registering an user and saving data to firestore.
+    /// - Parameters:
+    ///   - firstName: A `String` containing the user's first name.
+    ///   - lastName: A `String` containing the user's last name.
+    ///   - email: A `String` containing the user's email.
+    ///   - password: A `String` containing the user's password.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `authError` - An error object that indicates why the function     failed, or nil if the was successful.
+    ///     2. `user` - The user that was returned by firestore.
+    func registerUser(firstName: String, lastName: String, email: String, password: String, completionHandler: @escaping (AuthError?, User?) -> Void) {
         auth.createUser(withEmail: email, password: password) { [weak self] (result, error) in
 
             guard let self = self else {
@@ -60,18 +105,18 @@ class AuthManager {
             }
             
             guard error == nil else {
-                completionHandler(FirebaseError.auth(error), nil)
+                completionHandler(AuthError.auth(error), nil)
                 return
             }
 
             guard let result = result else {
-                completionHandler(FirebaseError.unknown, nil)
+                completionHandler(AuthError.unknown, nil)
                 return
             }
 
-            self.databaseManager.createUser(firstName: firstName, lastName: lastName, email: email, uid: result.user.uid) { firebaseError, user in
-                if let firebaseError = firebaseError {
-                    completionHandler(firebaseError, nil)
+            self.databaseManager.createUser(firstName: firstName, lastName: lastName, email: email, uid: result.user.uid) { databaseError, user in
+                if let databaseError = databaseError {
+                    completionHandler(AuthError.database(databaseError), nil)
                     return
                 }
                 
@@ -81,113 +126,109 @@ class AuthManager {
         }
     }
 
-    func logInUser(email: String, password: String, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
+    /// Logging an user via password
+    /// - Parameters:
+    ///   - email: A `String` containing the user's email.
+    ///   - password: A `String` containing the user's password.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `authError` - An error object that indicates why the function     failed, or nil if the was successful.
+    ///     2. `user` - The user that was returned by firestore.
+    func logInUser(email: String, password: String, completionHandler: @escaping (AuthError?, User?) -> Void) {
         auth.signIn(withEmail: email, password: password) { result, error in
             guard error == nil else {
-                completionHandler(FirebaseError.auth(error), nil)
+                completionHandler(AuthError.auth(error), nil)
                 return
             }
 
             guard let result = result else {
+                completionHandler(AuthError.unknown, nil)
                 return
             }
             
-            self.databaseManager.getCurrentUserData(uid: result.user.uid) { firebaseError, user in
-                if let firebaseError = firebaseError {
-                    switch firebaseError {
-                    case .database(let error):
-                        completionHandler(FirebaseError.database(error), user)
-                    case .unknown:
-                        completionHandler(FirebaseError.unknown, user)
-                    case .access(let error):
-                        completionHandler(FirebaseError.access(error), user)
-                    case .auth, .signOut, .nonExistingUser:
-                        assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                        // swiftlint:disable:next unneeded_break_in_switch
-                        break
-                    }
-                } else {
-                    completionHandler(nil, user)
-                }
+            self.databaseManager.getCurrentUserData(uid: result.user.uid) { databaseError, user in
+                completionHandler(AuthError.database(databaseError), user)
             }
         }
     }
     
-    func signOut(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
+    /// Signing out the current user
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `authError` - An error object that indicates why the function     failed, or nil if the was successful.
+    ///     2. `user` - The user that was returned by firestore.
+    func signOut(completionHandler: @escaping (AuthError?, Bool) -> Void) {
         do {
             try auth.signOut()
-            self.databaseManager.removeFCMTokenFromCurrentUser { firebaseError, success in
+            self.databaseManager.removeFCMTokenFromCurrentUser { databaseError, success in
+                if let databaseError = databaseError {
+                    completionHandler(AuthError.database(databaseError), false)
+                    return
+                }
                 self.databaseManager.setUserToNil()
-                completionHandler(firebaseError, success)
+                completionHandler(nil, success)
             }
         } catch let signOutError {
-            completionHandler(FirebaseError.signOut(signOutError), false)
+            completionHandler(AuthError.signOut(signOutError), false)
         }
     }
     
-    func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addBalanceToCurrentUser(balance, currency: currency) { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func addBalanceToCurrentUser(_ balance: Double, currency: Currency, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.addBalanceToCurrentUser(balance, currency: currency) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addTransactionToCurrentUser(amount: amount, category: category) { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.addTransactionToCurrentUser(amount: amount, category: category) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.addScoreToCurrentUser(basedOn: time) { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func addScoreToCurrentUser(basedOn time: Double, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.addScoreToCurrentUser(basedOn: time) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.changeCurrentUserCurrency(currency) { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func changeCurrentUserCurrency(_ currency: Currency, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.changeCurrentUserCurrency(currency) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func buyPremium(completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.buyPremium { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func buyPremium(completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.buyPremium { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (FirebaseError?, Bool) -> Void) {
-        databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { firebaseError, success in
-            completionHandler(firebaseError, success)
+    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (FirebaseError?, User?) -> Void) {
-        auth.fetchSignInMethods(forEmail: email) { methods, error in
-            if error != nil {
-                completionHandler(FirebaseError.nonExistingUser, nil)
-                return
-            }
-            
-            guard methods != nil else {
-                completionHandler(FirebaseError.nonExistingUser, nil)
-                return
-            }
-            
-            self.databaseManager.transferMoney(email: email, amount: amount, transferType: transferType) { firebaseError, user in
-                completionHandler(firebaseError, user)
-            }
+    func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (AuthError?, User?) -> Void) {
+        databaseManager.transferMoney(email: email, amount: amount, transferType: transferType) { databaseError, user in
+            completionHandler(AuthError.database(databaseError), user)
         }
     }
     
-    func firestoreDidChangeData(completionHandler: @escaping (FirebaseError?, User?) -> Void) {
-        databaseManager.firestoreDidChangeData { firebaseError, user in
-            completionHandler(firebaseError, user)
+    func firestoreDidChangeData(completionHandler: @escaping (AuthError?, User?) -> Void) {
+        databaseManager.firestoreDidChangeData { databaseError, user in
+            completionHandler(AuthError.database(databaseError), user)
+        }
+    }
+    
+    func getAllUsers(completionHandler: @escaping (AuthError?, [String]?) -> Void) {
+        databaseManager.getAllUsers { databaseError, emails in
+            completionHandler(AuthError.database(databaseError), emails)
         }
     }
     

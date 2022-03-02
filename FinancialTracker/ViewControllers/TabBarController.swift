@@ -39,6 +39,8 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Setting startup controller to Home
+        selectedIndex = 1
         setupChildViewControllers()
     }
     
@@ -46,43 +48,42 @@ class TabBarController: UITabBarController {
         super.viewDidAppear(animated)
         
         if accountCreated {
-            self.present(UIAlertController.create(title: "Welcome", message: FinanceTips.start.description), animated: true)
+            present(UIAlertController.create(title: "Welcome", message: FinanceTips.start.description), animated: true)
             accountCreated = false
         }
         
-        authManager?.firestoreDidChangeData { firebaseError, user in
-            if let firebaseError = firebaseError {
-                switch firebaseError {
-                case .access(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Access Error", message: error), animated: true)
-                case .database(let error):
-                    guard let error = error else { return }
-                    self.present(UIAlertController.create(title: "Database Error", message: error.localizedDescription), animated: true)
-                default:
-                    self.present(UIAlertController.create(title: "Unknown Error", message: "Unknown"), animated: true)
-                }
-            } else {
-                guard let user = user, let balance = user.balance else {
-                    return
-                }
-
-                guard user.premium else {
-                    return
-                }
+        authManager?.firestoreDidChangeData { authError, user in
+            guard let user = user else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
                 
-                if user.expenses.isEmpty, user.incomes.isEmpty {
-                    return
-                }
-                
-                if balance < FinanceTips.lowBalance.rawValue {
-                    self.present(UIAlertController.create(title: "Low Balance", message: FinanceTips.lowBalance.description), animated: true)
-                } else if balance > FinanceTips.goodBalance.rawValue {
-                    self.present(UIAlertController.create(title: "Good Balance", message: FinanceTips.goodBalance.description), animated: true)
-                } else if balance > FinanceTips.needToInvest.rawValue {
-                    self.present(UIAlertController.create(title: "Need Invest", message: FinanceTips.needToInvest.description), animated: true)
-                }
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
             }
+            
+            guard let balance = user.balance else {
+                return
+            }
+            
+            guard user.premium else {
+                return
+            }
+            
+            if user.expenses.isEmpty, user.incomes.isEmpty {
+                return
+            }
+            
+            self.balanceTips(balance: balance)
+        }
+    }
+    
+    private func balanceTips(balance: Double) {
+        if balance < FinanceTips.lowBalance.rawValue {
+            self.present(UIAlertController.create(title: "Low Balance", message: FinanceTips.lowBalance.description), animated: true)
+        } else if balance > FinanceTips.goodBalance.rawValue {
+            self.present(UIAlertController.create(title: "Good Balance", message: FinanceTips.goodBalance.description), animated: true)
+        } else if balance > FinanceTips.needToInvest.rawValue {
+            self.present(UIAlertController.create(title: "Need Invest", message: FinanceTips.needToInvest.description), animated: true)
         }
     }
     
@@ -90,51 +91,23 @@ class TabBarController: UITabBarController {
         guard let viewControllers = viewControllers else {
             return
         }
-
+        
         for viewController in viewControllers {
             if let navigationController = viewController as? UINavigationController {
-                let signOutButton = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
                 switch navigationController.topViewController {
                 case let homeVC as HomeViewController:
                     homeVC.authManager = authManager
-                    homeVC.navigationItem.rightBarButtonItem = signOutButton
                 case let profileVC as ProfileViewController:
                     profileVC.authManager = authManager
-                    profileVC.navigationItem.rightBarButtonItem = signOutButton
                 case let currencyVC as CurrencyTableViewController:
                     currencyVC.authManager = authManager
-                    currencyVC.navigationItem.rightBarButtonItem = signOutButton
                 case let remindersVC as RemindersTableViewController:
                     remindersVC.authManager = authManager
-                    remindersVC.navigationItem.rightBarButtonItem = signOutButton
                 default:
                     assertionFailure("This should not be here: \(String(describing: navigationController.topViewController)).")
-                    // swiftlint:disable:next unneeded_break_in_switch
-                    break
+                    return
                 }
             }
         }
-    }
-    
-    @objc func signOut() {
-        let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
-            self.authManager?.signOut { firebaseError, _ in
-                if let firebaseError = firebaseError {
-                    switch firebaseError {
-                    case .signOut(let error):
-                        guard let error = error else { return }
-                        self.present(UIAlertController.create(title: "Sign Out Error", message: error.localizedDescription), animated: true)
-                    case .database, .unknown, .access, .auth, .nonExistingUser:
-                        assertionFailure("This error should not appear: \(firebaseError.localizedDescription)")
-                        // swiftlint:disable:next unneeded_break_in_switch
-                        break
-                    }
-                }
-            }
-        }))
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        present(alertController, animated: true)
     }
 }
