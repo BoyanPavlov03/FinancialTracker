@@ -150,7 +150,7 @@ class DatabaseManager {
         
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
-        let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
+        let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
         
         do {
             if let category = category as? ExpenseCategory {
@@ -389,7 +389,7 @@ class DatabaseManager {
             return
         }
         
-        let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
+        let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
         
         let reminder = Reminder(transferType: transferType, description: description, date: formatedDate)
         
