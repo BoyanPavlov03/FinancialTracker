@@ -71,7 +71,7 @@ extension Date {
         return dateformat.string(from: self)
     }
     
-    func isBetweeen(date date1: Date, andDate date2: Date) -> Bool {
+    private func isBetweeen(date date1: Date, andDate date2: Date) -> Bool {
         return date1.compare(self) == self.compare(date2)
     }
     

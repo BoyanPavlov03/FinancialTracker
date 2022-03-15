@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-enum TimePeriodDivider: Int {
+private enum TimePeriodDivider: Int {
     case today
     case week
     case month

@@ -8,7 +8,7 @@
 import UIKit
 import MessageUI
 
-enum ProfileViewControllerSettings: String, CaseIterable {
+private enum ProfileViewControllerSettings: String, CaseIterable {
     case changeCurrency = "Change Currency"
     case support = "Support"
     case premium = "Upgrade to Premium"

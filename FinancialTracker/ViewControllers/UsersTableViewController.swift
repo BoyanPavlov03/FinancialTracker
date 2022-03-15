@@ -8,7 +8,7 @@
 import UIKit
 
 class UsersTableViewController: UITableViewController {
-    var usersEmails: [String] = [] {
+    private var usersEmails: [String] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.tableView.reloadData()

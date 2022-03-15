@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum FinanceTips: Double {
+private enum FinanceTips: Double {
     case lowBalance = 100.0
     case goodBalance = 1000.0
     case needToInvest = 3000.0
@@ -29,7 +29,7 @@ enum FinanceTips: Double {
 
 class TabBarController: UITabBarController {
     private var authManager: AuthManager?
-    var accountCreated = false
+    private var accountCreated = false
     
     func setAuthManager(_ authManager: AuthManager, accountCreated: Bool) {
         self.authManager = authManager

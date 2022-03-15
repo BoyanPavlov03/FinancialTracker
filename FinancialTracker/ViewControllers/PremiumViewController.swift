@@ -13,7 +13,6 @@ enum Product: String {
 }
 
 class PremiumViewController: UIViewController {
-
     var authManager: AuthManager?
     
     override func viewDidLoad() {

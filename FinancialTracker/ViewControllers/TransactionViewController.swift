@@ -13,7 +13,8 @@ class TransactionViewController: UIViewController {
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     
     var authManager: AuthManager?
-    var categoryCases: [Category] {
+    
+    private var categoryCases: [Category] {
         guard let premium = authManager?.currentUser?.premium else {
             assertionFailure("User data is nil.")
             return []

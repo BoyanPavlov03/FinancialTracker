@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Links: String {
+private enum Links: String {
     case symbolCurrencyApi = "https://raw.githubusercontent.com/mansourcodes/country-databases/main/currency-details.json"
     case ratesCurrencyApi = "https://open.er-api.com/v6/latest"
 }
