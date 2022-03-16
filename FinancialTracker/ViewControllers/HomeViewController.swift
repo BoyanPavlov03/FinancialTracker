@@ -57,6 +57,7 @@ class HomeViewController: UIViewController {
     
     private func expenseOrIncome(start: Date, end: Date) -> [Transaction] {
         var data: [Transaction] = []
+        // If control is on 0 it should expenses and if on 1 - incomes
         if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
             data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.expenses ?? [])
         } else {
@@ -68,10 +69,12 @@ class HomeViewController: UIViewController {
     private func periodDivider(_ period: Int) {
         switch period {
         case TimePeriodDivider.today.rawValue:
+            // Updating chart with all expenses or incomes for current day
             let start = Date().startOfDay
             guard let end = Date().endOfDay else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.week.rawValue:
+            // Updating chart with all expenses or incomes for current week
             guard let premium = authManager?.currentUser?.premium, premium else {
                 if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
                     updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
@@ -83,12 +86,15 @@ class HomeViewController: UIViewController {
             guard let start = Date().startOfWeek, let end = Date().endOfWeek else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.month.rawValue:
+            // Updating chart with all expenses or incomes for current month
             guard let start = Date().startOfMonth, let end = Date().endOfMonth else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.year.rawValue:
+            // Updating chart with all expenses or incomes for current year
             guard let start = Date().startOfYear, let end = Date().endOfYear else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.all.rawValue:
+            // Updating chart with all expenses or incomes
             if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
                 updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
             } else {
@@ -108,6 +114,8 @@ class HomeViewController: UIViewController {
         
         var transactions: [String: Double] = [:]
         var totalSum = 0.0
+        // Unifiying all expenses/incomes from the same category into total sum
+        // for when displaying on chart
         for transaction in transactionData {
             if transactions[transaction.category.getRawValue] == nil {
                 transactions[transaction.category.getRawValue] = 0.0
@@ -120,6 +128,7 @@ class HomeViewController: UIViewController {
                 
         var dataEntries: [ChartDataEntry] = []
         
+        // Setting all entries for the PieChart with unified expenses/incomes
         for transaction in sortedTransactions {
             let dataEntry = PieChartDataEntry(value: transaction.value.round(to: 2), label: transaction.key, data: transaction.key as AnyObject)
             dataEntries.append(dataEntry)
@@ -127,6 +136,7 @@ class HomeViewController: UIViewController {
         
         let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "")
         
+        // Setting the specific color for each category to the the it's corresponding entry
         var colors: [UIColor] = []
         sortedTransactions.forEach { key, _ in
             if let category = ExpenseCategory(rawValue: key) {

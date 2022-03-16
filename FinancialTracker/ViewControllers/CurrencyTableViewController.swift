@@ -51,6 +51,7 @@ class CurrencyTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Currency", for: indexPath)
 
+        // TableViewCell has this structure - USD (United States)
         cell.textLabel?.text = "\(currencies[indexPath.row].code) (\(currencies[indexPath.row].name))"
         
         return cell

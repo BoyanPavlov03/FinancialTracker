@@ -20,6 +20,8 @@ class TransactionViewController: UIViewController {
             return []
         }
         
+        // If control is on 0 it should expense categories that are shown
+        // and if on 1 - income ones
         if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
             var categories: [ExpenseCategory] = [.grocery, .transport]
             categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
