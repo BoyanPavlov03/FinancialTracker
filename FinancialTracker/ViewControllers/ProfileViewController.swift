@@ -33,23 +33,25 @@ class ProfileViewController: UIViewController {
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
         
-        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser,
+              let balance = currentUser.balance,
+              let currency = currentUser.currency else {
+            fatalError("User data is nil")
         }
         
-        nameLabel.text = "\(user.firstName) \(user.lastName)"
-        emailLabel.text = user.email
+        nameLabel.text = "\(currentUser.firstName) \(currentUser.lastName)"
+        emailLabel.text = currentUser.email
         balanceLabel.text = "Balance: \(balance)\(currency.symbolNative)"
-        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
+        userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
         
         authManager?.addDelegate(self)
     }
     
     private func updateBalanceAndExpenses() {
-        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser,
+              let balance = currentUser.balance,
+              let currency = currentUser.currency else {
+            fatalError("User data is nil")
         }
         
         if balance < 0 {
@@ -59,7 +61,7 @@ class ProfileViewController: UIViewController {
         }
         
         balanceLabel.text = "Balance: \(balance.round(to: 2))\(currency.symbolNative)"
-        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
+        userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
     }
     
     @IBAction func shareButtonTapped(_ sender: Any) {
@@ -169,13 +171,12 @@ extension ProfileViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let premium = authManager?.currentUser?.premium else {
-            assertionFailure("User data is nil")
-            return 0
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil")
         }
         
         let count = ProfileViewControllerSettings.allCases.count
-        return premium ? count - 1 : count
+        return currentUser.premium ? count - 1 : count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

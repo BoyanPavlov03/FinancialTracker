@@ -62,7 +62,7 @@ class TabBarController: UITabBarController {
             }
             
             guard let balance = user.balance else {
-                return
+                fatalError("User data is nil.")
             }
             
             guard user.premium else {
@@ -99,8 +99,6 @@ class TabBarController: UITabBarController {
                     homeVC.authManager = authManager
                 case let profileVC as ProfileViewController:
                     profileVC.authManager = authManager
-                case let currencyVC as CurrencyTableViewController:
-                    currencyVC.authManager = authManager
                 case let transfersVC as TransfersTableViewController:
                     transfersVC.authManager = authManager
                 default:

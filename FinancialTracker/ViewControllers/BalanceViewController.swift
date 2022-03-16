@@ -33,20 +33,20 @@ class BalanceViewController: UIViewController {
         navigationItem.setHidesBackButton(true, animated: true)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         
-        guard let firstName = authManager?.currentUser?.firstName else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil")
         }
         
-        welcomeLabel.text = "Welcome " + firstName
+        welcomeLabel.text = "Welcome " + currentUser.firstName
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
-                assertionFailure(error)
+                assertionFailure(error.localizedDescription)
                 return
             }
             
             guard let currencies = currencies else {
+                assertionFailure("Data is missing.")
                 return
             }
 

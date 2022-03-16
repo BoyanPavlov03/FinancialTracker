@@ -42,11 +42,11 @@ class TransfersTableViewController: UIViewController {
     
     @objc private func setTransfersData() {
         var transfers: [TransferType: [Transfer]] = [:]
-        guard let userTransfers = authManager?.currentUser?.transfers else {
-            return
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
         }
         
-        for transfer in userTransfers {
+        for transfer in currentUser.transfers {
             let transferType = transfer.transferType
             if transfers[transferType] == nil {
                 transfers[transferType] = []

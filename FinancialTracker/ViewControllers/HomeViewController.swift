@@ -48,7 +48,11 @@ class HomeViewController: UIViewController {
     }
     
     private func checkIfPremium() {
-        if let premium = authManager?.currentUser?.premium, premium, expenseDividerSegmentedControl.numberOfSegments == 2 {
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
+        if currentUser.premium, expenseDividerSegmentedControl.numberOfSegments == 2 {
             expenseDividerSegmentedControl.insertSegment(withTitle: "Week", at: 1, animated: true)
             expenseDividerSegmentedControl.insertSegment(withTitle: "Month", at: 2, animated: true)
             expenseDividerSegmentedControl.insertSegment(withTitle: "Year", at: 3, animated: true)
@@ -56,17 +60,23 @@ class HomeViewController: UIViewController {
     }
     
     private func expenseOrIncome(start: Date, end: Date) -> [Transaction] {
-        var data: [Transaction] = []
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
         // If control is on 0 it should expenses and if on 1 - incomes
         if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-            data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.expenses ?? [])
+            return start.transactionBetweenTwoDates(till: end, data: currentUser.expenses)
         } else {
-            data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.incomes ?? [])
+            return start.transactionBetweenTwoDates(till: end, data: currentUser.incomes)
         }
-        return data
     }
     
     private func periodDivider(_ period: Int) {
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
         switch period {
         case TimePeriodDivider.today.rawValue:
             // Updating chart with all expenses or incomes for current day
@@ -75,11 +85,11 @@ class HomeViewController: UIViewController {
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.week.rawValue:
             // Updating chart with all expenses or incomes for current week
-            guard let premium = authManager?.currentUser?.premium, premium else {
+            if currentUser.premium == false {
                 if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-                    updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+                    updateChart(transactionData: currentUser.expenses)
                 } else {
-                    updateChart(transactionData: authManager?.currentUser?.incomes ?? [])
+                    updateChart(transactionData: currentUser.incomes)
                 }
                 return
             }
@@ -96,9 +106,9 @@ class HomeViewController: UIViewController {
         case TimePeriodDivider.all.rawValue:
             // Updating chart with all expenses or incomes
             if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-                updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+                updateChart(transactionData: currentUser.expenses)
             } else {
-                updateChart(transactionData: authManager?.currentUser?.incomes ?? [])
+                updateChart(transactionData: currentUser.incomes)
             }
         default:
             break
@@ -152,7 +162,7 @@ class HomeViewController: UIViewController {
         transactionChart.data = pieChartData
         
         guard let symbol = authManager?.currentUser?.currency?.symbolNative else {
-            return
+            fatalError("User data is nil.")
         }
         let attributes = [NSAttributedString.Key.font: UIFont(name: "Tamil Sangam MN", size: 25.0)]
         let myString = "\(totalSum.round(to: 2))\(String(describing: symbol))"

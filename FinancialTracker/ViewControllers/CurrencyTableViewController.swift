@@ -26,11 +26,12 @@ class CurrencyTableViewController: UITableViewController {
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
-                assertionFailure(error)
+                assertionFailure(error.localizedDescription)
                 return
             }
             
             guard let currencies = currencies else {
+                assertionFailure("Data is missing.")
                 return
             }
 
@@ -58,9 +59,9 @@ class CurrencyTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let user = authManager?.currentUser, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser,
+              let currency = currentUser.currency else {
+            fatalError("User data is nil")
         }
         
         let selectedCode = currencies[indexPath.row].code

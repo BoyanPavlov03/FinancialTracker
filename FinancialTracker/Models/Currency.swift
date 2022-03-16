@@ -12,6 +12,11 @@ private enum Links: String {
     case ratesCurrencyApi = "https://open.er-api.com/v6/latest"
 }
 
+enum CurrencyError: Error {
+    case currencyName(Error?)
+    case currenctRate(Error?)
+}
+
 struct Currency: Codable {
     let name: String
     let symbolNative: String
@@ -40,13 +45,13 @@ extension Currency {
         rate = try values.decodeIfPresent(Double.self, forKey: .rate) ?? 0
     }
     
-    private static func fetchCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
+    private static func fetchCurrencies(completionHandler: @escaping (CurrencyError?, [Currency]?) -> Void) {
         var allCurrencies: [Currency] = []
         
         if let jsonLink = URL(string: Links.symbolCurrencyApi.rawValue) {
             URLSession.shared.dataTask(with: jsonLink) { data, _, error in
                 guard error == nil else {
-                    completionHandler(error?.localizedDescription, nil)
+                    completionHandler(CurrencyError.currencyName(error), nil)
                     return
                 }
                 
@@ -59,20 +64,20 @@ extension Currency {
                         
                         completionHandler(nil, allCurrencies)
                     } catch {
-                        completionHandler(error.localizedDescription, nil)
+                        completionHandler(CurrencyError.currencyName(error), nil)
                     }
                 }
             }.resume()
         }
     }
     
-    private static func fetchCurrencyRates(currencies: [Currency], completionHandler: @escaping (String?, [Currency]?) -> Void) {
+    private static func fetchCurrencyRates(currencies: [Currency], completionHandler: @escaping (CurrencyError?, [Currency]?) -> Void) {
         var allCurrencies: [Currency] = currencies
         
         if let jsonLink = URL(string: Links.ratesCurrencyApi.rawValue) {
             URLSession.shared.dataTask(with: jsonLink) { data, _, error in
                 guard error == nil else {
-                    completionHandler(error?.localizedDescription, nil)
+                    completionHandler(CurrencyError.currenctRate(error), nil)
                     return
                 }
                 
@@ -87,14 +92,14 @@ extension Currency {
                         }
                         completionHandler(nil, allCurrencies)
                     } catch {
-                        completionHandler(error.localizedDescription, nil)
+                        completionHandler(CurrencyError.currenctRate(error), nil)
                     }
                 }
             }.resume()
         }
     }
     
-    static func getCurrencies(completionHandler: @escaping (String?, [Currency]?) -> Void) {
+    static func getCurrencies(completionHandler: @escaping (CurrencyError?, [Currency]?) -> Void) {
         fetchCurrencies { error, allCurrencies in
             if let error = error {
                 completionHandler(error, nil)
