@@ -78,13 +78,13 @@ class DatabaseManager {
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
         let fcmToken = User.CodingKeys.FCMToken.rawValue
-        let remindersKey = User.CodingKeys.reminders.rawValue
+        let transfersKey = User.CodingKeys.transfers.rawValue
         guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
             assertionFailure("fcmToken key doesn't exist.")
             return
         }
         // swiftlint:disable:next line_length
-        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token, remindersKey: []] as [String: Any]
+        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token, transfersKey: []] as [String: Any]
         
         firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(data) { error in
             if error != nil {
@@ -376,14 +376,14 @@ class DatabaseManager {
         }
     }
     
-    /// Adding new reminder to the database of the current user.
+    /// Adding new transfer to the database of the current user.
     /// - Parameters:
     ///   - transferType: A `TransferType` whether the user wanted money or send to someone else.
-    ///   - description: A `String` containing the reminder's description.
+    ///   - description: A `String` containing the transfer's description.
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `success` - Boolean that indicates whether the function was successful.
-    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
+    func setTransferToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -391,20 +391,20 @@ class DatabaseManager {
         
         let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
         
-        let reminder = Reminder(transferType: transferType, description: description, date: formatedDate)
+        let transfer = Transfer(transferType: transferType, description: description, date: formatedDate)
         
         do {
-            let reminderData = try JSONEncoder().encode(reminder)
-            let json = try JSONSerialization.jsonObject(with: reminderData, options: [])
+            let trasnferData = try JSONEncoder().encode(transfer)
+            let json = try JSONSerialization.jsonObject(with: trasnferData, options: [])
             
             guard let dictionary = json as? [String: Any] else {
                 assertionFailure("Couldn't cast json to dictionary.")
                 return
             }
-            let remindersKey = User.CodingKeys.reminders.rawValue
-            let reminderValue = FieldValue.arrayUnion([dictionary])
+            let transfersKey = User.CodingKeys.transfers.rawValue
+            let transferValue = FieldValue.arrayUnion([dictionary])
             
-            let data = [remindersKey: reminderValue] as [String: Any]
+            let data = [transfersKey: transferValue] as [String: Any]
             firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(data, merge: true) { error in
                 if let error = error {
                     completionHandler(DatabaseError.database(error), false)
@@ -417,35 +417,35 @@ class DatabaseManager {
         }
     }
     
-    // Person has read his reminder so he removes it from his list.
+    // Person has read his transfer reminder so he removes it from his list.
     /// - Parameters:
-    ///   - reminder: A `Reminder` which should be deleted.
+    ///   - transfer: A `Transfer` which should be deleted.
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `success` - Boolean that indicates whether the function was successful.
-    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
+    func deleteTransferFromCurrentUser(transfer: Transfer, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
             return
         }
         
-        var reminders = currentUser.reminders
-        if let index = reminders.firstIndex(of: reminder) {
-            reminders.remove(at: index)
+        var transfers = currentUser.transfers
+        if let index = transfers.firstIndex(of: transfer) {
+            transfers.remove(at: index)
         }
         
-        let remindersKey = User.CodingKeys.reminders.rawValue
+        let transfersKey = User.CodingKeys.transfers.rawValue
         
         do {
-            let remindersData = try JSONEncoder().encode(reminders)
-            let remindersJson = try JSONSerialization.jsonObject(with: remindersData, options: [])
+            let transfersData = try JSONEncoder().encode(transfers)
+            let transfersJson = try JSONSerialization.jsonObject(with: transfersData, options: [])
                           
-            guard let remindersValue = remindersJson as? [Any] else {
+            guard let transfersValue = transfersJson as? [Any] else {
                 assertionFailure("Couldn't cast json to array.")
                 return
             }
             
-            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([remindersKey: remindersValue]) { error in
+            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([transfersKey: transfersValue]) { error in
                 if let error = error {
                     completionHandler(DatabaseError.database(error), false)
                     return

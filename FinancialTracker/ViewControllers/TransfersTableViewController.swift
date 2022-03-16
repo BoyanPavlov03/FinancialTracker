@@ -1,5 +1,5 @@
 //
-//  RemindersTableViewController.swift
+//  TransfersTableViewController.swift
 //  FinancialTracker
 //
 //  Created by Boyan Pavlov on 16.02.22.
@@ -7,13 +7,13 @@
 
 import UIKit
 
-class RemindersTableViewController: UIViewController {
+class TransfersTableViewController: UIViewController {
     @IBOutlet var transfersHistoryTableView: UITableView!
     
     let refreshControl = UIRefreshControl()
     
     var authManager: AuthManager?
-    private var transfers: [TransferType: [Reminder]] = [:] {
+    private var transfers: [TransferType: [Transfer]] = [:] {
         didSet {
             transfersHistoryTableView.reloadData()
             refreshControl.endRefreshing()
@@ -41,17 +41,17 @@ class RemindersTableViewController: UIViewController {
     }
     
     @objc private func setTransfersData() {
-        var transfers: [TransferType: [Reminder]] = [:]
-        guard let reminders = authManager?.currentUser?.reminders else {
+        var transfers: [TransferType: [Transfer]] = [:]
+        guard let userTransfers = authManager?.currentUser?.transfers else {
             return
         }
         
-        for reminder in reminders {
-            let transferType = reminder.transferType
+        for transfer in userTransfers {
+            let transferType = transfer.transferType
             if transfers[transferType] == nil {
                 transfers[transferType] = []
             }
-            transfers[transferType]?.append(reminder)
+            transfers[transferType]?.append(transfer)
         }
         
         self.transfers = transfers
@@ -67,7 +67,7 @@ class RemindersTableViewController: UIViewController {
     }
 }
 
-extension RemindersTableViewController: UITableViewDataSource {
+extension TransfersTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if noTransfers {
             let size = transfersHistoryTableView.bounds.size
@@ -115,8 +115,8 @@ extension RemindersTableViewController: UITableViewDataSource {
     // May change in the future
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let reminder = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, success in
+            let transfer = transfers[indexPath.section].value[indexPath.row]
+            authManager?.deleteTransferFromCurrentUser(transfer: transfer, completionHandler: { authError, success in
                 guard success else {
                     let alertTitle = authError?.title ?? "Unknown Error"
                     let alertMessage = authError?.message ?? "This error should not appear."
@@ -127,7 +127,7 @@ extension RemindersTableViewController: UITableViewDataSource {
                 
                 let transfers = self.transfers[indexPath.section].value
                 let key = self.transfers[indexPath.section].key
-                if let index = transfers.firstIndex(of: reminder) {
+                if let index = transfers.firstIndex(of: transfer) {
                     self.transfers[key]?.remove(at: index)
                 } else {
                     assertionFailure("This tableViewCell doesn't exist.")
@@ -137,7 +137,7 @@ extension RemindersTableViewController: UITableViewDataSource {
     }
 }
 
-extension RemindersTableViewController: UITableViewDelegate {
+extension TransfersTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }

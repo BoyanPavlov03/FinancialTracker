@@ -101,8 +101,8 @@ class TabBarController: UITabBarController {
                     profileVC.authManager = authManager
                 case let currencyVC as CurrencyTableViewController:
                     currencyVC.authManager = authManager
-                case let remindersVC as RemindersTableViewController:
-                    remindersVC.authManager = authManager
+                case let transfersVC as TransfersTableViewController:
+                    transfersVC.authManager = authManager
                 default:
                     assertionFailure("This should not be here: \(String(describing: navigationController.topViewController)).")
                     return

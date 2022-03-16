@@ -202,14 +202,14 @@ class AuthManager {
         }
     }
     
-    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (AuthError?, Bool) -> Void) {
-        databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { databaseError, success in
+    func setTransferToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.setTransferToCurrentUser(transferType: transferType, description: description) { databaseError, success in
             completionHandler(AuthError.database(databaseError), success)
         }
     }
     
-    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (AuthError?, Bool) -> Void) {
-        databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { databaseError, success in
+    func deleteTransferFromCurrentUser(transfer: Transfer, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.deleteTransferFromCurrentUser(transfer: transfer) { databaseError, success in
             completionHandler(AuthError.database(databaseError), success)
         }
     }

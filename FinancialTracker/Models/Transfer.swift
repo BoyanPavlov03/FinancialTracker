@@ -1,5 +1,5 @@
 //
-//  Reminder.swift
+//  Transfer.swift
 //  FinancialTracker
 //
 //  Created by Boyan Pavlov on 16.02.22.
@@ -21,7 +21,7 @@ enum TransferType: String, Codable {
     }
 }
 
-struct Reminder: Codable, Equatable {
+struct Transfer: Codable, Equatable {
     var transferType: TransferType
     var description: String
     var date: String
