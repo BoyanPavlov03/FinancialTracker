@@ -8,6 +8,7 @@
 import UIKit
 
 class CurrencyTableViewController: UITableViewController {
+    // MARK: - Private properties
     private var currencies: [Currency] = [] {
         didSet {
             DispatchQueue.main.async {
@@ -16,8 +17,10 @@ class CurrencyTableViewController: UITableViewController {
         }
     }
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,8 +42,7 @@ class CurrencyTableViewController: UITableViewController {
         }
     }
 
-    // MARK: - Table view data source
-
+    // MARK: - UITableViewDataSource methods
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }

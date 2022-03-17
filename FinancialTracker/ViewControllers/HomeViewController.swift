@@ -17,12 +17,15 @@ private enum TimePeriodDivider: Int {
 }
 
 class HomeViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var transactionChart: PieChartView!
     @IBOutlet var expenseDividerSegmentedControl: UISegmentedControl!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,6 +54,7 @@ class HomeViewController: UIViewController {
         authManager?.removeDelegate(self)
     }
     
+    // MARK: - Own methods
     private func checkIfPremium() {
         guard let currentUser = authManager?.currentUser else {
             fatalError("User data is nil.")
@@ -174,6 +178,15 @@ class HomeViewController: UIViewController {
         transactionChart.centerAttributedText = totalSumString
     }
     
+    // MARK: - IBAction methods
+    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(expenseDividerSegmentedControl.selectedSegmentIndex)
+    }
+    
+    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(sender.selectedSegmentIndex)
+    }
+    
     @objc private func addTransactionButtonTapped() {
         guard let transactionVC = ViewControllerFactory.shared.viewController(for: .transaction) as? TransactionViewController else {
             assertionFailure("Couldn't cast to TransactionViewController")
@@ -183,16 +196,9 @@ class HomeViewController: UIViewController {
         transactionVC.authManager = authManager
         navigationController?.pushViewController(transactionVC, animated: true)
     }
-    
-    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
-        periodDivider(expenseDividerSegmentedControl.selectedSegmentIndex)
-    }
-    
-    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
-        periodDivider(sender.selectedSegmentIndex)
-    }
 }
 
+// MARK: - DatabaseManagerDelegate
 extension HomeViewController: DatabaseManagerDelegate {
     func databaseManagerDidUserChange(sender: DatabaseManager) {
         dividerControlDidChange(expenseDividerSegmentedControl)

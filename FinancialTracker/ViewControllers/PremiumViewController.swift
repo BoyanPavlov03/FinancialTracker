@@ -13,8 +13,10 @@ enum Product: String {
 }
 
 class PremiumViewController: UIViewController {
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -23,6 +25,7 @@ class PremiumViewController: UIViewController {
         SKPaymentQueue.default().add(self)
     }
     
+    // MARK: - IBAction methods
     @IBAction func upgradeButtonTapped(_ sender: Any) {
         if SKPaymentQueue.canMakePayments() {
             let paymentRequest = SKMutablePayment()
@@ -33,6 +36,7 @@ class PremiumViewController: UIViewController {
     }
 }
 
+// MARK: - SKPaymentTransactionObserver
 extension PremiumViewController: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         for transaction in transactions {

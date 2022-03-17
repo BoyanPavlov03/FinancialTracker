@@ -8,12 +8,12 @@
 import UIKit
 
 class TransactionViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var amountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     
-    var authManager: AuthManager?
-    
+    // MARK: - Private properties
     private var categoryCases: [Category] {
         guard let currentUser = authManager?.currentUser else {
             fatalError("User data is nil.")
@@ -32,6 +32,10 @@ class TransactionViewController: UIViewController {
         }
     }
     
+    // MARK: - Properties
+    var authManager: AuthManager?
+    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,6 +45,7 @@ class TransactionViewController: UIViewController {
         categoryPicker.delegate = self
     }
     
+    // MARK: - IBAction methods
     @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: UISegmentedControl) {
         categoryPicker.reloadAllComponents()
     }
@@ -71,6 +76,7 @@ class TransactionViewController: UIViewController {
     }
 }
 
+// MARK: - UIPickerViewDataSource
 extension TransactionViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -81,6 +87,7 @@ extension TransactionViewController: UIPickerViewDataSource {
     }
 }
 
+// MARK: - UIPickerViewDelegate
 extension TransactionViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if let expense = categoryCases as? [ExpenseCategory] {

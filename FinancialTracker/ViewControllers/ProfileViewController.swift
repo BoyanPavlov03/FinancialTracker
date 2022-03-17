@@ -15,14 +15,17 @@ private enum ProfileViewControllerSettings: String, CaseIterable {
 }
 
 class ProfileViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var settingsTableView: UITableView!
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,6 +54,7 @@ class ProfileViewController: UIViewController {
         authManager?.removeDelegate(self)
     }
     
+    // MARK: - Own methods
     private func updateBalanceAndExpenses() {
         guard let currentUser = authManager?.currentUser,
               let balance = currentUser.balance,
@@ -66,13 +70,6 @@ class ProfileViewController: UIViewController {
         
         balanceLabel.text = "Balance: \(balance.round(to: 2))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
-    }
-    
-    @IBAction func shareButtonTapped(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
-        
-        activityVC.popoverPresentationController?.sourceView = self.view
-        present(activityVC, animated: true)
     }
     
     private func helpCellTapped() {
@@ -117,6 +114,14 @@ class ProfileViewController: UIViewController {
         navigationController?.pushViewController(currencyVC, animated: true)
     }
     
+    // MARK: - IBAction methods
+    @IBAction func shareButtonTapped(_ sender: Any) {
+        let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
+        
+        activityVC.popoverPresentationController?.sourceView = self.view
+        present(activityVC, animated: true)
+    }
+    
     @objc private func signOut() {
         let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
@@ -136,10 +141,11 @@ class ProfileViewController: UIViewController {
     }
 }
 
+// MARK: - MFMailComposeViewControllerDelegate
 extension ProfileViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        guard error == nil else {
-            controller.dismiss(animated: true)
+        if let error = error {
+            self.present(UIAlertController.create(title: "Error", message: error.localizedDescription), animated: true)
             return
         }
 
@@ -147,12 +153,14 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
     }
 }
 
+// MARK: - DatabaseManagerDelegate
 extension ProfileViewController: DatabaseManagerDelegate {
     func databaseManagerDidUserChange(sender: DatabaseManager) {
         updateBalanceAndExpenses()
     }
 }
 
+// MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
@@ -169,6 +177,7 @@ extension ProfileViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Settings"

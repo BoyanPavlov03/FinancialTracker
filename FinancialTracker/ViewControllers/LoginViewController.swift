@@ -8,14 +8,15 @@
 import UIKit
 
 class LoginViewController: UIViewController {
-    // MARK: - View properties
+    // MARK: - Outlet properties
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var loginButton: UIButton!
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
-    // MARK: - Methods
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,12 +27,14 @@ class LoginViewController: UIViewController {
         passwordField.isSecureTextEntry = true
     }
     
+    // MARK: - Own methods
     private func setUpUITextField(_ textField: UITextField) {
         textField.layer.cornerRadius = 15
         textField.layer.borderColor = UIColor.black.cgColor
         textField.layer.borderWidth = 1
     }
     
+    // MARK: - IBAction methods
     @IBAction func loginButtonTapped(_: Any) {
         guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !email.isEmpty else {
             present(UIAlertController.create(title: "Missing Email", message: "Please fill in your email"), animated: true)

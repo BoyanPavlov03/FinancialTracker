@@ -8,12 +8,14 @@
 import UIKit
 
 class EntryViewController: UIViewController {
-    // MARK: - View properties
+    // MARK: - Outlet properties
     @IBOutlet var loginButton: UIButton!
     @IBOutlet var registerButton: UIButton!
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,6 +23,7 @@ class EntryViewController: UIViewController {
         navigationItem.setHidesBackButton(true, animated: true)
     }
     
+    // MARK: - IBAction methods
     @IBAction func logInButtonTapped(_ sender: Any) {
         guard let loginVC = ViewControllerFactory.shared.viewController(for: .login) as? LoginViewController else {
             assertionFailure("Couldn't parse to LoginViewController.")

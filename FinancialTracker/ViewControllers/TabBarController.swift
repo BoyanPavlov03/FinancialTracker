@@ -28,14 +28,11 @@ private enum FinanceTips: Double {
 }
 
 class TabBarController: UITabBarController {
+    // MARK: - Private properties
     private var authManager: AuthManager?
     private var accountCreated = false
     
-    func setAuthManager(_ authManager: AuthManager, accountCreated: Bool) {
-        self.authManager = authManager
-        self.accountCreated = accountCreated
-    }
-    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -75,6 +72,12 @@ class TabBarController: UITabBarController {
             
             self.balanceTips(balance: balance)
         }
+    }
+    
+    // MARK: - Own methods
+    func setAuthManager(_ authManager: AuthManager, accountCreated: Bool) {
+        self.authManager = authManager
+        self.accountCreated = accountCreated
     }
     
     private func balanceTips(balance: Double) {

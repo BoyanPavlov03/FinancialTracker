@@ -8,17 +8,17 @@
 import UIKit
 
 class TransfersTableViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var transfersHistoryTableView: UITableView!
     
-    let refreshControl = UIRefreshControl()
-    
-    var authManager: AuthManager?
+    // MARK: - Private properties
     private var transfers: [TransferType: [Transfer]] = [:] {
         didSet {
             transfersHistoryTableView.reloadData()
             refreshControl.endRefreshing()
         }
     }
+    
     private var noTransfers: Bool {
         for value in transfers.values {
             guard value.isEmpty else {
@@ -28,6 +28,11 @@ class TransfersTableViewController: UIViewController {
         return true
     }
     
+    // MARK: - Properties
+    let refreshControl = UIRefreshControl()
+    var authManager: AuthManager?
+    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,6 +43,16 @@ class TransfersTableViewController: UIViewController {
         
         refreshControl.addTarget(self, action: #selector(setTransfersData), for: .valueChanged)
         transfersHistoryTableView.addSubview(refreshControl)
+    }
+    
+    // MARK: - IBAction methods
+    @IBAction func sendOrRequestButtonTapped(_ sender: Any) {
+        guard let usersVC = ViewControllerFactory.shared.viewController(for: .users) as? UsersTableViewController else {
+            assertionFailure("Couldn't cast to UsersTableViewController.")
+            return
+        }
+        usersVC.authManager = authManager
+        self.navigationController?.pushViewController(usersVC, animated: true)
     }
     
     @objc private func setTransfersData() {
@@ -56,17 +71,9 @@ class TransfersTableViewController: UIViewController {
         
         self.transfers = transfers
     }
-    
-    @IBAction func sendOrRequestButtonTapped(_ sender: Any) {
-        guard let usersVC = ViewControllerFactory.shared.viewController(for: .users) as? UsersTableViewController else {
-            assertionFailure("Couldn't cast to UsersTableViewController.")
-            return
-        }
-        usersVC.authManager = authManager
-        self.navigationController?.pushViewController(usersVC, animated: true)
-    }
 }
 
+// MARK: - UITableViewDataSource
 extension TransfersTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if noTransfers {
@@ -137,6 +144,7 @@ extension TransfersTableViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension TransfersTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
