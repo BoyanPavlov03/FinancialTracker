@@ -47,6 +47,10 @@ class ProfileViewController: UIViewController {
         authManager?.addDelegate(self)
     }
     
+    deinit {
+        authManager?.removeDelegate(self)
+    }
+    
     private func updateBalanceAndExpenses() {
         guard let currentUser = authManager?.currentUser,
               let balance = currentUser.balance,

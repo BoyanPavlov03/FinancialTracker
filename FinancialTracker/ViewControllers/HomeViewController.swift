@@ -47,6 +47,10 @@ class HomeViewController: UIViewController {
         authManager?.addDelegate(self)
     }
     
+    deinit {
+        authManager?.removeDelegate(self)
+    }
+    
     private func checkIfPremium() {
         guard let currentUser = authManager?.currentUser else {
             fatalError("User data is nil.")
