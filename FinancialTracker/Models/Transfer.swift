@@ -35,18 +35,4 @@ struct Transfer: Codable, Equatable {
         self.description = description
         self.date = date
     }
-    
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        transferType = try values.decode(TransferType.self, forKey: .transferType)
-        description = try values.decode(String.self, forKey: .description)
-        date = try values.decode(String.self, forKey: .date)
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(transferType, forKey: .transferType)
-        try container.encode(description, forKey: .description)
-        try container.encode(date, forKey: .date)
-    }
 }
