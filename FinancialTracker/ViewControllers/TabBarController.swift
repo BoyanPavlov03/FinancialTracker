@@ -52,7 +52,7 @@ class TabBarController: UITabBarController {
             accountCreated = false
         }
         
-        authManager?.firestoreDidChangeData { authError, user in
+        authManager?.firestoreDidChangeUserData { authError, user in
             guard let user = user else {
                 let alertTitle = authError?.title ?? "Unknown Error"
                 let alertMessage = authError?.message ?? "This error should not appear."
@@ -101,8 +101,8 @@ class TabBarController: UITabBarController {
                     profileVC.authManager = authManager
                 case let currencyVC as CurrencyTableViewController:
                     currencyVC.authManager = authManager
-                case let remindersVC as RemindersTableViewController:
-                    remindersVC.authManager = authManager
+                case let transfersVC as TransfersTableViewController:
+                    transfersVC.authManager = authManager
                 default:
                     assertionFailure("This should not be here: \(String(describing: navigationController.topViewController)).")
                     return

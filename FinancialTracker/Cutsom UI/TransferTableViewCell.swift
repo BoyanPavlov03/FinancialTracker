@@ -7,7 +7,21 @@
 
 import UIKit
 
+protocol TransferTableViewCellDelegate: AnyObject {
+    func didTapTransferStateButton(with title: String, section: Int, row: Int)
+}
+
 class TransferTableViewCell: UITableViewCell {
     @IBOutlet var transferTitleLabel: UILabel!
     @IBOutlet var transferDate: UILabel!
+    @IBOutlet var transferStateButton: UIButton!
+    
+    weak var delegate: TransferTableViewCellDelegate?
+    
+    var section: Int?
+    var row: Int?
+    
+    @IBAction func transferStateButtonTapped() {        
+        delegate?.didTapTransferStateButton(with: transferStateButton.titleLabel?.text ?? "Nil", section: 0, row: 0)
+    }
 }

@@ -50,6 +50,7 @@ enum AuthError: Error {
 
 enum DBCollectionKey: String {
     case users
+    case transfers
 }
 
 /// Class for managing all authentication related actions.
@@ -178,8 +179,8 @@ class AuthManager {
         }
     }
     
-    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (AuthError?, Bool) -> Void) {
-        databaseManager.addTransactionToCurrentUser(amount: amount, category: category) { databaseError, success in
+    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.addTransactionToUserByUID(uid, amount: amount, category: category) { databaseError, success in
             completionHandler(AuthError.database(databaseError), success)
         }
     }
@@ -202,27 +203,39 @@ class AuthManager {
         }
     }
     
-    func setReminderToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (AuthError?, Bool) -> Void) {
-        databaseManager.setReminderToCurrentUser(transferType: transferType, description: description) { databaseError, success in
-            completionHandler(AuthError.database(databaseError), success)
-        }
-    }
-    
-    func deleteReminderFromCurrentUser(reminder: Reminder, completionHandler: @escaping (AuthError?, Bool) -> Void) {
-        databaseManager.deleteReminderFromCurrentUser(reminder: reminder) { databaseError, success in
-            completionHandler(AuthError.database(databaseError), success)
-        }
-    }
-    
     func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (AuthError?, User?) -> Void) {
         databaseManager.transferMoney(email: email, amount: amount, transferType: transferType) { databaseError, user in
             completionHandler(AuthError.database(databaseError), user)
         }
     }
     
-    func firestoreDidChangeData(completionHandler: @escaping (AuthError?, User?) -> Void) {
-        databaseManager.firestoreDidChangeData { databaseError, user in
+    func acceptTransferFromUserByUID(_ uid: String, transfer: Transfer, completionHandler: @escaping(AuthError?, Bool) -> Void) {
+        databaseManager.acceptTransferFromUserByUID(uid, transfer: transfer) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
+        }
+    }
+    
+    func sendRequestedTransferFromUserByUID(_ uid: String, transfer: Transfer, completionHandler: @escaping(AuthError?, Bool) -> Void) {
+        databaseManager.sendRequestedTransferFromUserByUID(uid, transfer: transfer) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
+        }
+    }
+    
+    func completeTransfer(transfer: Transfer, completionHandler: @escaping(AuthError?, Bool) -> Void) {
+        databaseManager.completeTransfer(transfer: transfer) { databaseError, success in
+            completionHandler(AuthError.database(databaseError), success)
+        }
+    }
+        
+    func firestoreDidChangeUserData(completionHandler: @escaping (AuthError?, User?) -> Void) {
+        databaseManager.firestoreDidChangeUserData { databaseError, user in
             completionHandler(AuthError.database(databaseError), user)
+        }
+    }
+    
+    func firestoreDidChangeUserTransfersData(completionHandler: @escaping (AuthError?, [Transfer]?) -> Void) {
+        databaseManager.firestoreDidChangeUserTransfersData { databaseError, transfers in
+            completionHandler(AuthError.database(databaseError), transfers)
         }
     }
     
