@@ -1036,10 +1036,10 @@
             </objects>
             <point key="canvasLocation" x="6863" y="1276"/>
         </scene>
-        <!--Reminders Table View Controller-->
+        <!--Transfers Table View Controller-->
         <scene sceneID="hgB-Cz-T38">
             <objects>
-                <viewController id="bSc-xg-mq8" customClass="RemindersTableViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="bSc-xg-mq8" customClass="TransfersTableViewController" customModule="FinancialTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aGw-qA-xxK">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1244,28 +1244,28 @@
     </scenes>
     <designables>
         <designable name="2gT-XN-b5k">
-            <size key="intrinsicContentSize" width="164" height="38.5"/>
+            <size key="intrinsicContentSize" width="100" height="18.5"/>
         </designable>
         <designable name="5Fu-ny-t7c">
-            <size key="intrinsicContentSize" width="163.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="100.5" height="18.5"/>
         </designable>
         <designable name="7Ej-Wj-Ox2">
-            <size key="intrinsicContentSize" width="165.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="102.5" height="18.5"/>
         </designable>
         <designable name="D5G-uC-FGk">
-            <size key="intrinsicContentSize" width="137.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="72.5" height="18.5"/>
         </designable>
         <designable name="KVc-bc-oEf">
-            <size key="intrinsicContentSize" width="97" height="46.5"/>
+            <size key="intrinsicContentSize" width="32" height="34"/>
         </designable>
         <designable name="jYP-cS-Ihx">
-            <size key="intrinsicContentSize" width="137.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="72.5" height="18.5"/>
         </designable>
         <designable name="seU-7A-L7K">
-            <size key="intrinsicContentSize" width="96" height="46.5"/>
+            <size key="intrinsicContentSize" width="32" height="34"/>
         </designable>
         <designable name="tvk-ML-w8e">
-            <size key="intrinsicContentSize" width="165" height="38.5"/>
+            <size key="intrinsicContentSize" width="100" height="18.5"/>
         </designable>
     </designables>
     <resources>

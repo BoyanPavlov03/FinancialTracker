@@ -1,5 +1,5 @@
 //
-//  RemindersTableViewController.swift
+//  TransfersTableViewController.swift
 //  FinancialTracker
 //
 //  Created by Boyan Pavlov on 16.02.22.
@@ -7,18 +7,18 @@
 
 import UIKit
 
-class RemindersTableViewController: UIViewController {
+class TransfersTableViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var transfersHistoryTableView: UITableView!
     
-    let refreshControl = UIRefreshControl()
-    
-    var authManager: AuthManager?
-    private var transfers: [TransferType: [Reminder]] = [:] {
+    // MARK: - Private properties
+    private var transfers: [TransferType: [Transfer]] = [:] {
         didSet {
             transfersHistoryTableView.reloadData()
             refreshControl.endRefreshing()
         }
     }
+    
     private var noTransfers: Bool {
         for value in transfers.values {
             guard value.isEmpty else {
@@ -28,6 +28,11 @@ class RemindersTableViewController: UIViewController {
         return true
     }
     
+    // MARK: - Properties
+    let refreshControl = UIRefreshControl()
+    var authManager: AuthManager?
+    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,23 +45,7 @@ class RemindersTableViewController: UIViewController {
         transfersHistoryTableView.addSubview(refreshControl)
     }
     
-    @objc private func setTransfersData() {
-        var transfers: [TransferType: [Reminder]] = [:]
-        guard let reminders = authManager?.currentUser?.reminders else {
-            return
-        }
-        
-        for reminder in reminders {
-            let transferType = reminder.transferType
-            if transfers[transferType] == nil {
-                transfers[transferType] = []
-            }
-            transfers[transferType]?.append(reminder)
-        }
-        
-        self.transfers = transfers
-    }
-    
+    // MARK: - IBAction methods
     @IBAction func sendOrRequestButtonTapped(_ sender: Any) {
         guard let usersVC = ViewControllerFactory.shared.viewController(for: .users) as? UsersTableViewController else {
             assertionFailure("Couldn't cast to UsersTableViewController.")
@@ -65,9 +54,27 @@ class RemindersTableViewController: UIViewController {
         usersVC.authManager = authManager
         self.navigationController?.pushViewController(usersVC, animated: true)
     }
+    
+    @objc private func setTransfersData() {
+        var transfers: [TransferType: [Transfer]] = [:]
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
+        for transfer in currentUser.transfers {
+            let transferType = transfer.transferType
+            if transfers[transferType] == nil {
+                transfers[transferType] = []
+            }
+            transfers[transferType]?.append(transfer)
+        }
+        
+        self.transfers = transfers
+    }
 }
 
-extension RemindersTableViewController: UITableViewDataSource {
+// MARK: - UITableViewDataSource
+extension TransfersTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if noTransfers {
             let size = transfersHistoryTableView.bounds.size
@@ -115,8 +122,8 @@ extension RemindersTableViewController: UITableViewDataSource {
     // May change in the future
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let reminder = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteReminderFromCurrentUser(reminder: reminder, completionHandler: { authError, success in
+            let transfer = transfers[indexPath.section].value[indexPath.row]
+            authManager?.deleteTransferFromCurrentUser(transfer: transfer, completionHandler: { authError, success in
                 guard success else {
                     let alertTitle = authError?.title ?? "Unknown Error"
                     let alertMessage = authError?.message ?? "This error should not appear."
@@ -127,7 +134,7 @@ extension RemindersTableViewController: UITableViewDataSource {
                 
                 let transfers = self.transfers[indexPath.section].value
                 let key = self.transfers[indexPath.section].key
-                if let index = transfers.firstIndex(of: reminder) {
+                if let index = transfers.firstIndex(of: transfer) {
                     self.transfers[key]?.remove(at: index)
                 } else {
                     assertionFailure("This tableViewCell doesn't exist.")
@@ -137,7 +144,8 @@ extension RemindersTableViewController: UITableViewDataSource {
     }
 }
 
-extension RemindersTableViewController: UITableViewDelegate {
+// MARK: - UITableViewDelegate
+extension TransfersTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60.0
     }

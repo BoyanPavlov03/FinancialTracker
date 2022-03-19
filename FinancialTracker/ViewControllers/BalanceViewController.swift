@@ -8,13 +8,13 @@
 import UIKit
 
 class BalanceViewController: UIViewController {
-    // MARK: - View properties
+    // MARK: - Outlet properties
     @IBOutlet var balanceTextField: UITextField!
     @IBOutlet var nextButton: UIButton!
     @IBOutlet var welcomeLabel: UILabel!
     @IBOutlet var currencyPicker: UIPickerView!
     
-    // MARK: - Properties
+    // MARK: - Private properties
     private var currencies: [Currency] = [] {
         didSet {
             DispatchQueue.main.async {
@@ -22,9 +22,10 @@ class BalanceViewController: UIViewController {
             }
         }
     }
+    // MARK: - Properties
     var authManager: AuthManager?
     
-    // MARK: - Methods
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         balanceTextField.keyboardType = .numberPad
@@ -33,20 +34,20 @@ class BalanceViewController: UIViewController {
         navigationItem.setHidesBackButton(true, animated: true)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
         
-        guard let firstName = authManager?.currentUser?.firstName else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil")
         }
         
-        welcomeLabel.text = "Welcome " + firstName
+        welcomeLabel.text = "Welcome " + currentUser.firstName
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
-                assertionFailure(error)
+                assertionFailure(error.localizedDescription)
                 return
             }
             
             guard let currencies = currencies else {
+                assertionFailure("Data is missing.")
                 return
             }
 
@@ -57,6 +58,7 @@ class BalanceViewController: UIViewController {
         currencyPicker.dataSource = self
     }
     
+    // MARK: - IBAction methods
     @IBAction func nextButtonTapped(_ sender: Any) {
         guard let balance = balanceTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !balance.isEmpty else {
             present(UIAlertController.create(title: "Missing Balance", message: "Please fill in your starting balance"), animated: true)
@@ -111,12 +113,14 @@ class BalanceViewController: UIViewController {
     }
 }
 
+// MARK: - UIPickerViewDelegate
 extension BalanceViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return currencies[row].code
     }
 }
 
+// MARK: - UIPickerViewDataSource
 extension BalanceViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1

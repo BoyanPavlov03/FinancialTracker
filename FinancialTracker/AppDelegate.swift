@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             return
         }
         
-        authMananger.setReminderToCurrentUser(transferType: transferType, description: description, completionHandler: { authError, _ in
+        authMananger.setTransferToCurrentUser(transferType: transferType, description: description, completionHandler: { authError, _ in
             if let authError = authError {
                 assertionFailure(authError.localizedDescription)
                 completionHandler(.failed)

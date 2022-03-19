@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// One-to-many delegate releationships
 class DelegatesCollection<T>: Sequence {
     
     private lazy var weakDelegates = [WeakContainer]()

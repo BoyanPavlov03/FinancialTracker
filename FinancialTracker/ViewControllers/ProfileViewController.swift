@@ -8,21 +8,24 @@
 import UIKit
 import MessageUI
 
-enum ProfileViewControllerSettings: String, CaseIterable {
+private enum ProfileViewControllerSettings: String, CaseIterable {
     case changeCurrency = "Change Currency"
     case support = "Support"
     case premium = "Upgrade to Premium"
 }
 
 class ProfileViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var nameLabel: UILabel!
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
     @IBOutlet var settingsTableView: UITableView!
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -33,23 +36,30 @@ class ProfileViewController: UIViewController {
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
         
-        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser,
+              let balance = currentUser.balance,
+              let currency = currentUser.currency else {
+            fatalError("User data is nil")
         }
         
-        nameLabel.text = "\(user.firstName) \(user.lastName)"
-        emailLabel.text = user.email
+        nameLabel.text = "\(currentUser.firstName) \(currentUser.lastName)"
+        emailLabel.text = currentUser.email
         balanceLabel.text = "Balance: \(balance)\(currency.symbolNative)"
-        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
+        userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
         
         authManager?.addDelegate(self)
     }
     
+    deinit {
+        authManager?.removeDelegate(self)
+    }
+    
+    // MARK: - Own methods
     private func updateBalanceAndExpenses() {
-        guard let user = authManager?.currentUser, let balance = user.balance, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser,
+              let balance = currentUser.balance,
+              let currency = currentUser.currency else {
+            fatalError("User data is nil")
         }
         
         if balance < 0 {
@@ -59,14 +69,7 @@ class ProfileViewController: UIViewController {
         }
         
         balanceLabel.text = "Balance: \(balance.round(to: 2))\(currency.symbolNative)"
-        userTypeLabel.text = "User Type: \(user.premium ? "Premium" : "Normal")"
-    }
-    
-    @IBAction func shareButtonTapped(_ sender: Any) {
-        let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
-        
-        activityVC.popoverPresentationController?.sourceView = self.view
-        present(activityVC, animated: true)
+        userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
     }
     
     private func helpCellTapped() {
@@ -111,6 +114,14 @@ class ProfileViewController: UIViewController {
         navigationController?.pushViewController(currencyVC, animated: true)
     }
     
+    // MARK: - IBAction methods
+    @IBAction func shareButtonTapped(_ sender: Any) {
+        let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
+        
+        activityVC.popoverPresentationController?.sourceView = self.view
+        present(activityVC, animated: true)
+    }
+    
     @objc private func signOut() {
         let alertController = UIAlertController(title: "Sign Out", message: "You are about to sign out. Are you sure?", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { _ in
@@ -130,10 +141,11 @@ class ProfileViewController: UIViewController {
     }
 }
 
+// MARK: - MFMailComposeViewControllerDelegate
 extension ProfileViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        guard error == nil else {
-            controller.dismiss(animated: true)
+        if let error = error {
+            self.present(UIAlertController.create(title: "Error", message: error.localizedDescription), animated: true)
             return
         }
 
@@ -141,12 +153,14 @@ extension ProfileViewController: MFMailComposeViewControllerDelegate {
     }
 }
 
+// MARK: - DatabaseManagerDelegate
 extension ProfileViewController: DatabaseManagerDelegate {
     func databaseManagerDidUserChange(sender: DatabaseManager) {
         updateBalanceAndExpenses()
     }
 }
 
+// MARK: - UITableViewDelegate
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
@@ -163,19 +177,19 @@ extension ProfileViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource
 extension ProfileViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Settings"
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let premium = authManager?.currentUser?.premium else {
-            assertionFailure("User data is nil")
-            return 0
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil")
         }
         
         let count = ProfileViewControllerSettings.allCases.count
-        return premium ? count - 1 : count
+        return currentUser.premium ? count - 1 : count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

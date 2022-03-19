@@ -14,13 +14,12 @@
 		7058054A276893E4009515BE /* DesignableUITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70580549276893E4009515BE /* DesignableUITextField.swift */; };
 		705A4C7627C526C800D468FE /* UsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705A4C7527C526C800D468FE /* UsersTableViewController.swift */; };
 		705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705B3DB1279869D50059D832 /* ProfileViewController.swift */; };
-		705E7E5927BCFA8100FEA650 /* RemindersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E7E5827BCFA8100FEA650 /* RemindersTableViewController.swift */; };
-		705E7E5B27BCFC7000FEA650 /* Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E7E5A27BCFC7000FEA650 /* Reminder.swift */; };
+		705E7E5927BCFA8100FEA650 /* TransfersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E7E5827BCFA8100FEA650 /* TransfersTableViewController.swift */; };
+		705E7E5B27BCFC7000FEA650 /* Transfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E7E5A27BCFC7000FEA650 /* Transfer.swift */; };
 		705E8D3D27B3F013004F7395 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 705E8D3C27B3F013004F7395 /* Category.swift */; };
 		70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */; };
 		70607F7227A1EB80005ED7F7 /* PremiumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */; };
 		70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F7427A2D576005ED7F7 /* TabBarController.swift */; };
-		7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7068D90B278896B300DFA3B3 /* Utilities.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* TransactionViewController.swift */; };
 		707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F853C27AD55740053555B /* DelegatesCollection.swift */; };
@@ -58,13 +57,12 @@
 		70580549276893E4009515BE /* DesignableUITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignableUITextField.swift; sourceTree = "<group>"; };
 		705A4C7527C526C800D468FE /* UsersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewController.swift; sourceTree = "<group>"; };
 		705B3DB1279869D50059D832 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		705E7E5827BCFA8100FEA650 /* RemindersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersTableViewController.swift; sourceTree = "<group>"; };
-		705E7E5A27BCFC7000FEA650 /* Reminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminder.swift; sourceTree = "<group>"; };
+		705E7E5827BCFA8100FEA650 /* TransfersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransfersTableViewController.swift; sourceTree = "<group>"; };
+		705E7E5A27BCFC7000FEA650 /* Transfer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transfer.swift; sourceTree = "<group>"; };
 		705E8D3C27B3F013004F7395 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTableViewController.swift; sourceTree = "<group>"; };
 		70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumViewController.swift; sourceTree = "<group>"; };
 		70607F7427A2D576005ED7F7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		7068D90B278896B300DFA3B3 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		707F853C27AD55740053555B /* DelegatesCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatesCollection.swift; sourceTree = "<group>"; };
@@ -118,7 +116,7 @@
 				7014A77F27AC1F8A00E6A2DB /* User.swift */,
 				7014A78527AC207100E6A2DB /* Transaction.swift */,
 				705E8D3C27B3F013004F7395 /* Category.swift */,
-				705E7E5A27BCFC7000FEA650 /* Reminder.swift */,
+				705E7E5A27BCFC7000FEA650 /* Transfer.swift */,
 				70D6636527C3A75B00072131 /* Constants.swift */,
 			);
 			path = Models;
@@ -147,7 +145,6 @@
 			children = (
 				70835D9F277E438A0087C3D9 /* ViewControllerFactory.swift */,
 				7095718527888D1A00EB6EB3 /* Extensions.swift */,
-				7068D90B278896B300DFA3B3 /* Utilities.swift */,
 				707F853C27AD55740053555B /* DelegatesCollection.swift */,
 				7082B32E27B97A9D0083A169 /* PushNotificationSender.swift */,
 			);
@@ -175,7 +172,7 @@
 				70607F6F279D65DB005ED7F7 /* CurrencyTableViewController.swift */,
 				70607F7127A1EB80005ED7F7 /* PremiumViewController.swift */,
 				70607F7427A2D576005ED7F7 /* TabBarController.swift */,
-				705E7E5827BCFA8100FEA650 /* RemindersTableViewController.swift */,
+				705E7E5827BCFA8100FEA650 /* TransfersTableViewController.swift */,
 				705A4C7527C526C800D468FE /* UsersTableViewController.swift */,
 			);
 			path = ViewControllers;
@@ -339,11 +336,10 @@
 				708905A52764A317000CEE4E /* LoginViewController.swift in Sources */,
 				707F854127AED1410053555B /* AuthManager.swift in Sources */,
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
-				7068D90C278896B300DFA3B3 /* Utilities.swift in Sources */,
 				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
-				705E7E5927BCFA8100FEA650 /* RemindersTableViewController.swift in Sources */,
+				705E7E5927BCFA8100FEA650 /* TransfersTableViewController.swift in Sources */,
 				707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */,
-				705E7E5B27BCFC7000FEA650 /* Reminder.swift in Sources */,
+				705E7E5B27BCFC7000FEA650 /* Transfer.swift in Sources */,
 				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
