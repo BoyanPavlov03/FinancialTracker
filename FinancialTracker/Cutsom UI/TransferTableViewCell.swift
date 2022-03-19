@@ -22,6 +22,6 @@ class TransferTableViewCell: UITableViewCell {
     var row: Int?
     
     @IBAction func transferStateButtonTapped() {        
-        delegate?.didTapTransferStateButton(with: transferStateButton.titleLabel?.text ?? "Nil", section: 0, row: 0)
+        delegate?.didTapTransferStateButton(with: transferStateButton.titleLabel?.text ?? "Nil", section: section ?? 0, row: row ?? 0)
     }
 }

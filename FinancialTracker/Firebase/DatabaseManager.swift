@@ -78,7 +78,7 @@ class DatabaseManager {
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
         let fcmToken = User.CodingKeys.FCMToken.rawValue
-        guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
+        guard let token = UserDefaults.standard.string(forKey: User.CodingKeys.FCMToken.rawValue) else {
             assertionFailure("fcmToken key doesn't exist.")
             return
         }
@@ -509,70 +509,49 @@ class DatabaseManager {
         }
     }
     
-    func sendRequestedTransferFromUserByUID(_ uid: String, transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
-            completionHandler(DatabaseError.access("User data is nil \(#function)."), false)
-            return
-        }
-
-        guard let currency = currentUser.currency else {
-            return
-        }
-        
-        let receiverAmount = (transfer.amount / currency.rate) * transfer.receiverCurrencyRate
-        
-        self.addTransactionToUserByUID(uid, amount: receiverAmount, category: ExpenseCategory.transfer) { databaseError, _ in
-            if let databaseError = databaseError {
-                completionHandler(databaseError, false)
-                return
-            }
-            
-            self.addTransactionToUserByUID(currentUser.uid, amount: transfer.amount, category: IncomeCategory.transfer) { databaseError, _ in
-                if let databaseError = databaseError {
-                    completionHandler(databaseError, false)
-                    return
-                }
-                
-                completionHandler(nil, true)
-            }
-        }
-    }
-    
-    func acceptTransferFromUserByUID(_ uid: String, transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
-            completionHandler(DatabaseError.access("User data is nil \(#function)."), false)
-            return
-        }
-        
-        guard let currency = currentUser.currency else {
-            return
-        }
-        
-        let senderAmount = (transfer.amount / currency.rate) * transfer.senderCurrencyRate
-        
-        self.addTransactionToUserByUID(uid, amount: senderAmount, category: ExpenseCategory.transfer) { databaseError, _ in
-            if let databaseError = databaseError {
-                completionHandler(databaseError, false)
-                return
-            }
-            
-            self.addTransactionToUserByUID(currentUser.uid, amount: transfer.amount, category: IncomeCategory.transfer) { databaseError, _ in
-                if let databaseError = databaseError {
-                    completionHandler(databaseError, false)
-                    return
-                }
-                
-                completionHandler(nil, true)
-            }
-        }
-    }
-    
     func completeTransfer(transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
-        // swiftlint:disable:next line_length
-        firestore.collection(DBCollectionKey.users.rawValue).document(transfer.fromUser).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
-        // swiftlint:disable:next line_length
-        firestore.collection(DBCollectionKey.users.rawValue).document(transfer.toUser).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
-        completionHandler(nil, true)
+        guard let currentUser = currentUser else {
+            completionHandler(DatabaseError.access("User data is nil \(#function)."), false)
+            return
+        }
+        
+        let myTransferAmount = (transfer.amount / transfer.senderCurrencyRate) * transfer.receiverCurrencyRate
+        var otherUserTransactionType: Category
+        var myTransactionType: Category
+    
+        switch transfer.transferType {
+        case .receive:
+            otherUserTransactionType = ExpenseCategory.transfer
+            myTransactionType = IncomeCategory.transfer
+        case .requestToMe:
+            otherUserTransactionType = IncomeCategory.transfer
+            myTransactionType = ExpenseCategory.transfer
+        default:
+            assertionFailure("Should not appear.")
+            return
+        }
+        
+        self.addTransactionToUserByUID(transfer.fromUser, amount: transfer.amount, category: otherUserTransactionType) { databaseError, _ in
+            if let databaseError = databaseError {
+                completionHandler(databaseError, false)
+                return
+            }
+            
+            // swiftlint:disable:next line_length
+            self.firestore.collection(DBCollectionKey.users.rawValue).document(transfer.fromUser).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
+            
+            self.addTransactionToUserByUID(currentUser.uid, amount: myTransferAmount, category: myTransactionType) { databaseError, _ in
+                if let databaseError = databaseError {
+                    completionHandler(databaseError, false)
+                    return
+                }
+                
+                // swiftlint:disable:next line_length
+                self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
+                
+                completionHandler(nil, true)
+            }
+        }
     }
     
     /// Listener for firestore changes

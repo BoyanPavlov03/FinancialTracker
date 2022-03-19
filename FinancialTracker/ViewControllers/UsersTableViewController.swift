@@ -119,7 +119,7 @@ class UsersTableViewController: UITableViewController {
             switch transferType {
             case .send:
                 title = "Someone wants to send you money"
-                body = "\(currentUser.firstName) \(currentUser.lastName) wants to send you \(newAmount)\(receiverCurrency.symbolNative)"
+                body = "\(currentUser.firstName) \(currentUser.lastName) sends you \(newAmount)\(receiverCurrency.symbolNative)"
             case .requestFromMe:
                 title = "Money requested"
                 body = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you"

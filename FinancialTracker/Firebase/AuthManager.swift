@@ -209,18 +209,6 @@ class AuthManager {
         }
     }
     
-    func acceptTransferFromUserByUID(_ uid: String, transfer: Transfer, completionHandler: @escaping(AuthError?, Bool) -> Void) {
-        databaseManager.acceptTransferFromUserByUID(uid, transfer: transfer) { databaseError, success in
-            completionHandler(AuthError.database(databaseError), success)
-        }
-    }
-    
-    func sendRequestedTransferFromUserByUID(_ uid: String, transfer: Transfer, completionHandler: @escaping(AuthError?, Bool) -> Void) {
-        databaseManager.sendRequestedTransferFromUserByUID(uid, transfer: transfer) { databaseError, success in
-            completionHandler(AuthError.database(databaseError), success)
-        }
-    }
-    
     func completeTransfer(transfer: Transfer, completionHandler: @escaping(AuthError?, Bool) -> Void) {
         databaseManager.completeTransfer(transfer: transfer) { databaseError, success in
             completionHandler(AuthError.database(databaseError), success)

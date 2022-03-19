@@ -35,6 +35,7 @@ class TransfersTableViewController: UIViewController {
         title = "Transfers"
         transfersHistoryTableView.dataSource = self
         transfersHistoryTableView.delegate = self
+        transfersHistoryTableView.allowsSelection = false
         
         refreshControl.addTarget(self, action: #selector(setTransfersData), for: .valueChanged)
         transfersHistoryTableView.addSubview(refreshControl)
@@ -112,6 +113,7 @@ extension TransfersTableViewController: UITableViewDataSource {
         let value = transfers[indexPath.section].value[indexPath.row]
         cell.transferTitleLabel.text = value.description
         cell.transferDate.text = value.date
+        cell.transferStateButton.isEnabled = true
         switch value.transferType {
         case .send:
             if case .pending = value.transferState {
@@ -159,50 +161,14 @@ extension TransfersTableViewController: UITableViewDelegate {
 extension TransfersTableViewController: TransferTableViewCellDelegate {
     func didTapTransferStateButton(with title: String, section: Int, row: Int) {
         let transfer = transfers[section].value[row]
-        switch title {
-        case "Send":
-            authManager?.sendRequestedTransferFromUserByUID(transfer.fromUser, transfer: transfer, completionHandler: { authError, success in
-                guard success else {
-                    let alertTitle = authError?.title ?? "Unknown Error"
-                    let alertMessage = authError?.message ?? "This error should not appear."
-
-                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                    return
-                }
+        authManager?.completeTransfer(transfer: transfer, completionHandler: { authError, success in
+            guard success else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
                 
-                self.authManager?.completeTransfer(transfer: transfer, completionHandler: { authError, success in
-                    guard success else {
-                        let alertTitle = authError?.title ?? "Unknown Error"
-                        let alertMessage = authError?.message ?? "This error should not appear."
-
-                        self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                        return
-                    }
-                })
-            })
-        case "Accept":
-            authManager?.acceptTransferFromUserByUID(transfer.toUser, transfer: transfer, completionHandler: { authError, success in
-                guard success else {
-                    let alertTitle = authError?.title ?? "Unknown Error"
-                    let alertMessage = authError?.message ?? "This error should not appear."
-
-                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                    return
-                }
-                
-                self.authManager?.completeTransfer(transfer: transfer, completionHandler: { authError, success in
-                    guard success else {
-                        let alertTitle = authError?.title ?? "Unknown Error"
-                        let alertMessage = authError?.message ?? "This error should not appear."
-
-                        self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                        return
-                    }
-                })
-            })
-        default:
-            assertionFailure("Should not appear.")
-            return
-        }
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
+            }
+        })
     }
 }
