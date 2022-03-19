@@ -509,6 +509,12 @@ class DatabaseManager {
         }
     }
     
+    /// Transfering money from one user to another.
+    /// - Parameters:
+    ///   - transfer: A `Transfer` type which represents the transfer which needs to completed
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `success` - Boolean that indicates whether the function was successful.
     func completeTransfer(transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("User data is nil \(#function)."), false)
