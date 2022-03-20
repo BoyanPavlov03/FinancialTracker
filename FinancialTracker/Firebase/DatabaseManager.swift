@@ -303,10 +303,72 @@ class DatabaseManager {
                     completionHandler(DatabaseError.database(error), false)
                     return
                 }
-                completionHandler(nil, true)
+                
+                self.changeTransfersCurrency(currency: currency, uid: currentUser.uid) { databaseError, success in
+                    completionHandler(databaseError, success)
+                }
             }
         } catch {
             completionHandler(DatabaseError.database(error), false)
+        }
+    }
+    
+    /// Changing current user's currency to a new one of his choice.
+    /// - Parameters:
+    ///   - currency: A `Currency` type containing the currency's symbol, rate, code and name.
+    ///   - uid: A `String` type containing the currentUser uid.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `success` - Boolean that indicates whether the function was successful.
+    private func changeTransfersCurrency(currency: Currency, uid: String, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
+        let usersKey = DBCollectionKey.users.rawValue
+        let transfersKey = DBCollectionKey.transfers.rawValue
+        
+        firestore.collection(usersKey).document(uid).collection(transfersKey).getDocuments { querySnapshot, error in
+            if let error = error {
+                completionHandler(DatabaseError.database(error), false)
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                completionHandler(DatabaseError.unknown, false)
+                return
+            }
+            
+            let amountKey = Transfer.TransferKeys.amount.rawValue
+            let receiverCurrencyKey = Transfer.TransferKeys.receiverCurrencyRate.rawValue
+
+            for document in documents {
+                do {
+                    let data = try JSONSerialization.data(withJSONObject: document.data(), options: .prettyPrinted)
+                    let transfer = try JSONDecoder().decode(Transfer.self, from: data)
+
+                    let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: 2)
+                    
+                    var updatedData: [String: Any]
+                    // We don't want to change amount if we are on the receiving side
+                    switch transfer.transferType {
+                    case .send, .requestFromMe:
+                        updatedData = [amountKey: newAmount, receiverCurrencyKey: currency.rate]
+                    default:
+                        updatedData = [receiverCurrencyKey: currency.rate]
+                    }
+                    
+                    self.firestore.collection(usersKey)
+                                  .document(transfer.fromUser)
+                                  .collection(transfersKey)
+                                  .document(transfer.uid)
+                                  .updateData(updatedData)
+                    self.firestore.collection(usersKey)
+                                  .document(transfer.toUser)
+                                  .collection(transfersKey)
+                                  .document(transfer.uid)
+                                  .updateData(updatedData)
+                } catch {
+                    completionHandler(DatabaseError.database(error), false)
+                }
+            }
+            completionHandler(nil, true)
         }
     }
     
@@ -452,39 +514,25 @@ class DatabaseManager {
                     return
                 }
                 
-                let newAmount = ((amount / senderCurrency.rate) * receiverCurrency.rate).round(to: 2)
-                
                 let transferUID = UUID().uuidString
                 var receiverTransferType: TransferType
                 var senderTransferType: TransferType
-                var senderTitle: String
-                var senderBody: String
-                var receiverTitle: String
-                var receiverBody: String
                 let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
                 
                 switch transferType {
                 case .send:
                     senderTransferType = .send
                     receiverTransferType = .receive
-                    senderTitle = "You want to send money."
-                    senderBody = "You want to send \(amount)\(senderCurrency.symbolNative)."
-                    receiverTitle = "Someone wants to send you money."
-                    receiverBody = "\(currentUser.firstName) \(currentUser.lastName) wants to send you \(newAmount)\(receiverCurrency.symbolNative)."
                 case .requestFromMe:
                     senderTransferType = .requestFromMe
                     receiverTransferType = .requestToMe
-                    senderTitle = "You want money."
-                    senderBody = "You want \(amount)\(senderCurrency.symbolNative) from \(user.firstName) \(user.lastName)."
-                    receiverTitle = "Someone wants money."
-                    receiverBody = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you."
                 default:
                     assertionFailure("This isn't an option in here.")
                     return
                 }
                 
                 // swiftlint:disable:next line_length
-                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, title: senderTitle, description: senderBody, senderCurrencyRate: senderCurrency.rate, receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
+                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, senderCurrencyRate: senderCurrency.rate, senderName: "\(user.firstName) \(user.lastName)", receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
                 self.setTransferToUserByUUID(currentUser.uid, transfer: transfer) { databaseError, _ in
                     if let databaseError = databaseError {
                         completionHandler(databaseError, nil)
@@ -492,8 +540,6 @@ class DatabaseManager {
                     }
                     
                     transfer.transferType = receiverTransferType
-                    transfer.title = receiverTitle
-                    transfer.description = receiverBody
                     self.setTransferToUserByUUID(user.uid, transfer: transfer) { databaseError, _ in
                         if let databaseError = databaseError {
                             completionHandler(databaseError, nil)

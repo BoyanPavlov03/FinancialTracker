@@ -110,12 +110,17 @@ extension TransfersTableViewController: UITableViewDataSource {
         // swiftlint:disable:next force_cast
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransferTableViewCell", for: indexPath) as! TransferTableViewCell
         
+        guard let currentUser = authManager?.currentUser,
+              let currency = currentUser.currency else {
+                  fatalError("User data is nil")
+        }
+        
         let value = transfers[indexPath.section].value[indexPath.row]
-        cell.transferTitleLabel.text = value.description
         cell.transferDate.text = value.date
         cell.transferStateButton.isEnabled = true
         switch value.transferType {
         case .send:
+            cell.transferTitleLabel.text = "You want to send \(value.amount)\(currency.symbolNative)"
             if case .pending = value.transferState {
                 cell.transferStateButton.setTitle("Pending", for: .disabled)
             } else {
@@ -123,6 +128,8 @@ extension TransfersTableViewController: UITableViewDataSource {
             }
             cell.transferStateButton.isEnabled = false
         case .requestToMe:
+            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
+            cell.transferTitleLabel.text = "\(value.senderName) wants to send you \(amountInMyCurrency)\(currency.symbolNative)"
             if case .pending = value.transferState {
                 cell.transferStateButton.setTitle("Send", for: .normal)
             } else {
@@ -130,6 +137,7 @@ extension TransfersTableViewController: UITableViewDataSource {
                 cell.transferStateButton.isEnabled = false
             }
         case .requestFromMe:
+            cell.transferTitleLabel.text = "You want \(value.amount)\(currency.symbolNative) from \(value.senderName)"
             if case .pending = value.transferState {
                 cell.transferStateButton.setTitle("Pending", for: .disabled)
             } else {
@@ -137,6 +145,8 @@ extension TransfersTableViewController: UITableViewDataSource {
             }
             cell.transferStateButton.isEnabled = false
         case .receive:
+            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
+            cell.transferTitleLabel.text = "You received \(amountInMyCurrency)\(currency.symbolNative) from \(value.senderName)"
             if case .pending = value.transferState {
                 cell.transferStateButton.setTitle("Accept", for: .normal)
             } else {
