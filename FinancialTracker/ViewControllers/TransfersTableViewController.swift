@@ -18,7 +18,7 @@ class TransfersTableViewController: UIViewController {
             refreshControl.endRefreshing()
         }
     }
-    
+  
     private var noTransfers: Bool {
         for value in transfers.values {
             guard value.isEmpty else {
@@ -40,6 +40,7 @@ class TransfersTableViewController: UIViewController {
         title = "Transfers"
         transfersHistoryTableView.dataSource = self
         transfersHistoryTableView.delegate = self
+        transfersHistoryTableView.allowsSelection = false
         
         refreshControl.addTarget(self, action: #selector(setTransfersData), for: .valueChanged)
         transfersHistoryTableView.addSubview(refreshControl)
@@ -54,7 +55,7 @@ class TransfersTableViewController: UIViewController {
         usersVC.authManager = authManager
         self.navigationController?.pushViewController(usersVC, animated: true)
     }
-    
+
     @objc private func setTransfersData() {
         var transfers: [TransferType: [Transfer]] = [:]
         guard let currentUser = authManager?.currentUser else {
@@ -106,24 +107,76 @@ extension TransfersTableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let currentUser = authManager?.currentUser,
+              let currency = currentUser.currency else {
+                  fatalError("User data is nil")
+        }
+        
         // swiftlint:disable:next force_cast
         let cell = tableView.dequeueReusableCell(withIdentifier: "TransferTableViewCell", for: indexPath) as! TransferTableViewCell
         
-        cell.transferTitleLabel.text = transfers[indexPath.section].value[indexPath.row].description
-        cell.transferDate.text = transfers[indexPath.section].value[indexPath.row].date
+        let value = transfers[indexPath.section].value[indexPath.row]
+        cell.transferDate.text = value.date
+        cell.transferStateButton.isEnabled = true
+        switch value.transferType {
+        case .send:
+            cell.transferTitleLabel.text = "You want to send \(value.amount)\(currency.symbolNative)"
+            switch value.transferState {
+            case .pending:
+                cell.transferStateButton.setTitle("Pending", for: .disabled)
+            case .completed:
+                cell.transferStateButton.setTitle("Sent", for: .disabled)
+            }
+            cell.transferStateButton.isEnabled = false
+        case .requestToMe:
+            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
+            cell.transferTitleLabel.text = "\(value.senderName) wants to send you \(amountInMyCurrency)\(currency.symbolNative)"
+            switch value.transferState {
+            case .pending:
+                cell.transferStateButton.setTitle("Send", for: .normal)
+            case .completed:
+                cell.transferStateButton.setTitle("Sent", for: .disabled)
+                cell.transferStateButton.isEnabled = false
+            }
+        case .requestFromMe:
+            cell.transferTitleLabel.text = "You want \(value.amount)\(currency.symbolNative) from \(value.senderName)"
+            switch value.transferState {
+            case .pending:
+                cell.transferStateButton.setTitle("Pending", for: .disabled)
+            case .completed:
+                cell.transferStateButton.setTitle("Sent", for: .disabled)
+            }
+            cell.transferStateButton.isEnabled = false
+        case .receive:
+            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
+            cell.transferTitleLabel.text = "You received \(amountInMyCurrency)\(currency.symbolNative) from \(value.senderName)"
+            switch value.transferState {
+            case .pending:
+                cell.transferStateButton.setTitle("Accept", for: .normal)
+            case .completed:
+                cell.transferStateButton.setTitle("Received", for: .disabled)
+                cell.transferStateButton.isEnabled = false
+            }
+        }
+        cell.delegate = self
         
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
+}
+
+// MARK: - UITableViewDelegate
+extension TransfersTableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 95.0
     }
-    
-    // May change in the future
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
+}
+
+// MARK: - TransferTableViewCellDelegate
+extension TransfersTableViewController: TransferTableViewCellDelegate {
+    func didTapTransferStateButton(sender: TransferTableViewCell) {
+        if let indexPath = transfersHistoryTableView.indexPath(for: sender) {
             let transfer = transfers[indexPath.section].value[indexPath.row]
-            authManager?.deleteTransferFromCurrentUser(transfer: transfer, completionHandler: { authError, success in
+            authManager?.completeTransfer(transfer: transfer, completionHandler: { authError, success in
                 guard success else {
                     let alertTitle = authError?.title ?? "Unknown Error"
                     let alertMessage = authError?.message ?? "This error should not appear."
@@ -131,22 +184,7 @@ extension TransfersTableViewController: UITableViewDataSource {
                     self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                     return
                 }
-                
-                let transfers = self.transfers[indexPath.section].value
-                let key = self.transfers[indexPath.section].key
-                if let index = transfers.firstIndex(of: transfer) {
-                    self.transfers[key]?.remove(at: index)
-                } else {
-                    assertionFailure("This tableViewCell doesn't exist.")
-                }
             })
         }
-    }
-}
-
-// MARK: - UITableViewDelegate
-extension TransfersTableViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60.0
     }
 }

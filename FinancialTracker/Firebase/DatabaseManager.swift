@@ -13,7 +13,7 @@ enum DatabaseError: Error {
     case database(Error?)
     case nonExistingUser
     case access(String?)
-    case unknown
+    case unknown(String?)
     
     var title: String {
         switch self {
@@ -42,8 +42,8 @@ enum DatabaseError: Error {
             return error ?? ""
         case .database(let error):
             return error?.localizedDescription ?? ""
-        case .unknown:
-            return "This error should not appear."
+        case .unknown(let error):
+            return error ?? ""
         }
     }
 }
@@ -78,13 +78,12 @@ class DatabaseManager {
         let scoreKey = User.CodingKeys.score.rawValue
         let premiumKey = User.CodingKeys.premium.rawValue
         let fcmToken = User.CodingKeys.FCMToken.rawValue
-        let transfersKey = User.CodingKeys.transfers.rawValue
-        guard let token = UserDefaults.standard.string(forKey: "fcmToken") else {
+        guard let token = UserDefaults.standard.string(forKey: User.CodingKeys.FCMToken.rawValue) else {
             assertionFailure("fcmToken key doesn't exist.")
             return
         }
         // swiftlint:disable:next line_length
-        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token, transfersKey: []] as [String: Any]
+        let data = [firstNameKey: firstName, lastNameKey: lastName, emailKey: email, uidKey: uid, scoreKey: 0.0, premiumKey: false, fcmToken: token] as [String: Any]
         
         firestore.collection(DBCollectionKey.users.rawValue).document(uid).setData(data) { error in
             if error != nil {
@@ -142,7 +141,7 @@ class DatabaseManager {
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `success` - Boolean that indicates whether the function was successful.
-    func addTransactionToCurrentUser(amount: Double, category: Category, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
+    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -174,7 +173,7 @@ class DatabaseManager {
                 let expenseValue = FieldValue.arrayUnion([dictionary])
                 
                 let data = [expenseKey: expenseValue, balanceKey: newBalanceValue] as [String: Any]
-                firestore.collection(usersKey).document(currentUser.uid).setData(data, merge: true) { error in
+                firestore.collection(usersKey).document(uid).setData(data, merge: true) { error in
                     if let error = error {
                         completionHandler(DatabaseError.database(error), false)
                         return
@@ -202,7 +201,7 @@ class DatabaseManager {
                 let incomeValue = FieldValue.arrayUnion([dictionary])
                 
                 let data = [incomeKey: incomeValue, balanceKey: newBalanceValue] as [String: Any]
-                firestore.collection(usersKey).document(currentUser.uid).setData(data, merge: true) { error in
+                firestore.collection(usersKey).document(uid).setData(data, merge: true) { error in
                     if let error = error {
                         completionHandler(DatabaseError.database(error), false)
                         return
@@ -304,10 +303,94 @@ class DatabaseManager {
                     completionHandler(DatabaseError.database(error), false)
                     return
                 }
-                completionHandler(nil, true)
+                
+                self.changeTransfersCurrency(currency: currency, uid: currentUser.uid) { databaseError, success in
+                    completionHandler(databaseError, success)
+                }
             }
         } catch {
             completionHandler(DatabaseError.database(error), false)
+        }
+    }
+    
+    /// Changing current user's currency to a new one of his choice.
+    /// - Parameters:
+    ///   - currency: A `Currency` type containing the currency's symbol, rate, code and name.
+    ///   - uid: A `String` type containing the currentUser uid.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `success` - Boolean that indicates whether the function was successful.
+    private func changeTransfersCurrency(currency: Currency, uid: String, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
+        let usersKey = DBCollectionKey.users.rawValue
+        let transfersKey = DBCollectionKey.transfers.rawValue
+        
+        firestore.collection(usersKey).document(uid).collection(transfersKey).getDocuments { querySnapshot, error in
+            guard error == nil else {
+                completionHandler(DatabaseError.database(error), false)
+                return
+            }
+
+            guard let documents = querySnapshot?.documents else {
+                // The user may not have any transfers yet so this collection would be empty
+                return
+            }
+            
+            let amountKey = Transfer.TransferKeys.amount.rawValue
+            let receiverCurrencyKey = Transfer.TransferKeys.receiverCurrencyRate.rawValue
+
+            for document in documents {
+                do {
+                    let data = try JSONSerialization.data(withJSONObject: document.data(), options: .prettyPrinted)
+                    let transfer = try JSONDecoder().decode(Transfer.self, from: data)
+
+                    let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: 2)
+                    
+                    var updatedData: [String: Any]
+                    
+                    // We don't want to change amount if we are on the receiving side
+                    switch transfer.transferType {
+                    case .send, .requestFromMe:
+                        updatedData = [amountKey: newAmount, receiverCurrencyKey: currency.rate]
+                    default:
+                        updatedData = [receiverCurrencyKey: currency.rate]
+                    }
+                    
+                    self.updateTransfers(data: updatedData, transfer: transfer) { databaseError, success in
+                        completionHandler(databaseError, success)
+                    }
+                } catch {
+                    completionHandler(DatabaseError.database(error), false)
+                }
+            }
+            completionHandler(nil, true)
+        }
+    }
+    
+    /// Changing current user's currency to a new one of his choice.
+    /// - Parameters:
+    ///   - data: Data which needs to be replaced.
+    ///   - transfer: A `Transfer` type containing the transfer for which needs data to be replaced.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `success` - Boolean that indicates whether the function was successful.
+    private func updateTransfers(data: [String: Any], transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
+        let usersKey = DBCollectionKey.users.rawValue
+        let transfersKey = DBCollectionKey.transfers.rawValue
+        
+        self.firestore.collection(usersKey).document(transfer.fromUser).collection(transfersKey).document(transfer.uid).updateData(data) { error in
+            guard error == nil else {
+                completionHandler(DatabaseError.database(error), false)
+                return
+            }
+            
+            self.firestore.collection(usersKey).document(transfer.toUser).collection(transfersKey).document(transfer.uid).updateData(data) { error in
+                guard error == nil else {
+                    completionHandler(DatabaseError.database(error), false)
+                    return
+                }
+                
+                completionHandler(nil, true)
+            }
         }
     }
     
@@ -383,73 +466,23 @@ class DatabaseManager {
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `success` - Boolean that indicates whether the function was successful.
-    func setTransferToCurrentUser(transferType: TransferType, description: String, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
-            completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
-            return
-        }
-        
-        let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
-        
-        let transfer = Transfer(transferType: transferType, description: description, date: formatedDate)
-        
+    func setTransferToUserByUUID(_ uid: String, transfer: Transfer, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
         do {
-            let trasnferData = try JSONEncoder().encode(transfer)
-            let json = try JSONSerialization.jsonObject(with: trasnferData, options: [])
+            let transferData = try JSONEncoder().encode(transfer)
+            let json = try JSONSerialization.jsonObject(with: transferData, options: [])
             
             guard let dictionary = json as? [String: Any] else {
                 assertionFailure("Couldn't cast json to dictionary.")
                 return
             }
-            let transfersKey = User.CodingKeys.transfers.rawValue
-            let transferValue = FieldValue.arrayUnion([dictionary])
             
-            let data = [transfersKey: transferValue] as [String: Any]
-            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).setData(data, merge: true) { error in
+            // swiftlint:disable:next line_length
+            firestore.collection(DBCollectionKey.users.rawValue).document(uid).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).setData(dictionary) { error in
                 if let error = error {
                     completionHandler(DatabaseError.database(error), false)
                     return
                 }
-                completionHandler(nil, true)
-            }
-        } catch {
-            completionHandler(DatabaseError.database(error), false)
-        }
-    }
-    
-    // Person has read his transfer reminder so he removes it from his list.
-    /// - Parameters:
-    ///   - transfer: A `Transfer` which should be deleted.
-    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
-    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
-    ///     2. `success` - Boolean that indicates whether the function was successful.
-    func deleteTransferFromCurrentUser(transfer: Transfer, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
-        guard let currentUser = currentUser else {
-            completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
-            return
-        }
-        
-        var transfers = currentUser.transfers
-        if let index = transfers.firstIndex(of: transfer) {
-            transfers.remove(at: index)
-        }
-        
-        let transfersKey = User.CodingKeys.transfers.rawValue
-        
-        do {
-            let transfersData = try JSONEncoder().encode(transfers)
-            let transfersJson = try JSONSerialization.jsonObject(with: transfersData, options: [])
-                          
-            guard let transfersValue = transfersJson as? [Any] else {
-                assertionFailure("Couldn't cast json to array.")
-                return
-            }
-            
-            firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([transfersKey: transfersValue]) { error in
-                if let error = error {
-                    completionHandler(DatabaseError.database(error), false)
-                    return
-                }
+                
                 completionHandler(nil, true)
             }
         } catch {
@@ -466,6 +499,11 @@ class DatabaseManager {
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `user` - The user that were sent money to.
     func transferMoney(email: String, amount: Double, transferType: TransferType, completionHandler: @escaping (DatabaseError?, User?) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(DatabaseError.access("User data is nil \(#function)."), nil)
+            return
+        }
+        
         firestore.collection(DBCollectionKey.users.rawValue).whereField("email", isEqualTo: email).getDocuments { querySnapshot, error in
             if let error = error {
                 completionHandler(DatabaseError.database(error), nil)
@@ -474,13 +512,14 @@ class DatabaseManager {
             
             // Get all documents that match this email(should return 1)
             guard let documents = querySnapshot?.documents else {
-                completionHandler(DatabaseError.unknown, nil)
+                // We have a query here because its about the users and to access it you have to be logged so an error is needed
+                completionHandler(DatabaseError.unknown("There are no users."), nil)
                 return
             }
             
             // Checking if it is only one
             guard documents.count == 1 else {
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("There mustn't be more than one user with this email."), nil)
                 return
             }
             
@@ -492,17 +531,137 @@ class DatabaseManager {
                     return
                 }
                 
-                if transferType == .send {
-                    self.addTransactionToCurrentUser(amount: amount, category: ExpenseCategory.transfer) { databaseError, _ in
+                guard let receiverCurrency = user.currency,
+                      let senderCurrency = currentUser.currency else {
+                    completionHandler(DatabaseError.unknown("Users don't have currency."), nil)
+                    return
+                }
+                
+                let transferUID = UUID().uuidString
+                var receiverTransferType: TransferType
+                var senderTransferType: TransferType
+                let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
+                
+                switch transferType {
+                case .send:
+                    senderTransferType = .send
+                    receiverTransferType = .receive
+                case .requestFromMe:
+                    senderTransferType = .requestFromMe
+                    receiverTransferType = .requestToMe
+                default:
+                    fatalError("Receive or RequestToMe cases shouldn't be an option.")
+                }
+                
+                // swiftlint:disable:next line_length
+                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, senderName: "\(user.firstName) \(user.lastName)", senderCurrencyRate: senderCurrency.rate, receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
+                self.setTransferToUserByUUID(currentUser.uid, transfer: transfer) { databaseError, _ in
+                    if let databaseError = databaseError {
+                        completionHandler(databaseError, nil)
+                        return
+                    }
+                    
+                    transfer.transferType = receiverTransferType
+                    self.setTransferToUserByUUID(user.uid, transfer: transfer) { databaseError, _ in
                         if let databaseError = databaseError {
                             completionHandler(databaseError, nil)
                             return
                         }
+
                         completionHandler(nil, user)
                     }
-                } else if transferType == .request {
-                    completionHandler(nil, user)
                 }
+            } catch {
+                completionHandler(DatabaseError.database(error), nil)
+            }
+        }
+    }
+    
+    /// Transfering money from one user to another.
+    /// - Parameters:
+    ///   - transfer: A `Transfer` type which represents the transfer which needs to completed
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `success` - Boolean that indicates whether the function was successful.
+    func completeTransfer(transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(DatabaseError.access("User data is nil \(#function)."), false)
+            return
+        }
+        
+        let myTransferAmount = (transfer.amount / transfer.senderCurrencyRate) * transfer.receiverCurrencyRate
+        var otherUserTransactionType: Category
+        var myTransactionType: Category
+    
+        switch transfer.transferType {
+        case .receive:
+            otherUserTransactionType = ExpenseCategory.transfer
+            myTransactionType = IncomeCategory.transfer
+        case .requestToMe:
+            otherUserTransactionType = IncomeCategory.transfer
+            myTransactionType = ExpenseCategory.transfer
+        default:
+            assertionFailure("Should not appear.")
+            return
+        }
+        
+        self.addTransactionToUserByUID(transfer.fromUser, amount: transfer.amount, category: otherUserTransactionType) { databaseError, _ in
+            if let databaseError = databaseError {
+                completionHandler(databaseError, false)
+                return
+            }
+            
+            // swiftlint:disable:next line_length
+            self.firestore.collection(DBCollectionKey.users.rawValue).document(transfer.fromUser).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
+            
+            self.addTransactionToUserByUID(currentUser.uid, amount: myTransferAmount, category: myTransactionType) { databaseError, _ in
+                if let databaseError = databaseError {
+                    completionHandler(databaseError, false)
+                    return
+                }
+                
+                // swiftlint:disable:next line_length
+                self.firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
+                
+                completionHandler(nil, true)
+            }
+        }
+    }
+    
+    /// Listener for firestore changes
+    /// - Parameters:
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `user` - The user that was returned by firestore.
+    func firestoreDidChangeUserTransfersData(completionHandler: @escaping (DatabaseError?, [Transfer]?) -> Void) {
+        guard let currentUser = currentUser else {
+            completionHandler(DatabaseError.access("User data is nil \(#function)."), nil)
+            return
+        }
+        
+        // swiftlint:disable:next line_length
+        firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).collection(DBCollectionKey.transfers.rawValue).addSnapshotListener { query, error in
+            
+            guard error == nil else {
+                completionHandler(DatabaseError.database(error), nil)
+                return
+            }
+            
+            guard let query = query else {
+                // The user may not have any transfers yet so this collection would be empty
+                return
+            }
+            
+            do {
+                var transfers: [Transfer] = []
+                
+                for document in query.documents {
+                    let data = try JSONSerialization.data(withJSONObject: document.data(), options: .prettyPrinted)
+                    let transfer = try JSONDecoder().decode(Transfer.self, from: data)
+                    transfers.append(transfer)
+                }
+                
+                completionHandler(nil, transfers)
             } catch {
                 completionHandler(DatabaseError.database(error), nil)
             }
@@ -514,7 +673,7 @@ class DatabaseManager {
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `user` - The user that was returned by firestore.
-    func firestoreDidChangeData(completionHandler: @escaping (DatabaseError?, User?) -> Void) {
+    func firestoreDidChangeUserData(completionHandler: @escaping (DatabaseError?, User?) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("User data is nil \(#function)."), nil)
             return
@@ -527,7 +686,7 @@ class DatabaseManager {
             }
             
             guard let json = document?.data() else {
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("Current user data is nil."), nil)
                 return
             }
             
@@ -562,7 +721,7 @@ class DatabaseManager {
             }
             
             guard let json = document?.data() else {
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("Current user data is nil."), nil)
                 return
             }
             
@@ -611,7 +770,8 @@ class DatabaseManager {
             }
             
             guard let documents = querySnapshot?.documents else {
-                completionHandler(DatabaseError.unknown, nil)
+                // We have a query here because its about the users and to access it you have to be logged so an error is needed
+                completionHandler(DatabaseError.unknown("There are no users."), nil)
                 return
             }
             

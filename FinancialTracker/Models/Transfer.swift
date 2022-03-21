@@ -9,30 +9,29 @@ import Foundation
 
 enum TransferType: String, Codable {
     case send = "Send"
-    case request = "Request"
-    
-    var index: Int {
-        switch self {
-        case .send:
-            return 0
-        case .request:
-            return 1
-        }
-    }
+    case requestFromMe = "Request From Me"
+    case requestToMe = "Request To Me"
+    case receive = "Receive"
+}
+
+enum TransferState: String, Codable {
+    case pending = "Pending"
+    case completed = "Completed"
 }
 
 struct Transfer: Codable, Equatable {
+    let uid: String
     var transferType: TransferType
-    var description: String
-    var date: String
+    let transferState: TransferState
+    let fromUser: String
+    let toUser: String
+    let amount: Double
+    let senderName: String
+    let senderCurrencyRate: Double
+    let receiverCurrencyRate: Double
+    let date: String
     
-    enum CodingKeys: String, CodingKey {
-        case transferType, description, date
-    }
-    
-    init(transferType: TransferType, description: String, date: String) {
-        self.transferType = transferType
-        self.description = description
-        self.date = date
+    enum TransferKeys: String {
+        case transferState, amount, receiverCurrencyRate
     }
 }

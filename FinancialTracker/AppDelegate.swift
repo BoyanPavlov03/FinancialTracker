@@ -36,50 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         return true
     }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        guard let transferTypeRawValue = userInfo[Constants.UserInfo.transferType] as? String else {
-            completionHandler(.noData)
-            return
-        }
-        
-        guard let description = userInfo[Constants.UserInfo.description] as? String else {
-            completionHandler(.noData)
-            return
-        }
-    
-        guard let amount = userInfo[Constants.UserInfo.amount] as? String else {
-            completionHandler(.noData)
-            return
-        }
-
-        guard let transferType = TransferType(rawValue: transferTypeRawValue), let amountValue = Double(amount) else {
-            completionHandler(.failed)
-            return
-        }
-        
-        authMananger.setTransferToCurrentUser(transferType: transferType, description: description, completionHandler: { authError, _ in
-            if let authError = authError {
-                assertionFailure(authError.localizedDescription)
-                completionHandler(.failed)
-                return
-            }
-            if transferType == .send {
-                let category = IncomeCategory.transfer
-                self.authMananger.addTransactionToCurrentUser(amount: amountValue, category: category, completionHandler: { authError, _ in
-                    if let authError = authError {
-                        assertionFailure(authError.localizedDescription)
-                        completionHandler(.failed)
-                        return
-                    }
-
-                    completionHandler(.newData)
-                })
-            } else {
-                completionHandler(.newData)
-            }
-        })
-    }
 }
 
 extension AppDelegate: MessagingDelegate {

@@ -61,9 +61,13 @@ class TransactionViewController: UIViewController {
             return
         }
         
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToCurrentUser(amount: amountNumber, category: selectedCategory) { authError, success in
+        authManager?.addTransactionToUserByUID(currentUser.uid, amount: amountNumber, category: selectedCategory) { authError, success in
             guard success else {
                 let alertTitle = authError?.title ?? "Unknown Error"
                 let alertMessage = authError?.message ?? "This error should not appear."

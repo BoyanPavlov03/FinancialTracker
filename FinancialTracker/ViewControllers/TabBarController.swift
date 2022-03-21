@@ -49,7 +49,7 @@ class TabBarController: UITabBarController {
             accountCreated = false
         }
         
-        authManager?.firestoreDidChangeData { authError, user in
+        authManager?.firestoreDidChangeUserData { authError, user in
             guard let user = user else {
                 let alertTitle = authError?.title ?? "Unknown Error"
                 let alertMessage = authError?.message ?? "This error should not appear."

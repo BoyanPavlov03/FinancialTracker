@@ -1048,11 +1048,11 @@
                                 <rect key="frame" x="0.0" y="44" width="320" height="378"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TransferTableViewCell" rowHeight="68" id="c1c-JV-h1F" customClass="TransferTableViewCell" customModule="FinancialTracker" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="320" height="68"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TransferTableViewCell" rowHeight="95" id="c1c-JV-h1F" customClass="TransferTableViewCell" customModule="FinancialTracker" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="44.5" width="320" height="95"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="c1c-JV-h1F" id="txX-MI-CaN">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="68"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="95"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NLb-98-J52">
@@ -1067,10 +1067,21 @@
                                                     <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rhz-WO-i5x">
+                                                    <rect key="frame" x="18" y="58" width="67" height="31"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                    <connections>
+                                                        <action selector="transferStateButtonTapped" destination="c1c-JV-h1F" eventType="touchUpInside" id="Ocg-8a-ULg"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="rhz-WO-i5x" secondAttribute="trailing" constant="20" symbolic="YES" id="1Yz-jf-g9l"/>
                                                 <constraint firstItem="NLb-98-J52" firstAttribute="top" secondItem="txX-MI-CaN" secondAttribute="top" constant="10" id="2YF-r3-8Fl"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="TMg-im-9Bx" secondAttribute="trailing" constant="20" symbolic="YES" id="A2n-Bj-Z5s"/>
+                                                <constraint firstItem="rhz-WO-i5x" firstAttribute="leading" secondItem="txX-MI-CaN" secondAttribute="leading" constant="18" id="GK7-gl-n3q"/>
+                                                <constraint firstItem="rhz-WO-i5x" firstAttribute="top" secondItem="TMg-im-9Bx" secondAttribute="bottom" constant="7.5" id="P9U-GE-sHb"/>
                                                 <constraint firstItem="TMg-im-9Bx" firstAttribute="top" secondItem="NLb-98-J52" secondAttribute="bottom" constant="5" id="egi-El-qw9"/>
                                                 <constraint firstItem="NLb-98-J52" firstAttribute="leading" secondItem="txX-MI-CaN" secondAttribute="leading" constant="30" id="fHj-2Q-V89"/>
                                                 <constraint firstItem="TMg-im-9Bx" firstAttribute="leading" secondItem="txX-MI-CaN" secondAttribute="leading" constant="30" id="wCQ-gJ-fOr"/>
@@ -1079,6 +1090,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="transferDate" destination="TMg-im-9Bx" id="x75-zf-Xgo"/>
+                                            <outlet property="transferStateButton" destination="rhz-WO-i5x" id="PSB-Qv-xJG"/>
                                             <outlet property="transferTitleLabel" destination="NLb-98-J52" id="rj4-dr-9JT"/>
                                         </connections>
                                     </tableViewCell>
@@ -1122,7 +1134,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kD8-2g-z8B" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6863" y="511"/>
+            <point key="canvasLocation" x="6862.5" y="510.21126760563379"/>
         </scene>
         <!--Request Or Send View Controller-->
         <scene sceneID="MCu-Cd-QoS">

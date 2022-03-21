@@ -39,7 +39,7 @@ class UsersTableViewController: UITableViewController {
     }
     
     // MARK: - Own methods
-    private func requestOrSend(email: String, amount: Double, transferType: TransferType) {
+    private func requestOrSend(email: String, amount: Double, transferType: TransferType) {        
         authManager?.transferMoney(email: email, amount: amount, transferType: transferType, completionHandler: { authError, user in
             guard let user = user else {
                 let alertTitle = authError?.title ?? "Unknown Error"
@@ -63,15 +63,17 @@ class UsersTableViewController: UITableViewController {
             
             switch transferType {
             case .send:
-                title = "You have got money"
-                body = "\(currentUser.firstName) \(currentUser.lastName) send you \(newAmount)\(receiverCurrency.symbolNative)"
-            case .request:
+                title = "Someone wants to send you money"
+                body = "\(currentUser.firstName) \(currentUser.lastName) sends you \(newAmount)\(receiverCurrency.symbolNative)"
+            case .requestFromMe:
                 title = "Money requested"
                 body = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you"
+            default:
+                assertionFailure("Should not appear.")
+                return
             }
             
-            // swiftlint:disable:next line_length
-            PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body, amount: newAmount, transferType: transferType) { error in
+            PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body) { error in
                 if let error = error {
                     assertionFailure(error.localizedDescription)
                     return
@@ -117,7 +119,7 @@ class UsersTableViewController: UITableViewController {
                 return
             }
             
-            self.requestOrSend(email: self.usersEmails[indexPath.row], amount: amountValue, transferType: TransferType.request)
+            self.requestOrSend(email: self.usersEmails[indexPath.row], amount: amountValue, transferType: TransferType.requestFromMe)
         })
         alertVC.addAction(requestAlertAction)
         
@@ -140,5 +142,9 @@ class UsersTableViewController: UITableViewController {
             alertVC.view.superview?.isUserInteractionEnabled = true
             alertVC.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.backgroundTapped)))
         }
+    }
+  
+    @objc private func backgroundTapped() {
+        dismiss(animated: true, completion: nil)
     }
 }
