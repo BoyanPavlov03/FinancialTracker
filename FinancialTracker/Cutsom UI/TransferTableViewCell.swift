@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TransferTableViewCellDelegate: AnyObject {
-    func didTapTransferStateButton(sender: TransferTableViewCell, with title: String, section: Int, row: Int)
+    func didTapTransferStateButton(sender: TransferTableViewCell)
 }
 
 class TransferTableViewCell: UITableViewCell {
@@ -18,10 +18,7 @@ class TransferTableViewCell: UITableViewCell {
     
     weak var delegate: TransferTableViewCellDelegate?
     
-    var section: Int?
-    var row: Int?
-    
     @IBAction func transferStateButtonTapped() {        
-        delegate?.didTapTransferStateButton(sender: self, with: transferStateButton.titleLabel?.text ?? "Nil", section: section ?? 0, row: row ?? 0)
+        delegate?.didTapTransferStateButton(sender: self)
     }
 }

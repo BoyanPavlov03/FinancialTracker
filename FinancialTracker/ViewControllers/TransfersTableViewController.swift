@@ -159,8 +159,6 @@ extension TransfersTableViewController: UITableViewDataSource {
             }
         }
         cell.delegate = self
-        cell.section = indexPath.section
-        cell.row = indexPath.row
         
         return cell
     }
@@ -173,16 +171,18 @@ extension TransfersTableViewController: UITableViewDelegate {
 }
 
 extension TransfersTableViewController: TransferTableViewCellDelegate {
-    func didTapTransferStateButton(sender: TransferTableViewCell, with title: String, section: Int, row: Int) {
-        let transfer = transfers[section].value[row]
-        authManager?.completeTransfer(transfer: transfer, completionHandler: { authError, success in
-            guard success else {
-                let alertTitle = authError?.title ?? "Unknown Error"
-                let alertMessage = authError?.message ?? "This error should not appear."
-                
-                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                return
-            }
-        })
+    func didTapTransferStateButton(sender: TransferTableViewCell) {
+        if let indexPath = transfersHistoryTableView.indexPath(for: sender) {
+            let transfer = transfers[indexPath.section].value[indexPath.row]
+            authManager?.completeTransfer(transfer: transfer, completionHandler: { authError, success in
+                guard success else {
+                    let alertTitle = authError?.title ?? "Unknown Error"
+                    let alertMessage = authError?.message ?? "This error should not appear."
+                    
+                    self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                    return
+                }
+            })
+        }
     }
 }
