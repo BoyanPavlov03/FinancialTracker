@@ -325,13 +325,13 @@ class DatabaseManager {
         let transfersKey = DBCollectionKey.transfers.rawValue
         
         firestore.collection(usersKey).document(uid).collection(transfersKey).getDocuments { querySnapshot, error in
-            if let error = error {
+            guard error == nil else {
                 completionHandler(DatabaseError.database(error), false)
                 return
             }
 
             guard let documents = querySnapshot?.documents else {
-                completionHandler(DatabaseError.unknown, false)
+                // The user may not have any transfers yet so this collection would be empty
                 return
             }
             
@@ -346,6 +346,7 @@ class DatabaseManager {
                     let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: 2)
                     
                     var updatedData: [String: Any]
+                    
                     // We don't want to change amount if we are on the receiving side
                     switch transfer.transferType {
                     case .send, .requestFromMe:
@@ -354,21 +355,42 @@ class DatabaseManager {
                         updatedData = [receiverCurrencyKey: currency.rate]
                     }
                     
-                    self.firestore.collection(usersKey)
-                                  .document(transfer.fromUser)
-                                  .collection(transfersKey)
-                                  .document(transfer.uid)
-                                  .updateData(updatedData)
-                    self.firestore.collection(usersKey)
-                                  .document(transfer.toUser)
-                                  .collection(transfersKey)
-                                  .document(transfer.uid)
-                                  .updateData(updatedData)
+                    self.updateTransfers(data: updatedData, transfer: transfer) { databaseError, success in
+                        completionHandler(databaseError, success)
+                    }
                 } catch {
                     completionHandler(DatabaseError.database(error), false)
                 }
             }
             completionHandler(nil, true)
+        }
+    }
+    
+    /// Changing current user's currency to a new one of his choice.
+    /// - Parameters:
+    ///   - data: Data which needs to be replaced.
+    ///   - transfer: A `Transfer` type containing the transfer for which needs data to be replaced.
+    ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
+    ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
+    ///     2. `success` - Boolean that indicates whether the function was successful.
+    private func updateTransfers(data: [String: Any], transfer: Transfer, completionHandler: @escaping(DatabaseError?, Bool) -> Void) {
+        let usersKey = DBCollectionKey.users.rawValue
+        let transfersKey = DBCollectionKey.transfers.rawValue
+        
+        self.firestore.collection(usersKey).document(transfer.fromUser).collection(transfersKey).document(transfer.uid).updateData(data) { error in
+            guard error == nil else {
+                completionHandler(DatabaseError.database(error), false)
+                return
+            }
+            
+            self.firestore.collection(usersKey).document(transfer.toUser).collection(transfersKey).document(transfer.uid).updateData(data) { error in
+                guard error == nil else {
+                    completionHandler(DatabaseError.database(error), false)
+                    return
+                }
+                
+                completionHandler(nil, true)
+            }
         }
     }
     
@@ -490,6 +512,7 @@ class DatabaseManager {
             
             // Get all documents that match this email(should return 1)
             guard let documents = querySnapshot?.documents else {
+                // We have a query here because its about the users and to access it you have to be logged so an error is needed
                 completionHandler(DatabaseError.unknown, nil)
                 return
             }
@@ -527,12 +550,11 @@ class DatabaseManager {
                     senderTransferType = .requestFromMe
                     receiverTransferType = .requestToMe
                 default:
-                    assertionFailure("This isn't an option in here.")
-                    return
+                    fatalError("Receive or RequestToMe cases shouldn't be an option.")
                 }
                 
                 // swiftlint:disable:next line_length
-                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, senderCurrencyRate: senderCurrency.rate, senderName: "\(user.firstName) \(user.lastName)", receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
+                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, senderName: "\(user.firstName) \(user.lastName)", senderCurrencyRate: senderCurrency.rate, receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
                 self.setTransferToUserByUUID(currentUser.uid, transfer: transfer) { databaseError, _ in
                     if let databaseError = databaseError {
                         completionHandler(databaseError, nil)
@@ -626,6 +648,7 @@ class DatabaseManager {
             }
             
             guard let query = query else {
+                // The user may not have any transfers yet so this collection would be empty
                 return
             }
             
@@ -747,6 +770,7 @@ class DatabaseManager {
             }
             
             guard let documents = querySnapshot?.documents else {
+                // We have a query here because its about the users and to access it you have to be logged so an error is needed
                 completionHandler(DatabaseError.unknown, nil)
                 return
             }

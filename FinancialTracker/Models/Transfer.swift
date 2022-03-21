@@ -20,31 +20,18 @@ enum TransferState: String, Codable {
 }
 
 struct Transfer: Codable, Equatable {
-    var uid: String
+    let uid: String
     var transferType: TransferType
-    var transferState: TransferState
-    var fromUser: String
-    var toUser: String
-    var amount: Double
-    var senderName: String
-    var senderCurrencyRate: Double
-    var receiverCurrencyRate: Double
-    var date: String
+    let transferState: TransferState
+    let fromUser: String
+    let toUser: String
+    let amount: Double
+    let senderName: String
+    let senderCurrencyRate: Double
+    let receiverCurrencyRate: Double
+    let date: String
     
     enum TransferKeys: String {
-        case uid, transferType, transferState, fromUser, toUser, date, amount, senderCurrencyRate, receiverCurrencyRate, senderName
-    }
-    
-    init(uid: String, transferType: TransferType, transferState: TransferState, fromUser: String, toUser: String, amount: Double, senderCurrencyRate: Double, senderName: String, receiverCurrencyRate: Double, date: String) {
-        self.uid = uid
-        self.fromUser = fromUser
-        self.toUser = toUser
-        self.transferType = transferType
-        self.transferState = transferState
-        self.amount = amount
-        self.senderName = senderName
-        self.senderCurrencyRate = senderCurrencyRate
-        self.receiverCurrencyRate = receiverCurrencyRate
-        self.date = date
+        case transferState, amount, receiverCurrencyRate
     }
 }
