@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-enum TimePeriodDivider: Int {
+private enum TimePeriodDivider: Int {
     case today
     case week
     case month
@@ -17,12 +17,15 @@ enum TimePeriodDivider: Int {
 }
 
 class HomeViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var transactionChart: PieChartView!
     @IBOutlet var expenseDividerSegmentedControl: UISegmentedControl!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -47,8 +50,17 @@ class HomeViewController: UIViewController {
         authManager?.addDelegate(self)
     }
     
+    deinit {
+        authManager?.removeDelegate(self)
+    }
+    
+    // MARK: - Own methods
     private func checkIfPremium() {
-        if let premium = authManager?.currentUser?.premium, premium, expenseDividerSegmentedControl.numberOfSegments == 2 {
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
+        if currentUser.premium, expenseDividerSegmentedControl.numberOfSegments == 2 {
             expenseDividerSegmentedControl.insertSegment(withTitle: "Week", at: 1, animated: true)
             expenseDividerSegmentedControl.insertSegment(withTitle: "Month", at: 2, animated: true)
             expenseDividerSegmentedControl.insertSegment(withTitle: "Year", at: 3, animated: true)
@@ -56,43 +68,55 @@ class HomeViewController: UIViewController {
     }
     
     private func expenseOrIncome(start: Date, end: Date) -> [Transaction] {
-        var data: [Transaction] = []
-        if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-            data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.expenses ?? [])
-        } else {
-            data = start.transactionBetweenTwoDates(till: end, data: authManager?.currentUser?.incomes ?? [])
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
         }
-        return data
+        
+        // If control is on 0 it should expenses and if on 1 - incomes
+        if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
+            return start.transactionBetweenTwoDates(till: end, data: currentUser.expenses)
+        } else {
+            return start.transactionBetweenTwoDates(till: end, data: currentUser.incomes)
+        }
     }
     
     private func periodDivider(_ period: Int) {
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
         switch period {
         case TimePeriodDivider.today.rawValue:
+            // Updating chart with all expenses or incomes for current day
             let start = Date().startOfDay
             guard let end = Date().endOfDay else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.week.rawValue:
-            guard let premium = authManager?.currentUser?.premium, premium else {
+            // Updating chart with all expenses or incomes for current week
+            if currentUser.premium == false {
                 if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-                    updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+                    updateChart(transactionData: currentUser.expenses)
                 } else {
-                    updateChart(transactionData: authManager?.currentUser?.incomes ?? [])
+                    updateChart(transactionData: currentUser.incomes)
                 }
                 return
             }
             guard let start = Date().startOfWeek, let end = Date().endOfWeek else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.month.rawValue:
+            // Updating chart with all expenses or incomes for current month
             guard let start = Date().startOfMonth, let end = Date().endOfMonth else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.year.rawValue:
+            // Updating chart with all expenses or incomes for current year
             guard let start = Date().startOfYear, let end = Date().endOfYear else { return }
             updateChart(transactionData: expenseOrIncome(start: start, end: end))
         case TimePeriodDivider.all.rawValue:
+            // Updating chart with all expenses or incomes
             if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-                updateChart(transactionData: authManager?.currentUser?.expenses ?? [])
+                updateChart(transactionData: currentUser.expenses)
             } else {
-                updateChart(transactionData: authManager?.currentUser?.incomes ?? [])
+                updateChart(transactionData: currentUser.incomes)
             }
         default:
             break
@@ -108,6 +132,8 @@ class HomeViewController: UIViewController {
         
         var transactions: [String: Double] = [:]
         var totalSum = 0.0
+        // Unifiying all expenses/incomes from the same category into total sum
+        // for when displaying on chart
         for transaction in transactionData {
             if transactions[transaction.category.getRawValue] == nil {
                 transactions[transaction.category.getRawValue] = 0.0
@@ -120,6 +146,7 @@ class HomeViewController: UIViewController {
                 
         var dataEntries: [ChartDataEntry] = []
         
+        // Setting all entries for the PieChart with unified expenses/incomes
         for transaction in sortedTransactions {
             let dataEntry = PieChartDataEntry(value: transaction.value.round(to: 2), label: transaction.key, data: transaction.key as AnyObject)
             dataEntries.append(dataEntry)
@@ -127,6 +154,7 @@ class HomeViewController: UIViewController {
         
         let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "")
         
+        // Setting the specific color for each category to the the it's corresponding entry
         var colors: [UIColor] = []
         sortedTransactions.forEach { key, _ in
             if let category = ExpenseCategory(rawValue: key) {
@@ -142,12 +170,21 @@ class HomeViewController: UIViewController {
         transactionChart.data = pieChartData
         
         guard let symbol = authManager?.currentUser?.currency?.symbolNative else {
-            return
+            fatalError("User data is nil.")
         }
         let attributes = [NSAttributedString.Key.font: UIFont(name: "Tamil Sangam MN", size: 25.0)]
         let myString = "\(totalSum.round(to: 2))\(String(describing: symbol))"
         let totalSumString = NSAttributedString(string: myString, attributes: attributes as [NSAttributedString.Key: Any])
         transactionChart.centerAttributedText = totalSumString
+    }
+    
+    // MARK: - IBAction methods
+    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(expenseDividerSegmentedControl.selectedSegmentIndex)
+    }
+    
+    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
+        periodDivider(sender.selectedSegmentIndex)
     }
     
     @objc private func addTransactionButtonTapped() {
@@ -159,16 +196,9 @@ class HomeViewController: UIViewController {
         transactionVC.authManager = authManager
         navigationController?.pushViewController(transactionVC, animated: true)
     }
-    
-    @IBAction func expenseOrIncomeControlDidChange(_ sender: UISegmentedControl) {
-        periodDivider(expenseDividerSegmentedControl.selectedSegmentIndex)
-    }
-    
-    @IBAction func dividerControlDidChange(_ sender: UISegmentedControl) {
-        periodDivider(sender.selectedSegmentIndex)
-    }
 }
 
+// MARK: - DatabaseManagerDelegate
 extension HomeViewController: DatabaseManagerDelegate {
     func databaseManagerDidUserChange(sender: DatabaseManager) {
         dividerControlDidChange(expenseDividerSegmentedControl)

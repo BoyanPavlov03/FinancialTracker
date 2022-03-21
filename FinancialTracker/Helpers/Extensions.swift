@@ -8,11 +8,13 @@
 import Foundation
 import UIKit
 
-var today: Date {
-    return Date.init()
-}
+private var dateformat = DateFormatter()
 
 extension Date {
+    static var today: Date {
+        return Date.init()
+    }
+    
     var startOfWeek: Date? {
         let calendar = Calendar(identifier: .iso8601)
         guard let monday = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
@@ -64,13 +66,12 @@ extension Date {
     }
     
     func formatDate(_ format: String) -> String {
-        let dateformat = DateFormatter()
         dateformat.dateFormat = format
 
         return dateformat.string(from: self)
     }
     
-    func isBetweeen(date date1: Date, andDate date2: Date) -> Bool {
+    private func isBetweeen(date date1: Date, andDate date2: Date) -> Bool {
         return date1.compare(self) == self.compare(date2)
     }
     

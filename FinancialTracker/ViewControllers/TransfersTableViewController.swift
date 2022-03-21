@@ -8,17 +8,17 @@
 import UIKit
 
 class TransfersTableViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var transfersHistoryTableView: UITableView!
     
-    let refreshControl = UIRefreshControl()
-    
-    var authManager: AuthManager?
+    // MARK: - Private properties
     private var transfers: [TransferType: [Transfer]] = [:] {
         didSet {
             transfersHistoryTableView.reloadData()
             refreshControl.endRefreshing()
         }
     }
+  
     private var noTransfers: Bool {
         for value in transfers.values {
             guard value.isEmpty else {
@@ -28,6 +28,11 @@ class TransfersTableViewController: UIViewController {
         return true
     }
     
+    // MARK: - Properties
+    let refreshControl = UIRefreshControl()
+    var authManager: AuthManager?
+    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,30 +46,7 @@ class TransfersTableViewController: UIViewController {
         transfersHistoryTableView.addSubview(refreshControl)
     }
     
-    @objc private func setTransfersData() {
-        authManager?.firestoreDidChangeUserTransfersData(completionHandler: { authError, userTransfers in
-            guard let userTransfers = userTransfers else {
-                let alertTitle = authError?.title ?? "Unknown Error"
-                let alertMessage = authError?.message ?? "This error should not appear."
-                
-                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                return
-            }
-            
-            var transfers: [TransferType: [Transfer]] = [:]
-            
-            for transfer in userTransfers {
-                let transferType = transfer.transferType
-                if transfers[transferType] == nil {
-                    transfers[transferType] = []
-                }
-                transfers[transferType]?.append(transfer)
-            }
-            
-            self.transfers = transfers
-        })
-    }
-    
+    // MARK: - IBAction methods
     @IBAction func sendOrRequestButtonTapped(_ sender: Any) {
         guard let usersVC = ViewControllerFactory.shared.viewController(for: .users) as? UsersTableViewController else {
             assertionFailure("Couldn't cast to UsersTableViewController.")
@@ -73,8 +55,26 @@ class TransfersTableViewController: UIViewController {
         usersVC.authManager = authManager
         self.navigationController?.pushViewController(usersVC, animated: true)
     }
+
+    @objc private func setTransfersData() {
+        var transfers: [TransferType: [Transfer]] = [:]
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
+        }
+        
+        for transfer in currentUser.transfers {
+            let transferType = transfer.transferType
+            if transfers[transferType] == nil {
+                transfers[transferType] = []
+            }
+            transfers[transferType]?.append(transfer)
+        }
+        
+        self.transfers = transfers
+    }
 }
 
+// MARK: - UITableViewDataSource
 extension TransfersTableViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if noTransfers {
@@ -164,12 +164,14 @@ extension TransfersTableViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension TransfersTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 95.0
     }
 }
 
+// MARK: - TransferTableViewCellDelegate
 extension TransfersTableViewController: TransferTableViewCellDelegate {
     func didTapTransferStateButton(sender: TransferTableViewCell) {
         if let indexPath = transfersHistoryTableView.indexPath(for: sender) {

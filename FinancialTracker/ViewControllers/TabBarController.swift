@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum FinanceTips: Double {
+private enum FinanceTips: Double {
     case lowBalance = 100.0
     case goodBalance = 1000.0
     case needToInvest = 3000.0
@@ -28,14 +28,11 @@ enum FinanceTips: Double {
 }
 
 class TabBarController: UITabBarController {
+    // MARK: - Private properties
     private var authManager: AuthManager?
-    var accountCreated = false
+    private var accountCreated = false
     
-    func setAuthManager(_ authManager: AuthManager, accountCreated: Bool) {
-        self.authManager = authManager
-        self.accountCreated = accountCreated
-    }
-    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -62,7 +59,7 @@ class TabBarController: UITabBarController {
             }
             
             guard let balance = user.balance else {
-                return
+                fatalError("User data is nil.")
             }
             
             guard user.premium else {
@@ -75,6 +72,12 @@ class TabBarController: UITabBarController {
             
             self.balanceTips(balance: balance)
         }
+    }
+    
+    // MARK: - Own methods
+    func setAuthManager(_ authManager: AuthManager, accountCreated: Bool) {
+        self.authManager = authManager
+        self.accountCreated = accountCreated
     }
     
     private func balanceTips(balance: Double) {
@@ -99,8 +102,6 @@ class TabBarController: UITabBarController {
                     homeVC.authManager = authManager
                 case let profileVC as ProfileViewController:
                     profileVC.authManager = authManager
-                case let currencyVC as CurrencyTableViewController:
-                    currencyVC.authManager = authManager
                 case let transfersVC as TransfersTableViewController:
                     transfersVC.authManager = authManager
                 default:

@@ -8,15 +8,19 @@
 import UIKit
 
 class UsersTableViewController: UITableViewController {
-    var usersEmails: [String] = [] {
+    // MARK: - Private properties
+    private var usersEmails: [String] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         }
     }
+    
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,6 +38,56 @@ class UsersTableViewController: UITableViewController {
         })
     }
     
+    // MARK: - Own methods
+    private func requestOrSend(email: String, amount: Double, transferType: TransferType) {        
+        authManager?.transferMoney(email: email, amount: amount, transferType: transferType, completionHandler: { authError, user in
+            guard let user = user else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
+            }
+            
+            guard let currentUser = self.authManager?.currentUser, let senderRate = currentUser.currency?.rate else {
+                return
+            }
+            
+            guard let receiverCurrency = user.currency, let fcmToken = user.FCMToken else {
+                return
+            }
+            let newAmount = ((amount / senderRate) * receiverCurrency.rate).round(to: 2)
+            
+            var title: String
+            var body: String
+            
+            switch transferType {
+            case .send:
+                title = "Someone wants to send you money"
+                body = "\(currentUser.firstName) \(currentUser.lastName) sends you \(newAmount)\(receiverCurrency.symbolNative)"
+            case .requestFromMe:
+                title = "Money requested"
+                body = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you"
+            default:
+                assertionFailure("Should not appear.")
+                return
+            }
+            
+            PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body) { error in
+                if let error = error {
+                    assertionFailure(error.localizedDescription)
+                    return
+                }
+            }
+        })
+    }
+    
+    // MARK: - IBAction methods
+    @objc private func backgroundTapped() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: - UITableViewDataSource methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return usersEmails.count
     }
@@ -89,51 +143,8 @@ class UsersTableViewController: UITableViewController {
             alertVC.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.backgroundTapped)))
         }
     }
-    
+  
     @objc private func backgroundTapped() {
         dismiss(animated: true, completion: nil)
-    }
-    
-    private func requestOrSend(email: String, amount: Double, transferType: TransferType) {        
-        authManager?.transferMoney(email: email, amount: amount, transferType: transferType, completionHandler: { authError, user in
-            guard let user = user else {
-                let alertTitle = authError?.title ?? "Unknown Error"
-                let alertMessage = authError?.message ?? "This error should not appear."
-                
-                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
-                return
-            }
-            
-            guard let currentUser = self.authManager?.currentUser, let senderRate = currentUser.currency?.rate else {
-                return
-            }
-            
-            guard let receiverCurrency = user.currency, let fcmToken = user.FCMToken else {
-                return
-            }
-            let newAmount = ((amount / senderRate) * receiverCurrency.rate).round(to: 2)
-            
-            var title: String
-            var body: String
-            
-            switch transferType {
-            case .send:
-                title = "Someone wants to send you money"
-                body = "\(currentUser.firstName) \(currentUser.lastName) sends you \(newAmount)\(receiverCurrency.symbolNative)"
-            case .requestFromMe:
-                title = "Money requested"
-                body = "\(currentUser.firstName) \(currentUser.lastName) wants \(newAmount)\(receiverCurrency.symbolNative) from you"
-            default:
-                assertionFailure("Should not appear.")
-                return
-            }
-            
-            PushNotificatonSender.sendPushNotificationForMoneyTransfer(to: fcmToken, title: title, body: body) { error in
-                if let error = error {
-                    assertionFailure(error.localizedDescription)
-                    return
-                }
-            }
-        })
     }
 }

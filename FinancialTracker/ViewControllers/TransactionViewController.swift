@@ -8,28 +8,34 @@
 import UIKit
 
 class TransactionViewController: UIViewController {
+    // MARK: - Outlet properties
     @IBOutlet var amountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     
-    var authManager: AuthManager?
-    var categoryCases: [Category] {
-        guard let premium = authManager?.currentUser?.premium else {
-            assertionFailure("User data is nil.")
-            return []
+    // MARK: - Private properties
+    private var categoryCases: [Category] {
+        guard let currentUser = authManager?.currentUser else {
+            fatalError("User data is nil.")
         }
         
+        // If control is on 0 it should expense categories that are shown
+        // and if on 1 - income ones
         if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
             var categories: [ExpenseCategory] = [.grocery, .transport]
-            categories.append(contentsOf: premium ? [.taxes, .travel, .utility, .other] : [.other])
+            categories.append(contentsOf: currentUser.premium ? [.taxes, .travel, .utility, .other] : [.other])
             return categories
         } else {
             var categories: [IncomeCategory] = [.salary, .items]
-            categories.append(contentsOf: premium ? [.interest, .government, .other] : [.other])
+            categories.append(contentsOf: currentUser.premium ? [.interest, .government, .other] : [.other])
             return categories
         }
     }
     
+    // MARK: - Properties
+    var authManager: AuthManager?
+    
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -39,6 +45,7 @@ class TransactionViewController: UIViewController {
         categoryPicker.delegate = self
     }
     
+    // MARK: - IBAction methods
     @IBAction func expenseOrIncomeSegmentedControlTapped(_ sender: UISegmentedControl) {
         categoryPicker.reloadAllComponents()
     }
@@ -73,6 +80,7 @@ class TransactionViewController: UIViewController {
     }
 }
 
+// MARK: - UIPickerViewDataSource
 extension TransactionViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -83,6 +91,7 @@ extension TransactionViewController: UIPickerViewDataSource {
     }
 }
 
+// MARK: - UIPickerViewDelegate
 extension TransactionViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if let expense = categoryCases as? [ExpenseCategory] {

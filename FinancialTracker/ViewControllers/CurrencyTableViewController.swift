@@ -8,6 +8,7 @@
 import UIKit
 
 class CurrencyTableViewController: UITableViewController {
+    // MARK: - Private properties
     private var currencies: [Currency] = [] {
         didSet {
             DispatchQueue.main.async {
@@ -16,8 +17,10 @@ class CurrencyTableViewController: UITableViewController {
         }
     }
     
+    // MARK: - Properties
     var authManager: AuthManager?
     
+    // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,11 +29,12 @@ class CurrencyTableViewController: UITableViewController {
         
         Currency.getCurrencies { error, currencies in
             if let error = error {
-                assertionFailure(error)
+                assertionFailure(error.localizedDescription)
                 return
             }
             
             guard let currencies = currencies else {
+                assertionFailure("Data is missing.")
                 return
             }
 
@@ -38,8 +42,7 @@ class CurrencyTableViewController: UITableViewController {
         }
     }
 
-    // MARK: - Table view data source
-
+    // MARK: - UITableViewDataSource methods
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -51,15 +54,16 @@ class CurrencyTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Currency", for: indexPath)
 
+        // TableViewCell has this structure - USD (United States)
         cell.textLabel?.text = "\(currencies[indexPath.row].code) (\(currencies[indexPath.row].name))"
         
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let user = authManager?.currentUser, let currency = user.currency else {
-            assertionFailure("User data is nil")
-            return
+        guard let currentUser = authManager?.currentUser,
+              let currency = currentUser.currency else {
+            fatalError("User data is nil")
         }
         
         let selectedCode = currencies[indexPath.row].code
