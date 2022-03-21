@@ -13,7 +13,7 @@ enum AuthError: Error {
     case auth(Error?)
     case signOut(Error?)
     case database(DatabaseError?)
-    case unknown
+    case unknown(String?)
     
     var title: String {
         switch self {
@@ -42,8 +42,8 @@ enum AuthError: Error {
             return error?.localizedDescription ?? ""
         case .database(let error):
             return error?.message ?? ""
-        case .unknown:
-            return "This error should not appear."
+        case .unknown(let error):
+            return error ?? ""
         }
     }
 }
@@ -111,7 +111,7 @@ class AuthManager {
             }
 
             guard let result = result else {
-                completionHandler(AuthError.unknown, nil)
+                completionHandler(AuthError.unknown("We don't have a returned user."), nil)
                 return
             }
 
@@ -142,7 +142,7 @@ class AuthManager {
             }
 
             guard let result = result else {
-                completionHandler(AuthError.unknown, nil)
+                completionHandler(AuthError.unknown("We don't have a returned user."), nil)
                 return
             }
             

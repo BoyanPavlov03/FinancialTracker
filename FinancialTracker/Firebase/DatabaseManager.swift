@@ -13,7 +13,7 @@ enum DatabaseError: Error {
     case database(Error?)
     case nonExistingUser
     case access(String?)
-    case unknown
+    case unknown(String?)
     
     var title: String {
         switch self {
@@ -42,8 +42,8 @@ enum DatabaseError: Error {
             return error ?? ""
         case .database(let error):
             return error?.localizedDescription ?? ""
-        case .unknown:
-            return "This error should not appear."
+        case .unknown(let error):
+            return error ?? ""
         }
     }
 }
@@ -513,13 +513,13 @@ class DatabaseManager {
             // Get all documents that match this email(should return 1)
             guard let documents = querySnapshot?.documents else {
                 // We have a query here because its about the users and to access it you have to be logged so an error is needed
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("There are no users."), nil)
                 return
             }
             
             // Checking if it is only one
             guard documents.count == 1 else {
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("There mustn't be more than one user with this email."), nil)
                 return
             }
             
@@ -533,7 +533,7 @@ class DatabaseManager {
                 
                 guard let receiverCurrency = user.currency,
                       let senderCurrency = currentUser.currency else {
-                    completionHandler(DatabaseError.unknown, nil)
+                    completionHandler(DatabaseError.unknown("Users don't have currency."), nil)
                     return
                 }
                 
@@ -686,7 +686,7 @@ class DatabaseManager {
             }
             
             guard let json = document?.data() else {
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("Current user data is nil."), nil)
                 return
             }
             
@@ -721,7 +721,7 @@ class DatabaseManager {
             }
             
             guard let json = document?.data() else {
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("Current user data is nil."), nil)
                 return
             }
             
@@ -771,7 +771,7 @@ class DatabaseManager {
             
             guard let documents = querySnapshot?.documents else {
                 // We have a query here because its about the users and to access it you have to be logged so an error is needed
-                completionHandler(DatabaseError.unknown, nil)
+                completionHandler(DatabaseError.unknown("There are no users."), nil)
                 return
             }
             
