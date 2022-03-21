@@ -540,7 +540,7 @@ class DatabaseManager {
                 let transferUID = UUID().uuidString
                 var receiverTransferType: TransferType
                 var senderTransferType: TransferType
-                let formatedDate = today.formatDate("hh:mm:ss, MM/dd/yyyy")
+                let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
                 
                 switch transferType {
                 case .send:

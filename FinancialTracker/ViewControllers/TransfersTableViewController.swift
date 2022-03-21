@@ -55,22 +55,29 @@ class TransfersTableViewController: UIViewController {
         usersVC.authManager = authManager
         self.navigationController?.pushViewController(usersVC, animated: true)
     }
-
+    
     @objc private func setTransfersData() {
-        var transfers: [TransferType: [Transfer]] = [:]
-        guard let currentUser = authManager?.currentUser else {
-            fatalError("User data is nil.")
-        }
-        
-        for transfer in currentUser.transfers {
-            let transferType = transfer.transferType
-            if transfers[transferType] == nil {
-                transfers[transferType] = []
+        authManager?.firestoreDidChangeUserTransfersData(completionHandler: { authError, userTransfers in
+            guard let userTransfers = userTransfers else {
+                let alertTitle = authError?.title ?? "Unknown Error"
+                let alertMessage = authError?.message ?? "This error should not appear."
+                
+                self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
+                return
             }
-            transfers[transferType]?.append(transfer)
-        }
-        
-        self.transfers = transfers
+            
+            var transfers: [TransferType: [Transfer]] = [:]
+            
+            for transfer in userTransfers {
+                let transferType = transfer.transferType
+                if transfers[transferType] == nil {
+                    transfers[transferType] = []
+                }
+                transfers[transferType]?.append(transfer)
+            }
+            
+            self.transfers = transfers
+        })
     }
 }
 

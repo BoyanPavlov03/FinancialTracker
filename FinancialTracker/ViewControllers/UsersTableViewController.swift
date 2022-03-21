@@ -143,8 +143,4 @@ class UsersTableViewController: UITableViewController {
             alertVC.view.superview?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.backgroundTapped)))
         }
     }
-  
-    @objc private func backgroundTapped() {
-        dismiss(animated: true, completion: nil)
-    }
 }
