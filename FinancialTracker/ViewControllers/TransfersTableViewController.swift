@@ -10,6 +10,7 @@ import UIKit
 class TransfersTableViewController: UIViewController {
     // MARK: - Outlet properties
     @IBOutlet var transfersHistoryTableView: UITableView!
+    @IBOutlet var sendOrRequestButton: UIButton!
     
     // MARK: - Private properties
     private var transfers: [TransferType: [Transfer]] = [:] {
@@ -44,6 +45,7 @@ class TransfersTableViewController: UIViewController {
         
         refreshControl.addTarget(self, action: #selector(setTransfersData), for: .valueChanged)
         transfersHistoryTableView.addSubview(refreshControl)
+        sendOrRequestButton.layer.cornerRadius = 15
     }
     
     // MARK: - IBAction methods
@@ -137,7 +139,7 @@ extension TransfersTableViewController: UITableViewDataSource {
             cell.transferStateButton.isEnabled = false
         case .requestToMe:
             let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
-            cell.transferTitleLabel.text = "\(value.senderName) wants to send you \(amountInMyCurrency)\(currency.symbolNative)"
+            cell.transferTitleLabel.text = "\(value.senderName) wants \(amountInMyCurrency)\(currency.symbolNative)"
             switch value.transferState {
             case .pending:
                 cell.transferStateButton.setTitle("Send", for: .normal)

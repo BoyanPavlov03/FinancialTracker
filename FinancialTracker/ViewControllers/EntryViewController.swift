@@ -21,6 +21,8 @@ class EntryViewController: UIViewController {
         
         title = "Entry"
         navigationItem.setHidesBackButton(true, animated: true)
+        loginButton.layer.cornerRadius = 15
+        registerButton.layer.cornerRadius = 15
     }
     
     // MARK: - IBAction methods

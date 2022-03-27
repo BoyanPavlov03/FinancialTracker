@@ -29,6 +29,7 @@ class RegisterViewController: UIViewController {
         setUpUITextField(emailField)
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true
+        registerButton.layer.cornerRadius = 15
     }
     
     // MARK: - Own methods

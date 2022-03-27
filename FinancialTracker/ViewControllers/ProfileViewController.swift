@@ -32,6 +32,7 @@ class ProfileViewController: UIViewController {
         title = "Profile"
         navigationItem.setHidesBackButton(true, animated: true)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Sign Out", style: .plain, target: self, action: #selector(signOut))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(shareButtonTapped))
         tabBarItem.image = UIImage(systemName: "person")
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
@@ -72,12 +73,17 @@ class ProfileViewController: UIViewController {
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
     }
     
-    private func helpCellTapped() {
+    private func helpCellTapped(rect: CGRect) {
         let alertController = UIAlertController(title: "Support", message: nil, preferredStyle: .actionSheet)
-        alertController.addAction(UIAlertAction(title: Constants.Support.addExpense, style: .default, handler: setComposerMessage))
-        alertController.addAction(UIAlertAction(title: Constants.Support.refundMoney, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.addTransaction, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.refundTransfer, style: .default, handler: setComposerMessage))
+        alertController.addAction(UIAlertAction(title: Constants.Support.currencyNotChanging, style: .default, handler: setComposerMessage))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
+        
+        let bounds = settingsTableView.convert(rect, to: settingsTableView.superview)
+            
+        alertController.popoverPresentationController?.sourceRect = bounds
+        alertController.popoverPresentationController?.sourceView = self.view
         present(alertController, animated: true)
     }
 
@@ -115,7 +121,7 @@ class ProfileViewController: UIViewController {
     }
     
     // MARK: - IBAction methods
-    @IBAction func shareButtonTapped(_ sender: Any) {
+    @objc func shareButtonTapped() {
         let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
         
         activityVC.popoverPresentationController?.sourceView = self.view
@@ -167,7 +173,8 @@ extension ProfileViewController: UITableViewDelegate {
         case 0:
             changeCurrencyCellTapped()
         case 1:
-            helpCellTapped()
+            let rect = tableView.rectForRow(at: indexPath)
+            helpCellTapped(rect: rect)
         case 2:
             upgradeCellTapped()
         default:

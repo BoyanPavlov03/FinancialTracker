@@ -21,8 +21,9 @@ struct Constants {
     }
     
     struct Support {
-        static let addExpense = "Problem adding an expense"
-        static let refundMoney = "Want a refund"
+        static let addTransaction = "Problem adding a transaction"
+        static let refundTransfer = "Want a transfer refund"
+        static let currencyNotChanging = "Problem changing currency"
         static let other = "Other"
             
         static let email = "support_financialTracker@gmail.com"

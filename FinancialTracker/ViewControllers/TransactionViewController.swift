@@ -12,6 +12,7 @@ class TransactionViewController: UIViewController {
     @IBOutlet var amountTextField: UITextField!
     @IBOutlet var categoryPicker: UIPickerView!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
+    @IBOutlet var addButton: UIButton!
     
     // MARK: - Private properties
     private var categoryCases: [Category] {
@@ -43,6 +44,7 @@ class TransactionViewController: UIViewController {
         
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
+        addButton.layer.cornerRadius = 15
     }
     
     // MARK: - IBAction methods
