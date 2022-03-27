@@ -56,6 +56,7 @@ class BalanceViewController: UIViewController {
         
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
+        nextButton.layer.cornerRadius = 15
     }
     
     // MARK: - IBAction methods

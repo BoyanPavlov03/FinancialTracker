@@ -554,7 +554,7 @@ class DatabaseManager {
                 }
                 
                 // swiftlint:disable:next line_length
-                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, senderName: "\(user.firstName) \(user.lastName)", senderCurrencyRate: senderCurrency.rate, receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
+                var transfer = Transfer(uid: transferUID, transferType: senderTransferType, transferState: .pending, fromUser: currentUser.uid, toUser: user.uid, amount: amount, senderName: "\(currentUser.firstName) \(currentUser.lastName)", senderCurrencyRate: senderCurrency.rate, receiverCurrencyRate: receiverCurrency.rate, date: formatedDate)
                 self.setTransferToUserByUUID(currentUser.uid, transfer: transfer) { databaseError, _ in
                     if let databaseError = databaseError {
                         completionHandler(databaseError, nil)

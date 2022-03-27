@@ -25,6 +25,7 @@ class LoginViewController: UIViewController {
         setUpUITextField(emailField)
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true
+        loginButton.layer.cornerRadius = 15
     }
     
     // MARK: - Own methods

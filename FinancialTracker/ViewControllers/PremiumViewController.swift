@@ -13,6 +13,10 @@ enum Product: String {
 }
 
 class PremiumViewController: UIViewController {
+    // MARK: - Outlet properties
+    @IBOutlet var upgradeButton: UIButton!
+    @IBOutlet var proButton: UIButton!
+    
     // MARK: - Properties
     var authManager: AuthManager?
     
@@ -23,6 +27,8 @@ class PremiumViewController: UIViewController {
         title = "Premium"
         
         SKPaymentQueue.default().add(self)
+        upgradeButton.layer.cornerRadius = 15
+        proButton.layer.cornerRadius = 15
     }
     
     // MARK: - IBAction methods
