@@ -24,6 +24,7 @@ class HomeViewController: UIViewController {
     
     // MARK: - Properties
     var authManager: AuthManager?
+    var selectedTransactions: [Transaction] = []
     
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
@@ -37,11 +38,12 @@ class HomeViewController: UIViewController {
         
         checkIfPremium()
         
-        transactionChart.highlightPerTapEnabled = false
+        transactionChart.highlightPerTapEnabled = true
         transactionChart.drawEntryLabelsEnabled = false
         transactionChart.drawHoleEnabled = true
         transactionChart.rotationAngle = 0
         transactionChart.rotationEnabled = false
+        transactionChart.delegate = self
         
         let format = NumberFormatter()
         format.numberStyle = .decimal
@@ -90,42 +92,46 @@ class HomeViewController: UIViewController {
             // Updating chart with all expenses or incomes for current day
             let start = Date().startOfDay
             guard let end = Date().endOfDay else { return }
-            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+            selectedTransactions = expenseOrIncome(start: start, end: end)
         case TimePeriodDivider.week.rawValue:
             // Updating chart with all expenses or incomes for current week
             if currentUser.premium == false {
                 if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-                    updateChart(transactionData: currentUser.expenses)
+                    selectedTransactions = currentUser.expenses
                 } else {
-                    updateChart(transactionData: currentUser.incomes)
+                    selectedTransactions = currentUser.incomes
                 }
                 return
             }
             guard let start = Date().startOfWeek, let end = Date().endOfWeek else { return }
-            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+            selectedTransactions = expenseOrIncome(start: start, end: end)
         case TimePeriodDivider.month.rawValue:
             // Updating chart with all expenses or incomes for current month
             guard let start = Date().startOfMonth, let end = Date().endOfMonth else { return }
-            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+            
+            selectedTransactions = expenseOrIncome(start: start, end: end)
         case TimePeriodDivider.year.rawValue:
             // Updating chart with all expenses or incomes for current year
             guard let start = Date().startOfYear, let end = Date().endOfYear else { return }
-            updateChart(transactionData: expenseOrIncome(start: start, end: end))
+            selectedTransactions = expenseOrIncome(start: start, end: end)
         case TimePeriodDivider.all.rawValue:
             // Updating chart with all expenses or incomes
             if expenseOrIncomeSegmentedControl.selectedSegmentIndex == 0 {
-                updateChart(transactionData: currentUser.expenses)
+                selectedTransactions = currentUser.expenses
             } else {
-                updateChart(transactionData: currentUser.incomes)
+                selectedTransactions = currentUser.incomes
             }
         default:
             break
         }
+        
+        updateChart()
     }
     
-    private func updateChart(transactionData: [Transaction]) {
-        guard !transactionData.isEmpty else {
+    private func updateChart() {
+        guard !selectedTransactions.isEmpty else {
             transactionChart.data = nil
+            transactionChart.noDataText = "There are no transactions."
             transactionChart.notifyDataSetChanged()
             return
         }
@@ -134,7 +140,7 @@ class HomeViewController: UIViewController {
         var totalSum = 0.0
         // Unifiying all expenses/incomes from the same category into total sum
         // for when displaying on chart
-        for transaction in transactionData {
+        for transaction in selectedTransactions {
             if transactions[transaction.category.getRawValue] == nil {
                 transactions[transaction.category.getRawValue] = 0.0
             }
@@ -203,5 +209,34 @@ extension HomeViewController: DatabaseManagerDelegate {
     func databaseManagerDidUserChange(sender: DatabaseManager) {
         dividerControlDidChange(expenseDividerSegmentedControl)
         checkIfPremium()
+    }
+}
+
+extension HomeViewController: ChartViewDelegate {
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        guard let data = entry.data else {
+            return
+        }
+        
+        var transactionsByCategory: [Transaction] = []
+        
+        for transaction in selectedTransactions {
+            if transaction.category.getRawValue == String(describing: data) {
+                transactionsByCategory.append(transaction)
+            }
+        }
+        
+        // swiftlint:disable:next line_length
+        guard let selectedTransactionsVC = ViewControllerFactory.shared.viewController(for: .selectedTransactions) as? SelectedTransactionsViewController else {
+            assertionFailure("Couldn't cast to SelectedTransactionsViewController")
+            return
+        }
+        
+        selectedTransactionsVC.authManager = self.authManager
+        selectedTransactionsVC.selectedTransactions = transactionsByCategory
+        selectedTransactionsVC.category = String(describing: data)
+        
+        navigationController?.pushViewController(selectedTransactionsVC, animated: true)
+        transactionChart.highlightValue(nil)
     }
 }

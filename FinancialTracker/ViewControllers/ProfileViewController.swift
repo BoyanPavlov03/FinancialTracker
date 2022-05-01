@@ -93,6 +93,7 @@ class ProfileViewController: UIViewController {
             return
         }
 
+        premiumVC.delegate = self
         premiumVC.authManager = authManager
         navigationController?.pushViewController(premiumVC, animated: true)
     }
@@ -124,7 +125,7 @@ class ProfileViewController: UIViewController {
     @objc func shareButtonTapped() {
         let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
         
-        activityVC.popoverPresentationController?.sourceView = self.view
+        activityVC.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
         present(activityVC, animated: true)
     }
     
@@ -208,5 +209,11 @@ extension ProfileViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension ProfileViewController: PremiumViewControllerDelegate {
+    func didPurchasePremium(sender: PremiumViewController) {
+        settingsTableView.reloadData()
     }
 }

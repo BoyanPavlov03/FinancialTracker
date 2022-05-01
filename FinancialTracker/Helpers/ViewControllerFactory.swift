@@ -31,6 +31,7 @@ enum ViewControllerType: String {
     case currency = "CurrencyVC"
     case requestOrSend = "Request+SendVC"
     case users = "UsersVC"
+    case selectedTransactions = "SelectedTransactionsVC"
 }
 
 extension ViewControllerType {
