@@ -19,7 +19,6 @@ enum StoryBoardType: String {
 }
 
 enum ViewControllerType: String {
-    case entry = "EntryVC"
     case register = "RegisterVC"
     case login = "LoginVC"
     case balance = "BalanceVC"

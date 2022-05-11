@@ -51,13 +51,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     return
                 }
                 
-                guard let entryVC = ViewControllerFactory.shared.viewController(for: .entry) as? EntryViewController else {
-                    assertionFailure("Couldn't cast to EntryViewController.")
+                guard let loginVC = ViewControllerFactory.shared.viewController(for: .login) as? LoginViewController else {
+                    assertionFailure("Couldn't cast to LoginViewController.")
                     return
                 }
                 
-                entryVC.authManager = self.authManager
-                navVC.pushViewController(entryVC, animated: true)
+                loginVC.authManager = self.authManager
+                navVC.pushViewController(loginVC, animated: true)
                 window.rootViewController = navVC
             }
             

@@ -44,7 +44,6 @@
 		70B333612763E5A3002FAEB5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 70B333602763E5A2002FAEB5 /* GoogleService-Info.plist */; };
 		70D37DF027633FB40067FFE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D37DEF27633FB40067FFE6 /* AppDelegate.swift */; };
 		70D37DF227633FB40067FFE6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D37DF127633FB40067FFE6 /* SceneDelegate.swift */; };
-		70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D37DF327633FB40067FFE6 /* EntryViewController.swift */; };
 		70D37DF727633FB40067FFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF527633FB40067FFE6 /* Main.storyboard */; };
 		70D37DF927633FB50067FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF827633FB50067FFE6 /* Assets.xcassets */; };
 		70D37DFC27633FB50067FFE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DFA27633FB50067FFE6 /* LaunchScreen.storyboard */; };
@@ -84,7 +83,6 @@
 		70D37DEC27633FB40067FFE6 /* FinancialTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinancialTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		70D37DEF27633FB40067FFE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		70D37DF127633FB40067FFE6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		70D37DF327633FB40067FFE6 /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
 		70D37DF627633FB40067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		70D37DF827633FB50067FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		70D37DFB27633FB50067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -167,7 +165,6 @@
 		70D0D6CA2766227600ED0060 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				70D37DF327633FB40067FFE6 /* EntryViewController.swift */,
 				708905A42764A317000CEE4E /* LoginViewController.swift */,
 				70B3335E2763DDC7002FAEB5 /* RegisterViewController.swift */,
 				709638DF27649D2F000C152D /* BalanceViewController.swift */,
@@ -348,7 +345,6 @@
 				70799995281EAE8F0006FBEA /* TransactionTableViewCell.swift in Sources */,
 				707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */,
 				705E7E5B27BCFC7000FEA650 /* Transfer.swift in Sources */,
-				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
 				70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */,

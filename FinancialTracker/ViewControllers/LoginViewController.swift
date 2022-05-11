@@ -12,6 +12,7 @@ class LoginViewController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var loginButton: UIButton!
+    @IBOutlet var logoImage: UIImageView!
     
     // MARK: - Properties
     var authManager: AuthManager?
@@ -21,11 +22,40 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Login"
+        self.navigationItem.hidesBackButton = true
         
         setUpUITextField(emailField)
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true
         loginButton.layer.cornerRadius = 15
+        
+        switch traitCollection.userInterfaceStyle {
+        case .light, .unspecified:
+            logoImage.image = UIImage(named: "logoWhite")
+            passwordField.layer.borderColor = UIColor.black.cgColor
+            emailField.layer.borderColor = UIColor.black.cgColor
+        case .dark:
+            logoImage.image = UIImage(named: "logoDark")
+            passwordField.layer.borderColor = UIColor.white.cgColor
+            emailField.layer.borderColor = UIColor.white.cgColor
+        @unknown default:
+            fatalError("Unknown style")
+        }
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        switch newCollection.userInterfaceStyle {
+        case .dark:
+            logoImage.image = UIImage(named: "logoDark")
+            passwordField.layer.borderColor = UIColor.white.cgColor
+            emailField.layer.borderColor = UIColor.white.cgColor
+        case .light, .unspecified:
+            logoImage.image = UIImage(named: "logoWhite")
+            passwordField.layer.borderColor = UIColor.black.cgColor
+            emailField.layer.borderColor = UIColor.black.cgColor
+        @unknown default:
+            fatalError("Unknown style")
+        }
     }
     
     // MARK: - Own methods
@@ -46,6 +76,7 @@ class LoginViewController: UIViewController {
             present(UIAlertController.create(title: "Missing Password", message: "Please fill in your password"), animated: true)
             return
         }
+
         authManager?.logInUser(email: email, password: password) { authError, user in
             guard user != nil else {
                 let alertTitle = authError?.title ?? "Unknown Error"
@@ -56,4 +87,15 @@ class LoginViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func registerScreenButtonTapped(_ sender: Any) {
+        guard let registerVC = ViewControllerFactory.shared.viewController(for: .register) as? RegisterViewController else {
+            assertionFailure("Couldn't parse to RegisterViewController.")
+            return
+        }
+        
+        registerVC.authManager = authManager
+        navigationController?.pushViewController(registerVC, animated: true)
+    }
+    
 }

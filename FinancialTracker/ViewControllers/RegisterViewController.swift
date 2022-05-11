@@ -14,6 +14,7 @@ class RegisterViewController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var registerButton: UIButton!
+    @IBOutlet var logoImage: UIImageView!
     
     // MARK: - Properties
     var authManager: AuthManager?
@@ -23,6 +24,7 @@ class RegisterViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Register"
+        self.navigationItem.hidesBackButton = true
         
         setUpUITextField(firstNameField)
         setUpUITextField(lastNameField)
@@ -30,6 +32,30 @@ class RegisterViewController: UIViewController {
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true
         registerButton.layer.cornerRadius = 15
+        
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            logoImage.image = UIImage(named: "logoDark")
+            setBorderColor(color: UIColor.white.cgColor)
+        case .light, .unspecified:
+            logoImage.image = UIImage(named: "logoWhite")
+            setBorderColor(color: UIColor.black.cgColor)
+        @unknown default:
+            fatalError("Unknown style")
+        }
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        switch newCollection.userInterfaceStyle {
+        case .dark:
+            logoImage.image = UIImage(named: "logoDark")
+            setBorderColor(color: UIColor.white.cgColor)
+        case .light, .unspecified:
+            logoImage.image = UIImage(named: "logoWhite")
+            setBorderColor(color: UIColor.black.cgColor)
+        @unknown default:
+            fatalError("Unknown style")
+        }
     }
     
     // MARK: - Own methods
@@ -37,6 +63,13 @@ class RegisterViewController: UIViewController {
         textField.layer.cornerRadius = 15
         textField.layer.borderColor = UIColor.black.cgColor
         textField.layer.borderWidth = 1
+    }
+    
+    private func setBorderColor(color: CGColor) {
+        passwordField.layer.borderColor = color
+        emailField.layer.borderColor = color
+        firstNameField.layer.borderColor = color
+        lastNameField.layer.borderColor = color
     }
     
     // MARK: - IBAction methods
@@ -83,4 +116,15 @@ class RegisterViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func loginScreenButtonTapped(_ sender: Any) {
+        guard let loginVC = ViewControllerFactory.shared.viewController(for: .login) as? LoginViewController else {
+            assertionFailure("Couldn't parse to LoginViewController.")
+            return
+        }
+        
+        loginVC.authManager = authManager
+        navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
 }
