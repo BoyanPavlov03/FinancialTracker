@@ -45,6 +45,13 @@ class TransactionViewController: UIViewController {
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
         addButton.layer.cornerRadius = 15
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     // MARK: - IBAction methods

@@ -56,6 +56,19 @@ class HomeViewController: UIViewController {
         authManager?.removeDelegate(self)
     }
     
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        switch newCollection.userInterfaceStyle {
+        case .dark:
+            transactionChart.holeColor = UIColor.black
+            setCenterText(transactionChart.centerText ?? "0.0", color: UIColor.white)
+        case .light, .unspecified:
+            transactionChart.holeColor = UIColor.white
+            setCenterText(transactionChart.centerText ?? "0.0", color: UIColor.black)
+        @unknown default:
+            fatalError("Unknown style")
+        }
+    }
+    
     // MARK: - Own methods
     private func checkIfPremium() {
         guard let currentUser = authManager?.currentUser else {
@@ -178,9 +191,23 @@ class HomeViewController: UIViewController {
         guard let symbol = authManager?.currentUser?.currency?.symbolNative else {
             fatalError("User data is nil.")
         }
-        let attributes = [NSAttributedString.Key.font: UIFont(name: "Tamil Sangam MN", size: 25.0)]
         let myString = "\(totalSum.round(to: 2))\(String(describing: symbol))"
-        let totalSumString = NSAttributedString(string: myString, attributes: attributes as [NSAttributedString.Key: Any])
+        
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            transactionChart.holeColor = UIColor.black
+            setCenterText(myString, color: UIColor.white)
+        case .light, .unspecified:
+            transactionChart.holeColor = UIColor.white
+            setCenterText(myString, color: UIColor.black)
+        @unknown default:
+            fatalError("Unknown style")
+        }
+    }
+    
+    private func setCenterText(_ text: String, color: UIColor) {
+        let attributes = [NSAttributedString.Key.font: UIFont(name: "Tamil Sangam MN", size: 25.0), NSAttributedString.Key.foregroundColor: color]
+        let totalSumString = NSAttributedString(string: text, attributes: attributes as [NSAttributedString.Key: Any])
         transactionChart.centerAttributedText = totalSumString
     }
     
