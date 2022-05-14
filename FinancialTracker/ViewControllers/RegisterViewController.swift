@@ -43,6 +43,14 @@ class RegisterViewController: UIViewController {
         @unknown default:
             fatalError("Unknown style")
         }
+        
+        let keyboardRemovalGesture = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(keyboardRemovalGesture)
+        
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        center.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -127,4 +135,19 @@ class RegisterViewController: UIViewController {
         navigationController?.pushViewController(loginVC, animated: true)
     }
     
+    @objc func keyboardWillShow(notification: NSNotification) {
+        self.view.frame.origin.y = -150.0
+        logoImage.isHidden = true
+        title = ""
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        self.view.frame.origin.y = 0
+        logoImage.isHidden = false
+        title = "Register"
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
 }

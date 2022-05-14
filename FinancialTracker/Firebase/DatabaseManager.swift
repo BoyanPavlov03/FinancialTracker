@@ -141,7 +141,7 @@ class DatabaseManager {
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `success` - Boolean that indicates whether the function was successful.
-    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
+    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, date: Date, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -149,7 +149,7 @@ class DatabaseManager {
         
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
-        let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
+        let formatedDate = date.formatDate("hh:mm:ss, MM/dd/yyyy")
         
         do {
             if let category = category as? ExpenseCategory {
@@ -605,7 +605,9 @@ class DatabaseManager {
             return
         }
         
-        self.addTransactionToUserByUID(transfer.fromUser, amount: transfer.amount, category: otherUserTransactionType) { databaseError, _ in
+        let otherUID = transfer.fromUser
+        let myUID = currentUser.uid
+        self.addTransactionToUserByUID(otherUID, amount: transfer.amount, category: otherUserTransactionType, date: Date.today) { databaseError, _ in
             if let databaseError = databaseError {
                 completionHandler(databaseError, false)
                 return
@@ -614,7 +616,7 @@ class DatabaseManager {
             // swiftlint:disable:next line_length
             self.firestore.collection(DBCollectionKey.users.rawValue).document(transfer.fromUser).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
             
-            self.addTransactionToUserByUID(currentUser.uid, amount: myTransferAmount, category: myTransactionType) { databaseError, _ in
+            self.addTransactionToUserByUID(myUID, amount: myTransferAmount, category: myTransactionType, date: Date.today) { databaseError, _ in
                 if let databaseError = databaseError {
                     completionHandler(databaseError, false)
                     return

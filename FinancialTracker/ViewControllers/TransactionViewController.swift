@@ -13,6 +13,7 @@ class TransactionViewController: UIViewController {
     @IBOutlet var categoryPicker: UIPickerView!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     @IBOutlet var addButton: UIButton!
+    @IBOutlet var dateTextField: UITextField!
     
     // MARK: - Private properties
     private var categoryCases: [Category] {
@@ -35,6 +36,7 @@ class TransactionViewController: UIViewController {
     
     // MARK: - Properties
     var authManager: AuthManager?
+    let datePicker = UIDatePicker()
     
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
@@ -46,12 +48,21 @@ class TransactionViewController: UIViewController {
         categoryPicker.delegate = self
         addButton.layer.cornerRadius = 15
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
+        let keyboardRemovalGesture = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(keyboardRemovalGesture)
+        
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        center.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
+        datePicker.preferredDatePickerStyle = .inline
+        datePicker.maximumDate = Date()
+        
+        dateTextField.inputView = datePicker
+        dateTextField.text = Date().formatDate("MMMM dd yyyy")
     }
     
     // MARK: - IBAction methods
@@ -76,7 +87,9 @@ class TransactionViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToUserByUID(currentUser.uid, amount: amountNumber, category: selectedCategory) { authError, success in
+        let uid = currentUser.uid
+        let date = datePicker.date
+        authManager?.addTransactionToUserByUID(uid, amount: amountNumber, category: selectedCategory, date: date) { authError, success in
             guard success else {
                 let alertTitle = authError?.title ?? "Unknown Error"
                 let alertMessage = authError?.message ?? "This error should not appear."
@@ -86,6 +99,24 @@ class TransactionViewController: UIViewController {
             }
             self.navigationController?.popViewController(animated: true)
         }
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        self.view.frame.origin.y = -50.0
+        title = ""
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        self.view.frame.origin.y = 0
+        title = "Add Transaction"
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc func dateChange(datePicker: UIDatePicker) {
+        dateTextField.text = datePicker.date.formatDate("MMMM dd yyyy")
     }
 }
 

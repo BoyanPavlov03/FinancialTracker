@@ -131,9 +131,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dt4-Ee-aZv">
-                                        <rect key="frame" x="76" y="383" width="168.5" height="31"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Don't have an account"/>
+                                        <rect key="frame" x="83" y="383" width="154" height="30"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Don't have an account"/>
                                         <connections>
                                             <action selector="registerScreenButtonTapped:" destination="gck-Yy-xUr" eventType="touchUpInside" id="uqD-Bd-mbE"/>
                                         </connections>
@@ -339,9 +339,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PLG-Vu-x4g">
-                                        <rect key="frame" x="69" y="564" width="182.5" height="31"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Already have an account"/>
+                                        <rect key="frame" x="76" y="564" width="168" height="30"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Already have an account"/>
                                         <connections>
                                             <action selector="loginScreenButtonTapped:" destination="ZpF-hA-3yF" eventType="touchUpInside" id="dC6-qZ-zIn"/>
                                         </connections>
@@ -758,30 +758,60 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Pr0-rS-gKx">
                                 <rect key="frame" x="20" y="81" width="280" height="411"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="p3q-AX-Da2">
-                                        <rect key="frame" x="73.5" y="0.0" width="133.5" height="64.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="qGm-ns-Kpr">
+                                        <rect key="frame" x="34" y="0.0" width="212" height="64.5"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter amount" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FN8-72-vm9">
-                                                <rect key="frame" x="15.5" y="0.0" width="102.5" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tfj-uH-X1O">
-                                                <rect key="frame" x="5" y="30.5" width="123.5" height="34"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="p3q-AX-Da2">
+                                                <rect key="frame" x="0.0" y="0.0" width="91" height="64.5"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amount" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FN8-72-vm9">
+                                                        <rect key="frame" x="15.5" y="0.0" width="60" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tfj-uH-X1O">
+                                                        <rect key="frame" x="5" y="30.5" width="81" height="34"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="34" id="q0Z-fE-COZ"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                                    </textField>
+                                                </subviews>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="34" id="q0Z-fE-COZ"/>
+                                                    <constraint firstItem="FN8-72-vm9" firstAttribute="leading" secondItem="p3q-AX-Da2" secondAttribute="leading" constant="15.5" id="KOz-jX-1JR"/>
+                                                    <constraint firstItem="tfj-uH-X1O" firstAttribute="leading" secondItem="p3q-AX-Da2" secondAttribute="leading" constant="5" id="gZS-kf-uqv"/>
+                                                    <constraint firstAttribute="trailing" secondItem="tfj-uH-X1O" secondAttribute="trailing" constant="5" id="qe4-W1-Qjh"/>
+                                                    <constraint firstAttribute="trailing" secondItem="FN8-72-vm9" secondAttribute="trailing" constant="15.5" id="szO-5a-18B"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
-                                            </textField>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="wXL-fJ-kj0">
+                                                <rect key="frame" x="121" y="0.0" width="91" height="64.5"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Date" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0OX-fz-k0n">
+                                                        <rect key="frame" x="15.5" y="0.0" width="60" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gZZ-cI-bUi">
+                                                        <rect key="frame" x="5" y="30.5" width="81" height="34"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="34" id="dyt-q8-dR0"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                                    </textField>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="gZZ-cI-bUi" firstAttribute="leading" secondItem="wXL-fJ-kj0" secondAttribute="leading" constant="5" id="A8T-xF-QMW"/>
+                                                    <constraint firstAttribute="trailing" secondItem="gZZ-cI-bUi" secondAttribute="trailing" constant="5" id="D2q-PW-Rnk"/>
+                                                    <constraint firstItem="0OX-fz-k0n" firstAttribute="leading" secondItem="wXL-fJ-kj0" secondAttribute="leading" constant="15.5" id="Qg8-af-lbo"/>
+                                                    <constraint firstAttribute="trailing" secondItem="0OX-fz-k0n" secondAttribute="trailing" constant="15.5" id="wPe-jh-KvQ"/>
+                                                </constraints>
+                                            </stackView>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="FN8-72-vm9" firstAttribute="leading" secondItem="p3q-AX-Da2" secondAttribute="leading" constant="15.5" id="KOz-jX-1JR"/>
-                                            <constraint firstItem="tfj-uH-X1O" firstAttribute="leading" secondItem="p3q-AX-Da2" secondAttribute="leading" constant="5" id="gZS-kf-uqv"/>
-                                            <constraint firstAttribute="trailing" secondItem="tfj-uH-X1O" secondAttribute="trailing" constant="5" id="qe4-W1-Qjh"/>
-                                            <constraint firstAttribute="trailing" secondItem="FN8-72-vm9" secondAttribute="trailing" constant="15.5" id="szO-5a-18B"/>
-                                        </constraints>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="SDc-Oo-3yb">
                                         <rect key="frame" x="0.0" y="94.5" width="280" height="246.5"/>
@@ -840,6 +870,7 @@
                         <outlet property="addButton" destination="avd-sa-Few" id="bWD-LS-4Ki"/>
                         <outlet property="amountTextField" destination="tfj-uH-X1O" id="8iv-px-W4M"/>
                         <outlet property="categoryPicker" destination="jrK-Uu-rgV" id="Ruv-Ni-r4Z"/>
+                        <outlet property="dateTextField" destination="gZZ-cI-bUi" id="Eby-d4-BJo"/>
                         <outlet property="expenseOrIncomeSegmentedControl" destination="mne-9f-nWG" id="2de-p2-ALj"/>
                     </connections>
                 </viewController>
