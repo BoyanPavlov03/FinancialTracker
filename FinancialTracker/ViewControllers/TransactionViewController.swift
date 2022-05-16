@@ -44,6 +44,8 @@ class TransactionViewController: UIViewController {
         
         title = "Add Transaction"
         
+        amountTextField.delegate = self
+        
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
         addButton.layer.cornerRadius = 15
@@ -76,10 +78,7 @@ class TransactionViewController: UIViewController {
             return
         }
         
-        guard let amountNumber = Double(amount) else {
-            present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
-            return
-        }
+        let amountNumber = amount.doubleValue
         
         guard let currentUser = authManager?.currentUser else {
             fatalError("User data is nil.")
@@ -140,5 +139,33 @@ extension TransactionViewController: UIPickerViewDelegate {
             return income[row].rawValue
         }
         return ""
+    }
+}
+
+extension TransactionViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let newString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else {
+            return false
+        }
+        
+        if newString.doubleValue < 0 && !newString.isEmpty {
+            return false
+        }
+        
+        let arrayOfString = newString.components(separatedBy: ".")
+
+        if arrayOfString.count > 2 {
+            return false
+        }
+        
+        guard let currency = authManager?.currentUser?.currency else {
+            fatalError("User data is nil")
+        }
+        
+        if arrayOfString.count > 1 && arrayOfString[1].count > currency.symbolsAfterComma {
+            return false
+        }
+
+        return true
     }
 }

@@ -42,10 +42,10 @@ class ProfileViewController: UIViewController {
               let currency = currentUser.currency else {
             fatalError("User data is nil")
         }
-        
+                
         nameLabel.text = "\(currentUser.firstName) \(currentUser.lastName)"
         emailLabel.text = currentUser.email
-        balanceLabel.text = "Balance: \(balance)\(currency.symbolNative)"
+        balanceLabel.text = "Balance: \(Locale.getLocalizedAmount(balance))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
         
         authManager?.addDelegate(self)
@@ -69,7 +69,7 @@ class ProfileViewController: UIViewController {
             balanceLabel.textColor = .green
         }
         
-        balanceLabel.text = "Balance: \(balance.round(to: 2))\(currency.symbolNative)"
+        balanceLabel.text = "Balance: \(Locale.getLocalizedAmount(balance))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
     }
     

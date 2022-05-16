@@ -21,6 +21,7 @@ struct Currency: Codable {
     let name: String
     let symbolNative: String
     let code: String
+    let symbolsAfterComma: Int
     
     var rate: Double
     
@@ -29,6 +30,7 @@ struct Currency: Codable {
         case symbolNative = "symbol_native"
         case code
         case rate
+        case symbolsAfterComma = "decimal_digits"
     }
     
     struct ExchangeRates: Codable {
@@ -42,6 +44,7 @@ extension Currency {
         name = try values.decode(String.self, forKey: .name)
         symbolNative = try values.decode(String.self, forKey: .symbolNative)
         code = try values.decode(String.self, forKey: .code)
+        symbolsAfterComma = try values.decode(Int.self, forKey: .symbolsAfterComma)
         rate = try values.decodeIfPresent(Double.self, forKey: .rate) ?? 0
     }
     

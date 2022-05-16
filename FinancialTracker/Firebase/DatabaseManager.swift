@@ -151,6 +151,10 @@ class DatabaseManager {
         let balanceKey = User.CodingKeys.balance.rawValue
         let formatedDate = date.formatDate("hh:mm:ss, MM/dd/yyyy")
         
+        guard let currency = currentUser.currency else {
+            fatalError("User doesn't have currency.")
+        }
+        
         do {
             if let category = category as? ExpenseCategory {
                 let expenseKey = User.CodingKeys.expenses.rawValue
@@ -168,8 +172,8 @@ class DatabaseManager {
                     assertionFailure("User hasn't entered balance yet.")
                     return
                 }
-
-                let newBalanceValue = (userBalance - amount).round(to: 2)
+                
+                let newBalanceValue = (userBalance - amount).round(to: currency.symbolsAfterComma)
                 let expenseValue = FieldValue.arrayUnion([dictionary])
                 
                 let data = [expenseKey: expenseValue, balanceKey: newBalanceValue] as [String: Any]
@@ -197,7 +201,7 @@ class DatabaseManager {
                     return
                 }
 
-                let newBalanceValue = (userBalance + amount).round(to: 2)
+                let newBalanceValue = (userBalance + amount).round(to: currency.symbolsAfterComma)
                 let incomeValue = FieldValue.arrayUnion([dictionary])
                 
                 let data = [incomeKey: incomeValue, balanceKey: newBalanceValue] as [String: Any]
@@ -252,17 +256,17 @@ class DatabaseManager {
             return
         }
         
-        let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: 2)
+        let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: currentCurrency.symbolsAfterComma)
         
         var newExpenses: [Transaction] = []
         for expense in currentUser.expenses {
-            let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: 2)
+            let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: currentCurrency.symbolsAfterComma)
             newExpenses.append(Transaction(amount: newExpenseAmount, date: expense.date, category: expense.category))
         }
         
         var newIncomes: [Transaction] = []
         for income in currentUser.incomes {
-            let newIncomeAmount = ((income.amount / currentCurrency.rate) * currency.rate).round(to: 2)
+            let newIncomeAmount = ((income.amount / currentCurrency.rate) * currency.rate).round(to: currentCurrency.symbolsAfterComma)
             newIncomes.append(Transaction(amount: newIncomeAmount, date: income.date, category: income.category))
         }
         
@@ -343,7 +347,7 @@ class DatabaseManager {
                     let data = try JSONSerialization.data(withJSONObject: document.data(), options: .prettyPrinted)
                     let transfer = try JSONDecoder().decode(Transfer.self, from: data)
 
-                    let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: 2)
+                    let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: currency.symbolsAfterComma)
                     
                     var updatedData: [String: Any]
                     

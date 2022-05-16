@@ -48,7 +48,7 @@ extension SelectedTransactionsViewController: UITableViewDataSource {
             fatalError("User data is nil")
         }
         
-        cell.amountLabel.text = "\(selectedTransactions[indexPath.row].amount.round(to: 2))\(currency.symbolNative)"
+        cell.amountLabel.text = "\(selectedTransactions[indexPath.row].amount.round(to: currency.symbolsAfterComma))\(currency.symbolNative)"
         cell.dateLabel.text = selectedTransactions[indexPath.row].date
         
         return cell

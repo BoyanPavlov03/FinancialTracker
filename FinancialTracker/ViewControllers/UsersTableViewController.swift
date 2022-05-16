@@ -56,7 +56,7 @@ class UsersTableViewController: UITableViewController {
             guard let receiverCurrency = user.currency, let fcmToken = user.FCMToken else {
                 return
             }
-            let newAmount = ((amount / senderRate) * receiverCurrency.rate).round(to: 2)
+            let newAmount = ((amount / senderRate) * receiverCurrency.rate).round(to: receiverCurrency.symbolsAfterComma)
             
             var title: String
             var body: String

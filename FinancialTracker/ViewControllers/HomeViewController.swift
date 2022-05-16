@@ -167,7 +167,7 @@ class HomeViewController: UIViewController {
         
         // Setting all entries for the PieChart with unified expenses/incomes
         for transaction in sortedTransactions {
-            let dataEntry = PieChartDataEntry(value: transaction.value.round(to: 2), label: transaction.key, data: transaction.key as AnyObject)
+            let dataEntry = PieChartDataEntry(value: transaction.value, label: transaction.key, data: transaction.key as AnyObject)
             dataEntries.append(dataEntry)
         }
         
@@ -191,7 +191,7 @@ class HomeViewController: UIViewController {
         guard let symbol = authManager?.currentUser?.currency?.symbolNative else {
             fatalError("User data is nil.")
         }
-        let myString = "\(totalSum.round(to: 2))\(String(describing: symbol))"
+        let myString = "\(Locale.getLocalizedAmount(totalSum))\(String(describing: symbol))"
         
         switch traitCollection.userInterfaceStyle {
         case .dark:

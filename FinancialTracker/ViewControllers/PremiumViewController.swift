@@ -38,8 +38,8 @@ class PremiumViewController: UIViewController {
             fatalError("User data is nil")
         }
         
-        let amount = (currency.rate * 8.42).round(to: 2)
-        upgradeButton.setTitle("Upgrade Premium \(amount)\(currency.symbolNative)", for: .normal)
+        let amount = (currency.rate * 8.42).round(to: currency.symbolsAfterComma)
+        upgradeButton.setTitle("Upgrade Premium \(Locale.getLocalizedAmount(amount))\(currency.symbolNative)", for: .normal)
     }
     
     // MARK: - IBAction methods
