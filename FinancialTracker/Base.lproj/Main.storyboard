@@ -92,11 +92,11 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2gT-XN-b5k" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
+                                                    <textField opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2gT-XN-b5k" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="image" keyPath="leftImage">
                                                                 <imageReference key="value" image="key.fill" catalog="system" symbolScale="default"/>
@@ -219,7 +219,7 @@
                                                             <constraint firstAttribute="height" constant="50" id="5TL-V2-ziv"/>
                                                         </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" textContentType="name"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="image" keyPath="leftImage">
                                                                 <imageReference key="value" image="person.fill" catalog="system" symbolScale="default"/>
@@ -244,11 +244,11 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter last name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Fu-ny-t7c" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
+                                                    <textField opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter last name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Fu-ny-t7c" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" textContentType="additional-name"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="image" keyPath="leftImage">
                                                                 <imageReference key="value" image="person.fill" catalog="system" symbolScale="default"/>
@@ -269,11 +269,11 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="D5G-uC-FGk" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
+                                                    <textField opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="D5G-uC-FGk" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="yes" textContentType="email"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="image" keyPath="leftImage">
                                                                 <imageReference key="value" image="envelope.fill" catalog="system" symbolScale="default"/>
@@ -294,11 +294,11 @@
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tvk-ML-w8e" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
+                                                    <textField opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="tvk-ML-w8e" customClass="DesignableUITextField" customModule="FinancialTracker" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="25.5" width="230" height="50"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done"/>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="image" keyPath="leftImage">
                                                                 <imageReference key="value" image="key.fill" catalog="system" symbolScale="default"/>
@@ -373,8 +373,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="zl6-hd-nsi"/>
                     <connections>
+                        <outlet property="bottomConstraint" destination="sDO-OX-7qP" id="FlU-Os-Q6R"/>
                         <outlet property="emailField" destination="D5G-uC-FGk" id="pjM-TP-FRA"/>
                         <outlet property="firstNameField" destination="7Ej-Wj-Ox2" id="B0R-3G-WXJ"/>
+                        <outlet property="goToLoginButton" destination="PLG-Vu-x4g" id="RQO-1X-OMu"/>
                         <outlet property="lastNameField" destination="5Fu-ny-t7c" id="PZE-06-nJe"/>
                         <outlet property="logoImage" destination="e4d-Gw-L09" id="BSx-fS-oZT"/>
                         <outlet property="passwordField" destination="tvk-ML-w8e" id="5Rk-eR-Phw"/>
@@ -411,13 +413,13 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="g1u-OT-Urq">
                                         <rect key="frame" x="100" y="133" width="80" height="45"/>
                                         <subviews>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1JQ-hW-DPZ">
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1JQ-hW-DPZ">
                                                 <rect key="frame" x="0.0" y="0.0" width="80" height="45"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="45" id="PBB-wX-6Ww"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
+                                                <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                             </textField>
                                         </subviews>
                                         <constraints>

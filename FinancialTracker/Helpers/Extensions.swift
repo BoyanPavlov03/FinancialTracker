@@ -139,6 +139,16 @@ extension String {
         }
         return -1.0
     }
+    
+    func removeLastCharacters(amount: inout Int) -> String {
+        var newString = self
+        while amount > 0 {
+            newString.removeLast()
+            amount -= 1
+        }
+        
+        return newString
+    }
 }
 
 extension Locale {

@@ -53,11 +53,6 @@ class TransactionViewController: UIViewController {
         let keyboardRemovalGesture = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(keyboardRemovalGesture)
         
-        let center = NotificationCenter.default
-        center.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        
-        center.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
         datePicker.preferredDatePickerStyle = .inline
@@ -98,16 +93,6 @@ class TransactionViewController: UIViewController {
             }
             self.navigationController?.popViewController(animated: true)
         }
-    }
-    
-    @objc func keyboardWillShow(notification: NSNotification) {
-        self.view.frame.origin.y = -50.0
-        title = ""
-    }
-
-    @objc func keyboardWillHide(notification: NSNotification) {
-        self.view.frame.origin.y = 0
-        title = "Add Transaction"
     }
 
     @objc func dismissKeyboard() {

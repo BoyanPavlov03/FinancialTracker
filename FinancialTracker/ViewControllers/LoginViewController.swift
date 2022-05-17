@@ -29,6 +29,9 @@ class LoginViewController: UIViewController {
         passwordField.isSecureTextEntry = true
         loginButton.layer.cornerRadius = 15
         
+        let keyboardRemovalGesture = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(keyboardRemovalGesture)
+        
         switch traitCollection.userInterfaceStyle {
         case .light, .unspecified:
             logoImage.image = UIImage(named: "logoWhite")
@@ -41,6 +44,9 @@ class LoginViewController: UIViewController {
         @unknown default:
             fatalError("Unknown style")
         }
+        
+        emailField.delegate = self
+        passwordField.delegate = self
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -66,7 +72,7 @@ class LoginViewController: UIViewController {
     }
     
     // MARK: - IBAction methods
-    @IBAction func loginButtonTapped(_: Any) {
+    @IBAction func loginButtonTapped() {
         guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !email.isEmpty else {
             present(UIAlertController.create(title: "Missing Email", message: "Please fill in your email"), animated: true)
             return
@@ -98,4 +104,20 @@ class LoginViewController: UIViewController {
         navigationController?.pushViewController(registerVC, animated: true)
     }
     
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) as? UITextField {
+            nextField.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+            loginButtonTapped()
+            return true
+        }
+        return false
+    }
 }

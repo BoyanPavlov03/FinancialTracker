@@ -51,6 +51,11 @@ class RegisterViewController: UIViewController {
         center.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         center.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        firstNameField.delegate = self
+        lastNameField.delegate = self
+        emailField.delegate = self
+        passwordField.delegate = self
     }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -88,7 +93,7 @@ class RegisterViewController: UIViewController {
         return emailPred.evaluate(with: email)
     }
     
-    @IBAction func registerButtonTapped(_: Any) {
+    @IBAction func registerButtonTapped() {
         guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !firstName.isEmpty else {
             present(UIAlertController.create(title: "Missing First Name", message: "Please fill in your first name"), animated: true)
             return
@@ -136,9 +141,13 @@ class RegisterViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
-        self.view.frame.origin.y = -150.0
-        logoImage.isHidden = true
-        title = ""
+        if passwordField.isEditing || emailField.isEditing {
+            self.view.frame.origin.y = 0 - (passwordField.frame.size.height * 2)
+            logoImage.isHidden = true
+            title = ""
+            return
+        }
+        keyboardWillHide(notification: notification)
     }
 
     @objc func keyboardWillHide(notification: NSNotification) {
@@ -149,5 +158,18 @@ class RegisterViewController: UIViewController {
 
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+}
+
+extension RegisterViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) as? UITextField {
+            nextField.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+            registerButtonTapped()
+            return true
+        }
+        return false
     }
 }
