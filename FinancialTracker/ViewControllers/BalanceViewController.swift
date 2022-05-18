@@ -159,18 +159,17 @@ extension BalanceViewController: UITextFieldDelegate {
         let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         let arrayOfString = newString.components(separatedBy: ".")
         
+        // If the currency the user holds on to at the moment is one with 0 digits after the comma/dot, a comma/dot should not be allowed to be written
         if selectedCurrency.symbolsAfterComma == 0 && (newString.last == "." || newString.last == ",") {
             return false
         }
         
+        // If the entered text is not a whole number the user text isn't written onto the field
         if newString.doubleValue < 0 && !newString.isEmpty {
             return false
         }
-        
-        if arrayOfString.count > 2 {
-            return false
-        }
                 
+        // Checking if user has reached the currency limit after the comma/dot
         if arrayOfString.count > 1 && arrayOfString[1].count > selectedCurrency.symbolsAfterComma {
             return false
         }

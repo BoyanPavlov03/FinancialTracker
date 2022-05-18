@@ -20,6 +20,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
+    @IBOutlet var pointsLabel: UILabel!
     @IBOutlet var settingsTableView: UITableView!
     
     // MARK: - Properties
@@ -43,6 +44,7 @@ class ProfileViewController: UIViewController {
             fatalError("User data is nil")
         }
                 
+        pointsLabel.text = "Time spent(in points): \(currentUser.score) points"
         nameLabel.text = "\(currentUser.firstName) \(currentUser.lastName)"
         emailLabel.text = currentUser.email
         balanceLabel.text = "Balance: \(Locale.getLocalizedAmount(balance))\(currency.symbolNative)"
@@ -69,6 +71,7 @@ class ProfileViewController: UIViewController {
             balanceLabel.textColor = .green
         }
         
+        pointsLabel.text = "Time spent(in points): \(currentUser.score) points"
         balanceLabel.text = "Balance: \(Locale.getLocalizedAmount(balance))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
     }

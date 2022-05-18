@@ -72,7 +72,7 @@ class LoginViewController: UIViewController {
     }
     
     // MARK: - IBAction methods
-    @IBAction func loginButtonTapped() {
+    @IBAction func loginButtonTapped(_: Any) {
         guard let email = emailField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !email.isEmpty else {
             present(UIAlertController.create(title: "Missing Email", message: "Please fill in your email"), animated: true)
             return
@@ -111,11 +111,12 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Tagged every TextField with incremental numbers and going to the next one when return is tapped on keyboard
         if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) as? UITextField {
             nextField.becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
-            loginButtonTapped()
+            loginButtonTapped(loginButton as Any)
             return true
         }
         return false

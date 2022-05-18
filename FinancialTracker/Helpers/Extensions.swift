@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 private var dateformat = DateFormatter()
+private let numberFormatter = NumberFormatter()
 
 extension Date {
     static var today: Date {
@@ -126,14 +127,13 @@ extension Notification.Name {
 }
 
 extension String {
-    static let numberFormatter = NumberFormatter()
     var doubleValue: Double {
-        String.numberFormatter.decimalSeparator = "."
-        if let result =  String.numberFormatter.number(from: self) {
+        numberFormatter.decimalSeparator = "."
+        if let result =  numberFormatter.number(from: self) {
             return result.doubleValue
         } else {
-            String.numberFormatter.decimalSeparator = ","
-            if let result = String.numberFormatter.number(from: self) {
+            numberFormatter.decimalSeparator = ","
+            if let result = numberFormatter.number(from: self) {
                 return result.doubleValue
             }
         }

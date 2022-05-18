@@ -35,7 +35,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4k8-4v-rKB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1967" y="95"/>
+            <point key="canvasLocation" x="1746" y="-705"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="h97-j0-QG0">
@@ -180,7 +180,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="57q-YP-bR4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2831" y="401"/>
+            <point key="canvasLocation" x="2608" y="-398"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="xj3-44-478">
@@ -373,10 +373,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="zl6-hd-nsi"/>
                     <connections>
-                        <outlet property="bottomConstraint" destination="sDO-OX-7qP" id="FlU-Os-Q6R"/>
                         <outlet property="emailField" destination="D5G-uC-FGk" id="pjM-TP-FRA"/>
                         <outlet property="firstNameField" destination="7Ej-Wj-Ox2" id="B0R-3G-WXJ"/>
-                        <outlet property="goToLoginButton" destination="PLG-Vu-x4g" id="RQO-1X-OMu"/>
                         <outlet property="lastNameField" destination="5Fu-ny-t7c" id="PZE-06-nJe"/>
                         <outlet property="logoImage" destination="e4d-Gw-L09" id="BSx-fS-oZT"/>
                         <outlet property="passwordField" destination="tvk-ML-w8e" id="5Rk-eR-Phw"/>
@@ -385,7 +383,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a08-py-IVH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2831.8840579710145" y="-293.30357142857139"/>
+            <point key="canvasLocation" x="2610" y="-1092"/>
         </scene>
         <!--Balance View Controller-->
         <scene sceneID="Mc9-PO-mks">
@@ -477,7 +475,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lX1-dl-y8A" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3643" y="96"/>
+            <point key="canvasLocation" x="3420" y="-704"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="4M4-79-LX6">
@@ -563,7 +561,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Hzx-T6-Gna">
-                                <rect key="frame" x="15" y="99.5" width="63.5" height="100"/>
+                                <rect key="frame" x="15" y="99.5" width="63.5" height="140"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="UaG-38-9t8">
                                         <rect key="frame" x="0.0" y="0.0" width="63.5" height="20"/>
@@ -619,17 +617,35 @@
                                             </label>
                                         </subviews>
                                     </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Lbn-Sw-Zzr">
+                                        <rect key="frame" x="0.0" y="120" width="63.5" height="20"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.crop.circle.badge.clock" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="sJ1-8M-sOl">
+                                                <rect key="frame" x="-1.5" y="0.0" width="21.5" height="19.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="IrB-9p-6hN"/>
+                                                    <constraint firstAttribute="height" constant="20" id="o5i-4u-ct8"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBe-50-vdH">
+                                                <rect key="frame" x="28" y="0.0" width="35.5" height="20"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rER-1G-C1Y">
-                                <rect key="frame" x="0.0" y="224.5" width="320" height="1"/>
+                                <rect key="frame" x="0.0" y="264.5" width="320" height="1"/>
                                 <color key="backgroundColor" systemColor="systemGray2Color"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="bLf-cj-TqD"/>
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="uxE-AM-Drz">
-                                <rect key="frame" x="0.0" y="230.5" width="320" height="288.5"/>
+                                <rect key="frame" x="0.0" y="270.5" width="320" height="248.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingTableViewCell" id="ubK-AD-AzM">
@@ -665,6 +681,7 @@
                         <outlet property="balanceLabel" destination="XR2-Yi-tx1" id="SFB-Um-XtO"/>
                         <outlet property="emailLabel" destination="De5-an-VcW" id="u2Q-RI-oth"/>
                         <outlet property="nameLabel" destination="Lem-xz-i2Y" id="JvJ-lx-r5v"/>
+                        <outlet property="pointsLabel" destination="mBe-50-vdH" id="s8l-TI-c43"/>
                         <outlet property="settingsTableView" destination="uxE-AM-Drz" id="Udu-fH-bQJ"/>
                         <outlet property="userTypeLabel" destination="HOV-av-t1m" id="nH6-39-i6f"/>
                     </connections>
@@ -737,7 +754,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Cej-Ig-8G3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3858.75" y="1275"/>
+            <point key="canvasLocation" x="3887" y="511"/>
         </scene>
         <!--Transaction View Controller-->
         <scene sceneID="cL6-BJ-1w9">
@@ -1244,22 +1261,22 @@
     </scenes>
     <designables>
         <designable name="2gT-XN-b5k">
-            <size key="intrinsicContentSize" width="164" height="38.5"/>
+            <size key="intrinsicContentSize" width="100" height="18.5"/>
         </designable>
         <designable name="5Fu-ny-t7c">
-            <size key="intrinsicContentSize" width="163.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="100.5" height="18.5"/>
         </designable>
         <designable name="7Ej-Wj-Ox2">
-            <size key="intrinsicContentSize" width="165.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="102.5" height="18.5"/>
         </designable>
         <designable name="D5G-uC-FGk">
-            <size key="intrinsicContentSize" width="137.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="72.5" height="18.5"/>
         </designable>
         <designable name="jYP-cS-Ihx">
-            <size key="intrinsicContentSize" width="137.5" height="38.5"/>
+            <size key="intrinsicContentSize" width="72.5" height="18.5"/>
         </designable>
         <designable name="tvk-ML-w8e">
-            <size key="intrinsicContentSize" width="165" height="38.5"/>
+            <size key="intrinsicContentSize" width="100" height="18.5"/>
         </designable>
     </designables>
     <resources>
@@ -1271,6 +1288,7 @@
         <image name="house" catalog="system" width="128" height="106"/>
         <image name="key.fill" catalog="system" width="83" height="128"/>
         <image name="person" catalog="system" width="128" height="117"/>
+        <image name="person.crop.circle.badge.clock" catalog="system" width="128" height="113"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="star" catalog="system" width="128" height="116"/>
         <systemColor name="systemBackgroundColor">

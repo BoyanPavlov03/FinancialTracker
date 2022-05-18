@@ -74,7 +74,6 @@ class RegisterViewController: UIViewController {
     // MARK: - Own methods
     private func setUpUITextField(_ textField: UITextField) {
         textField.layer.cornerRadius = 15
-        textField.layer.borderColor = UIColor.black.cgColor
         textField.layer.borderWidth = 1
     }
     
@@ -93,7 +92,7 @@ class RegisterViewController: UIViewController {
         return emailPred.evaluate(with: email)
     }
     
-    @IBAction func registerButtonTapped() {
+    @IBAction func registerButtonTapped(_: Any) {
         guard let firstName = firstNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !firstName.isEmpty else {
             present(UIAlertController.create(title: "Missing First Name", message: "Please fill in your first name"), animated: true)
             return
@@ -142,6 +141,7 @@ class RegisterViewController: UIViewController {
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if passwordField.isEditing || emailField.isEditing {
+            // The doubled size of any of the TextFields is enough so that the text field can be seen on every supported device
             self.view.frame.origin.y = 0 - (passwordField.frame.size.height * 2)
             logoImage.isHidden = true
             title = ""
@@ -163,11 +163,12 @@ class RegisterViewController: UIViewController {
 
 extension RegisterViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Tagged every TextField with incremental numbers and going to the next one when return is tapped on keyboard
         if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) as? UITextField {
             nextField.becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
-            registerButtonTapped()
+            registerButtonTapped(registerButton as Any)
             return true
         }
         return false

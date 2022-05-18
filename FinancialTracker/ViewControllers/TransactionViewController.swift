@@ -133,20 +133,17 @@ extension TransactionViewController: UITextFieldDelegate {
             return false
         }
         
+        guard let currency = authManager?.currentUser?.currency else {
+            fatalError("User data is nil")
+        }
+        let arrayOfString = newString.components(separatedBy: ".")
+
+        // If the entered text is not a whole number the user text isn't written onto the field
         if newString.doubleValue < 0 && !newString.isEmpty {
             return false
         }
         
-        let arrayOfString = newString.components(separatedBy: ".")
-
-        if arrayOfString.count > 2 {
-            return false
-        }
-        
-        guard let currency = authManager?.currentUser?.currency else {
-            fatalError("User data is nil")
-        }
-        
+        // Checking if user has reached the currency limit after the comma/dot
         if arrayOfString.count > 1 && arrayOfString[1].count > currency.symbolsAfterComma {
             return false
         }
