@@ -20,6 +20,7 @@ class ProfileViewController: UIViewController {
     @IBOutlet var emailLabel: UILabel!
     @IBOutlet var userTypeLabel: UILabel!
     @IBOutlet var balanceLabel: UILabel!
+    @IBOutlet var pointsLabel: UILabel!
     @IBOutlet var settingsTableView: UITableView!
     
     // MARK: - Properties
@@ -42,10 +43,11 @@ class ProfileViewController: UIViewController {
               let currency = currentUser.currency else {
             fatalError("User data is nil")
         }
-        
+                
+        pointsLabel.text = "Time spent(in points): \(currentUser.score) points"
         nameLabel.text = "\(currentUser.firstName) \(currentUser.lastName)"
         emailLabel.text = currentUser.email
-        balanceLabel.text = "Balance: \(balance)\(currency.symbolNative)"
+        balanceLabel.text = "Balance: \(Locale.getLocalizedAmount(balance))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
         
         authManager?.addDelegate(self)
@@ -69,7 +71,8 @@ class ProfileViewController: UIViewController {
             balanceLabel.textColor = .green
         }
         
-        balanceLabel.text = "Balance: \(balance.round(to: 2))\(currency.symbolNative)"
+        pointsLabel.text = "Time spent(in points): \(currentUser.score) points"
+        balanceLabel.text = "Balance: \(Locale.getLocalizedAmount(balance))\(currency.symbolNative)"
         userTypeLabel.text = "User Type: \(currentUser.premium ? "Premium" : "Normal")"
     }
     
@@ -93,6 +96,7 @@ class ProfileViewController: UIViewController {
             return
         }
 
+        premiumVC.delegate = self
         premiumVC.authManager = authManager
         navigationController?.pushViewController(premiumVC, animated: true)
     }
@@ -124,7 +128,7 @@ class ProfileViewController: UIViewController {
     @objc func shareButtonTapped() {
         let activityVC = UIActivityViewController(activityItems: [Constants.Share.shareText, Constants.Share.shareLink], applicationActivities: nil)
         
-        activityVC.popoverPresentationController?.sourceView = self.view
+        activityVC.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
         present(activityVC, animated: true)
     }
     
@@ -208,5 +212,11 @@ extension ProfileViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+extension ProfileViewController: PremiumViewControllerDelegate {
+    func didPurchasePremium(sender: PremiumViewController) {
+        settingsTableView.reloadData()
     }
 }

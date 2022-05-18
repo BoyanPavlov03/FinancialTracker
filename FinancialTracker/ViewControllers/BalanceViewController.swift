@@ -28,7 +28,6 @@ class BalanceViewController: UIViewController {
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        balanceTextField.keyboardType = .numberPad
         
         title = "Balance"
         navigationItem.setHidesBackButton(true, animated: true)
@@ -57,6 +56,7 @@ class BalanceViewController: UIViewController {
         currencyPicker.delegate = self
         currencyPicker.dataSource = self
         nextButton.layer.cornerRadius = 15
+        balanceTextField.delegate = self
     }
     
     // MARK: - IBAction methods
@@ -66,11 +66,8 @@ class BalanceViewController: UIViewController {
             return
         }
         
-        guard let balanceNumber = Double(balance) else {
-            present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
-            return
-        }
-        
+        let balanceNumber = balance.doubleValue
+
         let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
         
         authManager?.addBalanceToCurrentUser(balanceNumber, currency: selectedCurrency) { authError, success in
@@ -119,6 +116,27 @@ extension BalanceViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return currencies[row].code
     }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        guard let balance = balanceTextField.text else {
+            assertionFailure("Not value.")
+            return
+        }
+        
+        let arrayOfString = balance.components(separatedBy: ".")
+        let selectedCurrency = currencies[row]
+        
+        if arrayOfString.count > 1 && arrayOfString[1].count > selectedCurrency.symbolsAfterComma {
+            var amount = arrayOfString[1].count - selectedCurrency.symbolsAfterComma
+            var newString = balance.removeLastCharacters(amount: &amount)
+            if selectedCurrency.symbolsAfterComma == 0 {
+                newString.removeLast()
+            }
+            
+            balanceTextField.text = newString
+        }
+        
+    }
 }
 
 // MARK: - UIPickerViewDataSource
@@ -129,5 +147,33 @@ extension BalanceViewController: UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return currencies.count
+    }
+}
+
+extension BalanceViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let newString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else {
+            return false
+        }
+        
+        let selectedCurrency = currencies[currencyPicker.selectedRow(inComponent: 0)]
+        let arrayOfString = newString.components(separatedBy: ".")
+        
+        // If the currency the user holds on to at the moment is one with 0 digits after the comma/dot, a comma/dot should not be allowed to be written
+        if selectedCurrency.symbolsAfterComma == 0 && (newString.last == "." || newString.last == ",") {
+            return false
+        }
+        
+        // If the entered text is not a whole number the user text isn't written onto the field
+        if newString.doubleValue < 0 && !newString.isEmpty {
+            return false
+        }
+                
+        // Checking if user has reached the currency limit after the comma/dot
+        if arrayOfString.count > 1 && arrayOfString[1].count > selectedCurrency.symbolsAfterComma {
+            return false
+        }
+
+        return true
     }
 }

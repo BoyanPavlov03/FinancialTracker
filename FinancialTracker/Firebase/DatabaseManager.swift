@@ -141,7 +141,7 @@ class DatabaseManager {
     ///   - completionHandler: Block that is to be executed if an error appears or the function is successfully executed.
     ///     1. `databaseError` - An error object that indicates why the function failed, or nil if the was successful.
     ///     2. `success` - Boolean that indicates whether the function was successful.
-    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
+    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, date: Date, completionHandler: @escaping (DatabaseError?, Bool) -> Void) {
         guard let currentUser = currentUser else {
             completionHandler(DatabaseError.access("Current user is nil in \(#function)."), false)
             return
@@ -149,7 +149,11 @@ class DatabaseManager {
         
         let usersKey = DBCollectionKey.users.rawValue
         let balanceKey = User.CodingKeys.balance.rawValue
-        let formatedDate = Date.today.formatDate("hh:mm:ss, MM/dd/yyyy")
+        let formatedDate = date.formatDate("hh:mm:ss, MM/dd/yyyy")
+        
+        guard let currency = currentUser.currency else {
+            fatalError("User doesn't have currency.")
+        }
         
         do {
             if let category = category as? ExpenseCategory {
@@ -168,8 +172,8 @@ class DatabaseManager {
                     assertionFailure("User hasn't entered balance yet.")
                     return
                 }
-
-                let newBalanceValue = (userBalance - amount).round(to: 2)
+                
+                let newBalanceValue = (userBalance - amount).round(to: currency.symbolsAfterComma)
                 let expenseValue = FieldValue.arrayUnion([dictionary])
                 
                 let data = [expenseKey: expenseValue, balanceKey: newBalanceValue] as [String: Any]
@@ -197,7 +201,7 @@ class DatabaseManager {
                     return
                 }
 
-                let newBalanceValue = (userBalance + amount).round(to: 2)
+                let newBalanceValue = (userBalance + amount).round(to: currency.symbolsAfterComma)
                 let incomeValue = FieldValue.arrayUnion([dictionary])
                 
                 let data = [incomeKey: incomeValue, balanceKey: newBalanceValue] as [String: Any]
@@ -252,17 +256,17 @@ class DatabaseManager {
             return
         }
         
-        let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: 2)
+        let newBalance = ((balance / currentCurrency.rate) * currency.rate).round(to: currentCurrency.symbolsAfterComma)
         
         var newExpenses: [Transaction] = []
         for expense in currentUser.expenses {
-            let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: 2)
+            let newExpenseAmount = ((expense.amount / currentCurrency.rate) * currency.rate).round(to: currentCurrency.symbolsAfterComma)
             newExpenses.append(Transaction(amount: newExpenseAmount, date: expense.date, category: expense.category))
         }
         
         var newIncomes: [Transaction] = []
         for income in currentUser.incomes {
-            let newIncomeAmount = ((income.amount / currentCurrency.rate) * currency.rate).round(to: 2)
+            let newIncomeAmount = ((income.amount / currentCurrency.rate) * currency.rate).round(to: currentCurrency.symbolsAfterComma)
             newIncomes.append(Transaction(amount: newIncomeAmount, date: income.date, category: income.category))
         }
         
@@ -343,7 +347,7 @@ class DatabaseManager {
                     let data = try JSONSerialization.data(withJSONObject: document.data(), options: .prettyPrinted)
                     let transfer = try JSONDecoder().decode(Transfer.self, from: data)
 
-                    let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: 2)
+                    let newAmount = ((transfer.amount / transfer.receiverCurrencyRate) * currency.rate).round(to: currency.symbolsAfterComma)
                     
                     var updatedData: [String: Any]
                     
@@ -605,7 +609,9 @@ class DatabaseManager {
             return
         }
         
-        self.addTransactionToUserByUID(transfer.fromUser, amount: transfer.amount, category: otherUserTransactionType) { databaseError, _ in
+        let otherUID = transfer.fromUser
+        let myUID = currentUser.uid
+        self.addTransactionToUserByUID(otherUID, amount: transfer.amount, category: otherUserTransactionType, date: Date.today) { databaseError, _ in
             if let databaseError = databaseError {
                 completionHandler(databaseError, false)
                 return
@@ -614,7 +620,7 @@ class DatabaseManager {
             // swiftlint:disable:next line_length
             self.firestore.collection(DBCollectionKey.users.rawValue).document(transfer.fromUser).collection(DBCollectionKey.transfers.rawValue).document(transfer.uid).updateData([Transfer.TransferKeys.transferState.rawValue: "Completed"])
             
-            self.addTransactionToUserByUID(currentUser.uid, amount: myTransferAmount, category: myTransactionType) { databaseError, _ in
+            self.addTransactionToUserByUID(myUID, amount: myTransferAmount, category: myTransactionType, date: Date.today) { databaseError, _ in
                 if let databaseError = databaseError {
                     completionHandler(databaseError, false)
                     return

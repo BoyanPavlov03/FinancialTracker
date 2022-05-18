@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 private var dateformat = DateFormatter()
+private let numberFormatter = NumberFormatter()
 
 extension Date {
     static var today: Date {
@@ -123,4 +124,35 @@ extension Dictionary {
 
 extension Notification.Name {
     public static let FCMToken = Notification.Name(User.CodingKeys.FCMToken.rawValue)
+}
+
+extension String {
+    var doubleValue: Double {
+        numberFormatter.decimalSeparator = "."
+        if let result =  numberFormatter.number(from: self) {
+            return result.doubleValue
+        } else {
+            numberFormatter.decimalSeparator = ","
+            if let result = numberFormatter.number(from: self) {
+                return result.doubleValue
+            }
+        }
+        return -1.0
+    }
+    
+    func removeLastCharacters(amount: inout Int) -> String {
+        var newString = self
+        while amount > 0 {
+            newString.removeLast()
+            amount -= 1
+        }
+        
+        return newString
+    }
+}
+
+extension Locale {
+    static func getLocalizedAmount(_ amount: Double) -> String {
+        return String(format: "%.2f", locale: Locale.current, arguments: [amount])
+    }
 }

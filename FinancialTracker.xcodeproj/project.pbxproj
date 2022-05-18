@@ -22,6 +22,8 @@
 		70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70607F7427A2D576005ED7F7 /* TabBarController.swift */; };
 		7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */; };
 		7076B1EF277CD92A005C83F9 /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7076B1EE277CD92A005C83F9 /* TransactionViewController.swift */; };
+		70799993281EA82B0006FBEA /* SelectedTransactionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70799992281EA82B0006FBEA /* SelectedTransactionsViewController.swift */; };
+		70799995281EAE8F0006FBEA /* TransactionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70799994281EAE8F0006FBEA /* TransactionTableViewCell.swift */; };
 		707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F853C27AD55740053555B /* DelegatesCollection.swift */; };
 		707F854127AED1410053555B /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F854027AED1410053555B /* AuthManager.swift */; };
 		707F854327AED2010053555B /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 707F854227AED2010053555B /* DatabaseManager.swift */; };
@@ -42,7 +44,6 @@
 		70B333612763E5A3002FAEB5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 70B333602763E5A2002FAEB5 /* GoogleService-Info.plist */; };
 		70D37DF027633FB40067FFE6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D37DEF27633FB40067FFE6 /* AppDelegate.swift */; };
 		70D37DF227633FB40067FFE6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D37DF127633FB40067FFE6 /* SceneDelegate.swift */; };
-		70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D37DF327633FB40067FFE6 /* EntryViewController.swift */; };
 		70D37DF727633FB40067FFE6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF527633FB40067FFE6 /* Main.storyboard */; };
 		70D37DF927633FB50067FFE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DF827633FB50067FFE6 /* Assets.xcassets */; };
 		70D37DFC27633FB50067FFE6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 70D37DFA27633FB50067FFE6 /* LaunchScreen.storyboard */; };
@@ -65,6 +66,8 @@
 		70607F7427A2D576005ED7F7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		7076B1EC277CB1DD005C83F9 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7076B1EE277CD92A005C83F9 /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
+		70799992281EA82B0006FBEA /* SelectedTransactionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedTransactionsViewController.swift; sourceTree = "<group>"; };
+		70799994281EAE8F0006FBEA /* TransactionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewCell.swift; sourceTree = "<group>"; };
 		707F853C27AD55740053555B /* DelegatesCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegatesCollection.swift; sourceTree = "<group>"; };
 		707F854027AED1410053555B /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		707F854227AED2010053555B /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
@@ -80,7 +83,6 @@
 		70D37DEC27633FB40067FFE6 /* FinancialTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinancialTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		70D37DEF27633FB40067FFE6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		70D37DF127633FB40067FFE6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		70D37DF327633FB40067FFE6 /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
 		70D37DF627633FB40067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		70D37DF827633FB50067FFE6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		70D37DFB27633FB50067FFE6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			children = (
 				70580549276893E4009515BE /* DesignableUITextField.swift */,
 				7081BE0027C02FE1001DA44C /* TransferTableViewCell.swift */,
+				70799994281EAE8F0006FBEA /* TransactionTableViewCell.swift */,
 			);
 			path = "Cutsom UI";
 			sourceTree = "<group>";
@@ -162,7 +165,6 @@
 		70D0D6CA2766227600ED0060 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				70D37DF327633FB40067FFE6 /* EntryViewController.swift */,
 				708905A42764A317000CEE4E /* LoginViewController.swift */,
 				70B3335E2763DDC7002FAEB5 /* RegisterViewController.swift */,
 				709638DF27649D2F000C152D /* BalanceViewController.swift */,
@@ -174,6 +176,7 @@
 				70607F7427A2D576005ED7F7 /* TabBarController.swift */,
 				705E7E5827BCFA8100FEA650 /* TransfersTableViewController.swift */,
 				705A4C7527C526C800D468FE /* UsersTableViewController.swift */,
+				70799992281EA82B0006FBEA /* SelectedTransactionsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 				70607F7527A2D576005ED7F7 /* TabBarController.swift in Sources */,
 				70D6636627C3A75B00072131 /* Constants.swift in Sources */,
 				7014A78627AC207100E6A2DB /* Transaction.swift in Sources */,
+				70799993281EA82B0006FBEA /* SelectedTransactionsViewController.swift in Sources */,
 				705A4C7627C526C800D468FE /* UsersTableViewController.swift in Sources */,
 				707F854327AED2010053555B /* DatabaseManager.swift in Sources */,
 				7082B32F27B97A9D0083A169 /* PushNotificationSender.swift in Sources */,
@@ -338,9 +342,9 @@
 				705B3DB2279869D50059D832 /* ProfileViewController.swift in Sources */,
 				70DA8522279C21FC002A7335 /* Currency.swift in Sources */,
 				705E7E5927BCFA8100FEA650 /* TransfersTableViewController.swift in Sources */,
+				70799995281EAE8F0006FBEA /* TransactionTableViewCell.swift in Sources */,
 				707F853D27AD55740053555B /* DelegatesCollection.swift in Sources */,
 				705E7E5B27BCFC7000FEA650 /* Transfer.swift in Sources */,
-				70D37DF427633FB40067FFE6 /* EntryViewController.swift in Sources */,
 				709638E027649D2F000C152D /* BalanceViewController.swift in Sources */,
 				7076B1ED277CB1DD005C83F9 /* HomeViewController.swift in Sources */,
 				70607F70279D65DB005ED7F7 /* CurrencyTableViewController.swift in Sources */,

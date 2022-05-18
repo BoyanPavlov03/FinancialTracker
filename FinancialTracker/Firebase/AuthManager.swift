@@ -179,8 +179,8 @@ class AuthManager {
         }
     }
     
-    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, completionHandler: @escaping (AuthError?, Bool) -> Void) {
-        databaseManager.addTransactionToUserByUID(uid, amount: amount, category: category) { databaseError, success in
+    func addTransactionToUserByUID(_ uid: String, amount: Double, category: Category, date: Date, completionHandler: @escaping (AuthError?, Bool) -> Void) {
+        databaseManager.addTransactionToUserByUID(uid, amount: amount, category: category, date: date) { databaseError, success in
             completionHandler(AuthError.database(databaseError), success)
         }
     }

@@ -12,6 +12,10 @@ enum Product: String {
     case premium = "org.elsys.premium"
 }
 
+protocol PremiumViewControllerDelegate: AnyObject {
+    func didPurchasePremium(sender: PremiumViewController)
+}
+
 class PremiumViewController: UIViewController {
     // MARK: - Outlet properties
     @IBOutlet var upgradeButton: UIButton!
@@ -19,6 +23,7 @@ class PremiumViewController: UIViewController {
     
     // MARK: - Properties
     var authManager: AuthManager?
+    weak var delegate: PremiumViewControllerDelegate?
     
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
@@ -29,6 +34,12 @@ class PremiumViewController: UIViewController {
         SKPaymentQueue.default().add(self)
         upgradeButton.layer.cornerRadius = 15
         proButton.layer.cornerRadius = 15
+        guard let currency = authManager?.currentUser?.currency else {
+            fatalError("User data is nil")
+        }
+        
+        let amount = (currency.rate * 8.42).round(to: currency.symbolsAfterComma)
+        upgradeButton.setTitle("Upgrade Premium \(Locale.getLocalizedAmount(amount))\(currency.symbolNative)", for: .normal)
     }
     
     // MARK: - IBAction methods
@@ -57,6 +68,7 @@ extension PremiumViewController: SKPaymentTransactionObserver {
                         self.present(UIAlertController.create(title: alertTitle, message: alertMessage), animated: true)
                         return
                     }
+                    self.delegate?.didPurchasePremium(sender: self)
                     self.navigationController?.popViewController(animated: true)
                 }
             case .failed:

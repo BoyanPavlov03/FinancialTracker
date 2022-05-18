@@ -129,7 +129,7 @@ extension TransfersTableViewController: UITableViewDataSource {
         cell.transferStateButton.isEnabled = true
         switch value.transferType {
         case .send:
-            cell.transferTitleLabel.text = "You want to send \(value.amount)\(currency.symbolNative)"
+            cell.transferTitleLabel.text = "You want to send \(Locale.getLocalizedAmount(value.amount))\(currency.symbolNative)"
             switch value.transferState {
             case .pending:
                 cell.transferStateButton.setTitle("Pending", for: .disabled)
@@ -138,8 +138,8 @@ extension TransfersTableViewController: UITableViewDataSource {
             }
             cell.transferStateButton.isEnabled = false
         case .requestToMe:
-            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
-            cell.transferTitleLabel.text = "\(value.senderName) wants \(amountInMyCurrency)\(currency.symbolNative)"
+            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: currency.symbolsAfterComma)
+            cell.transferTitleLabel.text = "\(value.senderName) wants \(Locale.getLocalizedAmount(amountInMyCurrency))\(currency.symbolNative)"
             switch value.transferState {
             case .pending:
                 cell.transferStateButton.setTitle("Send", for: .normal)
@@ -148,7 +148,7 @@ extension TransfersTableViewController: UITableViewDataSource {
                 cell.transferStateButton.isEnabled = false
             }
         case .requestFromMe:
-            cell.transferTitleLabel.text = "You want \(value.amount)\(currency.symbolNative) from \(value.senderName)"
+            cell.transferTitleLabel.text = "You want \(Locale.getLocalizedAmount(value.amount))\(currency.symbolNative) from \(value.senderName)"
             switch value.transferState {
             case .pending:
                 cell.transferStateButton.setTitle("Pending", for: .disabled)
@@ -157,8 +157,9 @@ extension TransfersTableViewController: UITableViewDataSource {
             }
             cell.transferStateButton.isEnabled = false
         case .receive:
-            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: 2)
-            cell.transferTitleLabel.text = "You received \(amountInMyCurrency)\(currency.symbolNative) from \(value.senderName)"
+            let amountInMyCurrency = ((value.amount / value.senderCurrencyRate) * currency.rate).round(to: currency.symbolsAfterComma)
+            let localizedString = Locale.getLocalizedAmount(amountInMyCurrency)
+            cell.transferTitleLabel.text = "You received \(localizedString)\(currency.symbolNative) from \(value.senderName)"
             switch value.transferState {
             case .pending:
                 cell.transferStateButton.setTitle("Accept", for: .normal)

@@ -14,6 +14,7 @@ class RegisterViewController: UIViewController {
     @IBOutlet var emailField: UITextField!
     @IBOutlet var passwordField: UITextField!
     @IBOutlet var registerButton: UIButton!
+    @IBOutlet var logoImage: UIImageView!
     
     // MARK: - Properties
     var authManager: AuthManager?
@@ -23,6 +24,7 @@ class RegisterViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Register"
+        self.navigationItem.hidesBackButton = true
         
         setUpUITextField(firstNameField)
         setUpUITextField(lastNameField)
@@ -30,13 +32,56 @@ class RegisterViewController: UIViewController {
         setUpUITextField(passwordField)
         passwordField.isSecureTextEntry = true
         registerButton.layer.cornerRadius = 15
+        
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            logoImage.image = UIImage(named: "logoDark")
+            setBorderColor(color: UIColor.white.cgColor)
+        case .light, .unspecified:
+            logoImage.image = UIImage(named: "logoWhite")
+            setBorderColor(color: UIColor.black.cgColor)
+        @unknown default:
+            fatalError("Unknown style")
+        }
+        
+        let keyboardRemovalGesture = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(keyboardRemovalGesture)
+        
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        center.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        firstNameField.delegate = self
+        lastNameField.delegate = self
+        emailField.delegate = self
+        passwordField.delegate = self
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        switch newCollection.userInterfaceStyle {
+        case .dark:
+            logoImage.image = UIImage(named: "logoDark")
+            setBorderColor(color: UIColor.white.cgColor)
+        case .light, .unspecified:
+            logoImage.image = UIImage(named: "logoWhite")
+            setBorderColor(color: UIColor.black.cgColor)
+        @unknown default:
+            fatalError("Unknown style")
+        }
     }
     
     // MARK: - Own methods
     private func setUpUITextField(_ textField: UITextField) {
         textField.layer.cornerRadius = 15
-        textField.layer.borderColor = UIColor.black.cgColor
         textField.layer.borderWidth = 1
+    }
+    
+    private func setBorderColor(color: CGColor) {
+        passwordField.layer.borderColor = color
+        emailField.layer.borderColor = color
+        firstNameField.layer.borderColor = color
+        lastNameField.layer.borderColor = color
     }
     
     // MARK: - IBAction methods
@@ -82,5 +127,50 @@ class RegisterViewController: UIViewController {
                 return
             }
         }
+    }
+    
+    @IBAction func loginScreenButtonTapped(_ sender: Any) {
+        guard let loginVC = ViewControllerFactory.shared.viewController(for: .login) as? LoginViewController else {
+            assertionFailure("Couldn't parse to LoginViewController.")
+            return
+        }
+        
+        loginVC.authManager = authManager
+        navigationController?.pushViewController(loginVC, animated: true)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if passwordField.isEditing || emailField.isEditing {
+            // The doubled size of any of the TextFields is enough so that the text field can be seen on every supported device
+            self.view.frame.origin.y = 0 - (passwordField.frame.size.height * 2)
+            logoImage.isHidden = true
+            title = ""
+            return
+        }
+        keyboardWillHide(notification: notification)
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        self.view.frame.origin.y = 0
+        logoImage.isHidden = false
+        title = "Register"
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
+extension RegisterViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Tagged every TextField with incremental numbers and going to the next one when return is tapped on keyboard
+        if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) as? UITextField {
+            nextField.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+            registerButtonTapped(registerButton as Any)
+            return true
+        }
+        return false
     }
 }

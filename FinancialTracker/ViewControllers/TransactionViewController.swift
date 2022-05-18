@@ -13,6 +13,7 @@ class TransactionViewController: UIViewController {
     @IBOutlet var categoryPicker: UIPickerView!
     @IBOutlet var expenseOrIncomeSegmentedControl: UISegmentedControl!
     @IBOutlet var addButton: UIButton!
+    @IBOutlet var dateTextField: UITextField!
     
     // MARK: - Private properties
     private var categoryCases: [Category] {
@@ -35,6 +36,7 @@ class TransactionViewController: UIViewController {
     
     // MARK: - Properties
     var authManager: AuthManager?
+    let datePicker = UIDatePicker()
     
     // MARK: - Lifecycle methods
     override func viewDidLoad() {
@@ -42,9 +44,22 @@ class TransactionViewController: UIViewController {
         
         title = "Add Transaction"
         
+        amountTextField.delegate = self
+        
         categoryPicker.dataSource = self
         categoryPicker.delegate = self
         addButton.layer.cornerRadius = 15
+        
+        let keyboardRemovalGesture = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(keyboardRemovalGesture)
+        
+        datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
+        datePicker.preferredDatePickerStyle = .inline
+        datePicker.maximumDate = Date()
+        
+        dateTextField.inputView = datePicker
+        dateTextField.text = Date().formatDate("MMMM dd yyyy")
     }
     
     // MARK: - IBAction methods
@@ -58,10 +73,7 @@ class TransactionViewController: UIViewController {
             return
         }
         
-        guard let amountNumber = Double(amount) else {
-            present(UIAlertController.create(title: "Invalid Format", message: "Please fill in a number"), animated: true)
-            return
-        }
+        let amountNumber = amount.doubleValue
         
         guard let currentUser = authManager?.currentUser else {
             fatalError("User data is nil.")
@@ -69,7 +81,9 @@ class TransactionViewController: UIViewController {
         
         let selectedCategory = categoryCases[categoryPicker.selectedRow(inComponent: 0)]
         
-        authManager?.addTransactionToUserByUID(currentUser.uid, amount: amountNumber, category: selectedCategory) { authError, success in
+        let uid = currentUser.uid
+        let date = datePicker.date
+        authManager?.addTransactionToUserByUID(uid, amount: amountNumber, category: selectedCategory, date: date) { authError, success in
             guard success else {
                 let alertTitle = authError?.title ?? "Unknown Error"
                 let alertMessage = authError?.message ?? "This error should not appear."
@@ -79,6 +93,14 @@ class TransactionViewController: UIViewController {
             }
             self.navigationController?.popViewController(animated: true)
         }
+    }
+
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    @objc func dateChange(datePicker: UIDatePicker) {
+        dateTextField.text = datePicker.date.formatDate("MMMM dd yyyy")
     }
 }
 
@@ -102,5 +124,30 @@ extension TransactionViewController: UIPickerViewDelegate {
             return income[row].rawValue
         }
         return ""
+    }
+}
+
+extension TransactionViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard let newString = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) else {
+            return false
+        }
+        
+        guard let currency = authManager?.currentUser?.currency else {
+            fatalError("User data is nil")
+        }
+        let arrayOfString = newString.components(separatedBy: ".")
+
+        // If the entered text is not a whole number the user text isn't written onto the field
+        if newString.doubleValue < 0 && !newString.isEmpty {
+            return false
+        }
+        
+        // Checking if user has reached the currency limit after the comma/dot
+        if arrayOfString.count > 1 && arrayOfString[1].count > currency.symbolsAfterComma {
+            return false
+        }
+
+        return true
     }
 }
