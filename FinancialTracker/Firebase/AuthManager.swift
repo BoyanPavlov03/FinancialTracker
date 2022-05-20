@@ -165,7 +165,6 @@ class AuthManager {
                     completionHandler(AuthError.database(databaseError), false)
                     return
                 }
-                self.databaseManager.setUserToNil()
                 completionHandler(nil, success)
             }
         } catch let signOutError {

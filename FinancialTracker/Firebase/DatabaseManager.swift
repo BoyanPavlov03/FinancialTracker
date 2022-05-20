@@ -454,6 +454,7 @@ class DatabaseManager {
         
         let fcmTokenKey = User.CodingKeys.FCMToken.rawValue
         
+        setUserToNil()
         firestore.collection(DBCollectionKey.users.rawValue).document(currentUser.uid).updateData([fcmTokenKey: ""]) { error in
             if let error = error {
                 completionHandler(DatabaseError.database(error), false)
