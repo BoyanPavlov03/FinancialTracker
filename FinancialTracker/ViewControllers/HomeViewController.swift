@@ -114,6 +114,7 @@ class HomeViewController: UIViewController {
                 } else {
                     selectedTransactions = currentUser.incomes
                 }
+                updateChart()
                 return
             }
             guard let start = Date().startOfWeek, let end = Date().endOfWeek else { return }
